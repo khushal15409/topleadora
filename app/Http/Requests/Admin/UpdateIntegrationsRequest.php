@@ -17,7 +17,7 @@ class UpdateIntegrationsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_enabled' => ['sometimes', 'boolean'],
+            'platform_payment_enabled' => ['sometimes', 'boolean'],
             'google_ads_id' => ['nullable', 'string', 'max:64'],
             'google_ads_conversion_label' => ['nullable', 'string', 'max:128'],
 
@@ -30,7 +30,7 @@ class UpdateIntegrationsRequest extends FormRequest
             'whatsapp_webhook_verify_token' => ['nullable', 'string', 'max:255'],
             'whatsapp_inbound_organization_id' => ['nullable', 'integer', 'exists:organizations,id'],
 
-            'payment_enabled' => ['sometimes', 'boolean'],
+            'gateway_payment_enabled' => ['sometimes', 'boolean'],
             'payment_key' => ['nullable', 'string', 'max:255'],
             'payment_secret' => ['nullable', 'string', 'max:5000'],
 

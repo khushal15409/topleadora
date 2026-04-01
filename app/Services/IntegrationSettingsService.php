@@ -51,7 +51,11 @@ class IntegrationSettingsService
      */
     public function save(array $data): void
     {
-        Setting::putString('payment_enabled', ! empty($data['payment_enabled']) ? '1' : '0');
+        // Platform billing toggle (paid SaaS vs free mode).
+        // Checkbox fields may be absent when unchecked; only update when key is present.
+        if (array_key_exists('platform_payment_enabled', $data)) {
+            Setting::putString('payment_enabled', ! empty($data['platform_payment_enabled']) ? '1' : '0');
+        }
 
         Setting::putString('google_ads_id', $data['google_ads_id'] ?? null);
         Setting::putString('google_ads_conversion_label', $data['google_ads_conversion_label'] ?? null);
@@ -71,7 +75,10 @@ class IntegrationSettingsService
 
         Setting::putString('integrations.whatsapp.inbound_organization_id', $data['whatsapp_inbound_organization_id'] ?? null);
 
-        Setting::putString('integrations.payment.enabled', ! empty($data['payment_enabled']) ? '1' : '0');
+        // Payment gateway toggle (separate from platform billing mode).
+        if (array_key_exists('gateway_payment_enabled', $data)) {
+            Setting::putString('integrations.payment.enabled', ! empty($data['gateway_payment_enabled']) ? '1' : '0');
+        }
         Setting::putString('integrations.payment.key', $data['payment_key'] ?? null);
         Setting::putString('integrations.payment.secret', $data['payment_secret'] ?? null);
 

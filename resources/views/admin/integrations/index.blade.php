@@ -35,10 +35,12 @@
                     <small class="text-body-secondary">{{ __('Turn payments ON for paid SaaS mode, or OFF for free access mode.') }}</small>
                 </div>
                 <div class="form-check form-switch m-0">
+                    {{-- Unchecked checkboxes don't submit any value, so send an explicit 0. --}}
+                    <input type="hidden" name="platform_payment_enabled" value="0">
                     <input
                         class="form-check-input"
                         type="checkbox"
-                        name="payment_enabled"
+                        name="platform_payment_enabled"
                         value="1"
                         id="payment_enabled_global"
                         @checked($platform['payment_enabled'] ?? true)
@@ -170,8 +172,9 @@
                     <small class="text-body-secondary">{{ __('Store Razorpay/Stripe keys here.') }}</small>
                 </div>
                 <div class="form-check form-switch m-0">
-                    <input class="form-check-input" type="checkbox" name="payment_enabled" value="1" id="payment_enabled" @checked($payment['enabled'] ?? false)>
-                    <label class="form-check-label" for="payment_enabled">{{ __('Enabled') }}</label>
+                    <input type="hidden" name="gateway_payment_enabled" value="0">
+                    <input class="form-check-input" type="checkbox" name="gateway_payment_enabled" value="1" id="gateway_payment_enabled" @checked($payment['enabled'] ?? false)>
+                    <label class="form-check-label" for="gateway_payment_enabled">{{ __('Enabled') }}</label>
                 </div>
             </div>
             <div class="card-body px-4 pb-4">
