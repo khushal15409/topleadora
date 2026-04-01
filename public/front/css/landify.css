@@ -1,0 +1,473 @@
+/**
+ * Landify Theme – CRM Front Page Only
+ * BootstrapMade Landify-style template. All selectors scoped to .landify-theme.
+ * Loaded ONLY by layouts.front – never by app.blade.php (backend super-admin/organization).
+ */
+
+.landify-theme {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #0a0a0a;
+    background: #fff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.landify-theme * {
+    box-sizing: border-box;
+}
+
+/* ========== Variables (Landify style) ========== */
+.landify-theme {
+    --lf-primary: #0a0a0a;
+    --lf-primary-light: #404040;
+    --lf-accent: #6366f1;
+    --lf-accent-hover: #4f46e5;
+    --lf-bg: #ffffff;
+    --lf-bg-alt: #f9fafb;
+    --lf-text: #0a0a0a;
+    --lf-text-muted: #737373;
+    --lf-border: #e5e5e5;
+    --lf-radius: 8px;
+    --lf-radius-lg: 12px;
+    --lf-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    --lf-shadow-lg: 0 10px 40px -10px rgba(0,0,0,0.12);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* ========== Navbar (Landify fixed nav) ========== */
+.landify-theme .lf-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--lf-border);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+    transition: box-shadow 0.2s ease;
+}
+.landify-theme .lf-navbar.scrolled {
+    box-shadow: var(--lf-shadow);
+}
+.landify-theme .lf-brand {
+    font-weight: 700;
+    font-size: 1.35rem;
+    color: var(--lf-primary) !important;
+    text-decoration: none;
+}
+.landify-theme .lf-nav-link {
+    font-weight: 500;
+    color: var(--lf-text) !important;
+    padding: 0.5rem 0.85rem !important;
+    border-radius: var(--lf-radius);
+    transition: color 0.2s, background 0.2s;
+}
+.landify-theme .lf-nav-link:hover {
+    color: var(--lf-accent) !important;
+    background: rgba(99, 102, 241, 0.08);
+}
+.landify-theme .lf-btn {
+    display: inline-block;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    border-radius: var(--lf-radius);
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+}
+.landify-theme .lf-btn-nav {
+    color: var(--lf-text) !important;
+    padding: 0.5rem 1rem;
+    background: transparent;
+}
+.landify-theme .lf-btn-primary {
+    background: var(--lf-accent);
+    color: #fff !important;
+    padding: 0.5rem 1.25rem;
+}
+.landify-theme .lf-btn-primary:hover {
+    background: var(--lf-accent-hover);
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+.landify-theme .lf-btn-outline {
+    background: transparent;
+    color: var(--lf-text);
+    border: 2px solid var(--lf-border);
+    padding: 0.5rem 1.25rem;
+}
+.landify-theme .lf-btn-outline:hover {
+    border-color: var(--lf-accent);
+    color: var(--lf-accent);
+    background: rgba(99, 102, 241, 0.06);
+}
+.landify-theme .lf-btn-lg {
+    padding: 0.75rem 1.75rem;
+    font-size: 1rem;
+}
+.landify-theme .lf-btn-block {
+    width: 100%;
+    padding: 0.75rem 1rem;
+}
+
+/* ========== Hero (Landify hero) ========== */
+.landify-theme .lf-hero {
+    padding: 8rem 0 5rem;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #fff 0%, var(--lf-bg-alt) 100%);
+}
+.landify-theme .lf-hero-title {
+    font-size: clamp(2.5rem, 5vw, 3.75rem);
+    font-weight: 700;
+    color: var(--lf-text);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+.landify-theme .lf-hero-lead {
+    font-size: 1.2rem;
+    color: var(--lf-text-muted);
+    margin-bottom: 0;
+    max-width: 520px;
+    line-height: 1.65;
+}
+.landify-theme .lf-hero-btns {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.landify-theme .lf-hero-mockup {
+    max-width: 100%;
+}
+.landify-theme .lf-mockup-card {
+    background: #fff;
+    border-radius: var(--lf-radius-lg);
+    box-shadow: var(--lf-shadow-lg);
+    border: 1px solid var(--lf-border);
+    padding: 1.5rem 1.75rem;
+    max-width: 400px;
+    margin: 0 auto;
+    animation: lf-float 5s ease-in-out infinite;
+}
+@keyframes lf-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+.landify-theme .lf-mockup-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--lf-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.landify-theme .lf-mockup-body {
+    background: var(--lf-bg-alt);
+    border-radius: var(--lf-radius);
+    padding: 1rem;
+    margin-top: 0.75rem;
+}
+.landify-theme .lf-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+.landify-theme .lf-badge-primary {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--lf-accent);
+}
+.landify-theme .lf-badge-muted {
+    background: rgba(115, 115, 115, 0.12);
+    color: var(--lf-text-muted);
+}
+
+/* ========== Sections (Landify) ========== */
+.landify-theme .lf-section {
+    padding: 5rem 0;
+}
+.landify-theme .lf-section-alt {
+    background: var(--lf-bg-alt);
+}
+.landify-theme .lf-section-title {
+    font-size: clamp(1.85rem, 3vw, 2.35rem);
+    font-weight: 700;
+    color: var(--lf-text);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+.landify-theme .lf-section-sub {
+    color: var(--lf-text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+}
+
+/* ========== Feature cards (Tailor-made features) ========== */
+.landify-theme .lf-card {
+    background: #fff;
+    border-radius: var(--lf-radius-lg);
+    padding: 1.75rem;
+    height: 100%;
+    border: 1px solid var(--lf-border);
+    box-shadow: var(--lf-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+}
+.landify-theme .lf-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--lf-shadow-lg);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+.landify-theme .lf-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--lf-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+    background: rgba(99, 102, 241, 0.1);
+}
+.landify-theme .lf-card-title {
+    font-weight: 600;
+    font-size: 1.15rem;
+    color: var(--lf-text);
+    margin-bottom: 0.5rem;
+}
+.landify-theme .lf-card-text {
+    color: var(--lf-text-muted);
+    margin-bottom: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+/* ========== Testimonials (Real stories) ========== */
+.landify-theme .lf-testimonial-card {
+    padding: 1.75rem;
+}
+.landify-theme .lf-testimonial-quote {
+    color: var(--lf-text);
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-bottom: 0;
+}
+.landify-theme .lf-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--lf-accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+/* ========== Stats (Our achievements) ========== */
+.landify-theme .lf-stat-value {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--lf-accent);
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.02em;
+}
+.landify-theme .lf-stat-label {
+    font-size: 0.9rem;
+    color: var(--lf-text-muted);
+}
+
+/* ========== How it works (steps) ========== */
+.landify-theme .lf-step {
+    position: relative;
+    padding-left: 3.25rem;
+    padding-bottom: 2rem;
+}
+.landify-theme .lf-step:last-child {
+    padding-bottom: 0;
+}
+.landify-theme .lf-step::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 36px;
+    bottom: -0.5rem;
+    width: 2px;
+    background: var(--lf-border);
+}
+.landify-theme .lf-step:last-child::before {
+    display: none;
+}
+.landify-theme .lf-step-num {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--lf-accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.landify-theme .lf-step-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.35rem;
+    color: var(--lf-text);
+}
+.landify-theme .lf-step-text {
+    color: var(--lf-text-muted);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* ========== Pricing (Landify pricing cards) ========== */
+.landify-theme .lf-pricing-card {
+    padding: 2rem;
+    position: relative;
+}
+.landify-theme .lf-pricing-card-featured {
+    border-color: var(--lf-accent);
+    box-shadow: 0 0 0 2px var(--lf-accent), var(--lf-shadow);
+}
+.landify-theme .lf-badge-popular {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--lf-accent);
+    color: #fff;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.landify-theme .lf-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--lf-text);
+}
+.landify-theme .lf-price small {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--lf-text-muted);
+}
+.landify-theme .lf-pricing-card .lf-btn {
+    margin-top: 0.5rem;
+}
+.landify-theme .lf-pricing-card-featured .lf-btn-primary {
+    background: var(--lf-accent);
+}
+.landify-theme .lf-pricing-card-featured .lf-btn-primary:hover {
+    background: var(--lf-accent-hover);
+    color: #fff !important;
+}
+
+/* ========== CTA strip (Landify bottom CTA) ========== */
+.landify-theme .lf-cta {
+    padding: 5rem 0;
+    background: linear-gradient(135deg, var(--lf-primary) 0%, #1a1a1a 100%);
+    color: #fff;
+    text-align: center;
+}
+.landify-theme .lf-cta-title {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #fff;
+    letter-spacing: -0.02em;
+}
+.landify-theme .lf-cta-sub {
+    opacity: 0.9;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+.landify-theme .lf-btn-white {
+    background: #fff;
+    color: var(--lf-primary) !important;
+}
+.landify-theme .lf-btn-white:hover {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--lf-primary) !important;
+    transform: translateY(-2px);
+}
+
+/* ========== Footer (Landify dark footer) ========== */
+.landify-theme .lf-footer {
+    background: var(--lf-primary);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 3.5rem 0 2rem;
+}
+.landify-theme .lf-footer-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+}
+.landify-theme .lf-footer-brand:hover {
+    color: #fff;
+}
+.landify-theme .lf-footer-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 0;
+    max-width: 280px;
+    line-height: 1.6;
+}
+.landify-theme .lf-footer-heading {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 0.75rem;
+}
+.landify-theme .lf-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.landify-theme .lf-footer-links li {
+    margin-bottom: 0.4rem;
+}
+.landify-theme .lf-footer-links a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+.landify-theme .lf-footer-links a:hover {
+    color: #fff;
+}
+.landify-theme .lf-footer-social {
+    color: rgba(255, 255, 255, 0.75);
+    margin-left: 0.75rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.landify-theme .lf-footer-social:hover {
+    color: #fff;
+}
+.landify-theme .lf-footer-divider {
+    border-color: rgba(255, 255, 255, 0.15);
+    margin: 2rem 0 1rem;
+}
+.landify-theme .lf-footer-copy {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.45);
+    text-align: center;
+    margin-bottom: 0;
+}
