@@ -41,8 +41,8 @@
             {{ __('Marketing form is not fully configured. Please contact the site administrator.') }}
         </div>
     @else
-        <div class="row g-3">
-            <div class="col-12">
+        <div class="leads-form-grid">
+            <div class="leads-form-field">
                 <label for="lc-name" class="form-label small fw-semibold text-muted mb-1">{{ __('Full Name') }} <span class="text-danger">*</span></label>
                 <input
                     type="text"
@@ -55,7 +55,7 @@
                 >
                 <div class="invalid-feedback d-none small" data-error-for="name"></div>
             </div>
-            <div class="col-12">
+            <div class="leads-form-field">
                 <label for="lc-phone" class="form-label small fw-semibold text-muted mb-1">{{ __('Mobile Number') }} <span class="text-danger">*</span></label>
                 <input
                     type="tel"
@@ -70,7 +70,7 @@
                 >
                 <div class="invalid-feedback d-none small" data-error-for="phone"></div>
             </div>
-            <div class="col-12">
+            <div class="leads-form-field">
                 <label for="lc-email" class="form-label small fw-semibold text-muted mb-1">{{ __('Email Address') }} <span class="text-danger">*</span></label>
                 <input
                     type="email"
@@ -83,7 +83,7 @@
                 >
                 <div class="invalid-feedback d-none small" data-error-for="email"></div>
             </div>
-            <div class="col-12">
+            <div class="leads-form-field">
                 <label for="lc-city" class="form-label small fw-semibold text-muted mb-1">{{ __('City') }} <span class="text-danger">*</span></label>
                 <input
                     type="text"
@@ -96,14 +96,14 @@
                 >
                 <div class="invalid-feedback d-none small" data-error-for="city"></div>
             </div>
-            <div class="col-12">
+            <div class="leads-form-field">
                 <label for="lc-country" class="form-label small fw-semibold text-muted mb-1">{{ __('Country') }} <span class="text-danger">*</span></label>
                 <select id="lc-country" class="form-select bg-light" disabled aria-disabled="true" title="{{ __('Country is fixed for this campaign') }}">
                     <option selected>{{ $indiaCountry->name }} ({{ $indiaCountry->code }})</option>
                 </select>
                 <div class="invalid-feedback d-none small" data-error-for="country_id"></div>
             </div>
-            <div class="col-12">
+            <div class="leads-form-field">
                 <label class="form-label small fw-semibold text-muted mb-1">{{ __('Selected Service') }} <span class="text-danger">*</span></label>
                 <div class="leads-selected-service rounded-3 border bg-light px-3 py-3">
                     <span id="lc-service-label" class="fw-semibold text-dark mb-0">{{ $selectedServiceName ?? '—' }}</span>
@@ -111,7 +111,10 @@
                 <div class="invalid-feedback d-none small" data-error-for="service_id"></div>
             </div>
             @foreach ($dynamicFormFields as $field)
-                <div class="col-12">
+                @php
+                    $isAdditionalFullWidth = $field->field_key === 'message';
+                @endphp
+                <div @class(['leads-form-field', 'leads-form-field--full' => $isAdditionalFullWidth])>
                     @if ($field->field_type === 'textarea')
                         <label for="lc-extra-{{ $field->field_key }}" class="form-label small fw-semibold text-muted mb-1">{{ $field->label }}@if ($field->is_required) <span class="text-danger">*</span> @endif</label>
                         <textarea
@@ -136,7 +139,7 @@
                     <div class="invalid-feedback d-none small" data-error-for="extra.{{ $field->field_key }}"></div>
                 </div>
             @endforeach
-            <div class="col-12 pt-1">
+            <div class="leads-form-field leads-form-field--full leads-form-field--submit pt-1">
                 <button type="submit" class="btn btn-leads-submit w-100 py-3" id="lead-capture-submit">
                     <span class="lead-submit-label">{{ $submitLabel }}</span>
                     <span class="lead-submit-loading d-none spinner-border spinner-border-sm ms-2" role="status" aria-hidden="true"></span>

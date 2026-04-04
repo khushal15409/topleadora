@@ -269,6 +269,33 @@
   color: #475569;
 }
 
+/* Lead capture form — 2 columns ≥768px, 1 column mobile; full-width rows for textarea + submit */
+.leads-capture-form .leads-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (min-width: 768px) {
+  .leads-capture-form .leads-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+.leads-capture-form .leads-form-field {
+  min-width: 0;
+}
+
+.leads-capture-form .leads-form-field--full {
+  grid-column: 1 / -1;
+}
+
+.leads-capture-form .leads-form-field--submit {
+  margin-top: 0.125rem;
+}
+
 /* Form */
 .leads-capture-form .form-label {
   font-weight: 600;

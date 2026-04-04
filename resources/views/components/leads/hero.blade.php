@@ -49,7 +49,7 @@
             </div>
         @endisset
         <div class="row g-4 g-xl-5 align-items-start align-items-lg-center">
-            <div class="col-lg-7 ls-animate">
+            <div class="col-lg-6 ls-animate">
                 @if (! empty($page['trust_badge']))
                     <p class="small text-uppercase fw-semibold mb-2 opacity-75">{{ $page['trust_badge'] }}</p>
                 @endif
@@ -68,7 +68,7 @@
                 </div>
                 <p class="small opacity-75 mb-0 d-none d-md-block">{{ __('Free consultation · No obligation · Quick response') }}</p>
             </div>
-            <div class="col-lg-5 ls-animate">
+            <div class="col-lg-6 ls-animate">
                 {{ $slot }}
             </div>
         </div>
