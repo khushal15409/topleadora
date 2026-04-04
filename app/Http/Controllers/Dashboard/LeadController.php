@@ -7,6 +7,7 @@ use App\Http\Requests\Dashboard\LeadQuickActionRequest;
 use App\Http\Requests\Dashboard\StoreLeadRequest;
 use App\Http\Requests\Dashboard\UpdateLeadRequest;
 use App\Models\Lead;
+use App\Models\LeadNiche;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -27,7 +28,8 @@ class LeadController extends Controller
                 $term = '%'.$request->string('q')->trim().'%';
                 $q->where(function ($q) use ($term): void {
                     $q->where('name', 'like', $term)
-                        ->orWhere('phone', 'like', $term);
+                        ->orWhere('phone', 'like', $term)
+                        ->orWhere('email', 'like', $term);
                 });
             })
             ->when(
@@ -41,6 +43,8 @@ class LeadController extends Controller
         $statusFilter = $request->string('status')->toString();
         $statusOptions = Lead::statusOptions();
 
+        $nicheLabels = LeadNiche::query()->pluck('label', 'slug')->all();
+
         $assignableUsers = $user->canViewAllOrganizationLeads()
             ? User::query()
                 ->where('organization_id', $user->organization_id)
@@ -52,7 +56,8 @@ class LeadController extends Controller
             'leads',
             'statusFilter',
             'statusOptions',
-            'assignableUsers'
+            'assignableUsers',
+            'nicheLabels'
         ));
     }
 
@@ -75,7 +80,9 @@ class LeadController extends Controller
             'assigned_to' => $user->id,
         ]);
 
-        return view('dashboard.leads.create', compact('lead', 'statusOptions', 'sourceOptions', 'assignableUsers'));
+        $nicheOptions = LeadNiche::query()->activeOrdered()->pluck('label', 'slug')->all();
+
+        return view('dashboard.leads.create', compact('lead', 'statusOptions', 'sourceOptions', 'assignableUsers', 'nicheOptions'));
     }
 
     public function store(StoreLeadRequest $request): RedirectResponse
@@ -109,7 +116,9 @@ class LeadController extends Controller
                 ->get(['id', 'name'])
             : collect();
 
-        return view('dashboard.leads.edit', compact('lead', 'statusOptions', 'sourceOptions', 'assignableUsers'));
+        $nicheOptions = LeadNiche::query()->activeOrdered()->pluck('label', 'slug')->all();
+
+        return view('dashboard.leads.edit', compact('lead', 'statusOptions', 'sourceOptions', 'assignableUsers', 'nicheOptions'));
     }
 
     public function update(UpdateLeadRequest $request, Lead $lead): RedirectResponse

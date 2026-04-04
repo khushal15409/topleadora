@@ -19,6 +19,7 @@
                 @method('PUT')
                 @include('dashboard.leads._form', [
                     'submitLabel' => __('Update lead'),
+                    'nicheOptions' => $nicheOptions,
                 ])
             </form>
         </div>

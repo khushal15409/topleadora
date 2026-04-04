@@ -21,6 +21,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RolePermissionSeeder::class,
             PlanSeeder::class,
+            LeadNicheSeeder::class,
+            LeadLandingPageSeeder::class,
+            MarketingStructureSeeder::class,
+            BlogPostSeeder::class,
         ]);
 
         // UserFactory default password is the literal string "password" (see database/factories/UserFactory.php).

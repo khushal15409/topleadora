@@ -46,7 +46,7 @@
                         id="q"
                         value="{{ request('q') }}"
                         class="form-control"
-                        placeholder="{{ __('Name or phone') }}"
+                        placeholder="{{ __('Name, phone or email') }}"
                     >
                 </div>
                 <div class="col-12 col-md-3">
@@ -79,7 +79,9 @@
                     <thead class="table-light">
                         <tr>
                             <th>{{ __('Name') }}</th>
+                            <th class="d-none d-lg-table-cell">{{ __('Email') }}</th>
                             <th>{{ __('Phone') }}</th>
+                            <th class="d-none d-md-table-cell">{{ __('Niche') }}</th>
                             <th>{{ __('Source') }}</th>
                             <th>{{ __('Status') }}</th>
                             <th>{{ __('Next follow-up') }}</th>
@@ -91,7 +93,9 @@
                         @foreach ($leads as $lead)
                             <tr>
                                 <td class="fw-medium">{{ $lead->name }}</td>
+                                <td class="d-none d-lg-table-cell small text-body-secondary">{{ $lead->email ?? '—' }}</td>
                                 <td>{{ $lead->phone ?? '—' }}</td>
+                                <td class="d-none d-md-table-cell small">{{ $lead->niche ? ($nicheLabels[$lead->niche] ?? $lead->niche) : '—' }}</td>
                                 <td>{{ $lead->sourceLabel() }}</td>
                                 <td>
                                     <span class="badge bg-label-primary rounded-pill">{{ $lead->statusLabel() }}</span>

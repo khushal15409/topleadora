@@ -11,6 +11,10 @@ class RobotsController extends Controller
         $body = implode("\n", [
             'User-agent: *',
             'Allow: /',
+            'Disallow: /admin',
+            'Disallow: /dashboard',
+            'Disallow: /login',
+            'Disallow: /register',
             '',
             'Sitemap: '.url('/sitemap.xml'),
             '',
@@ -21,4 +25,3 @@ class RobotsController extends Controller
             ->header('Cache-Control', 'public, max-age=86400');
     }
 }
-

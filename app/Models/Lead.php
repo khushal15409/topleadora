@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Lead extends Model
 {
-    /** @use HasFactory<\Database\Factories\LeadFactory> */
+    /** @use HasFactory<LeadFactory> */
     use HasFactory;
 
     public const STATUS_NEW = 'new';
@@ -34,15 +35,26 @@ class Lead extends Model
 
     public const SOURCE_OTHER = 'other';
 
+    public const SOURCE_LANDING = 'landing';
+
     protected $fillable = [
         'organization_id',
         'assigned_to',
         'name',
         'email',
         'phone',
+        'city',
+        'country',
+        'niche',
         'status',
         'source',
+        'source_page',
+        'campaign',
+        'utm_source',
+        'utm_medium',
+        'landing_slug',
         'notes',
+        'message',
         'next_followup_at',
         'followup_completed_at',
     ];
@@ -113,6 +125,7 @@ class Lead extends Model
             self::SOURCE_FACEBOOK => __('Facebook'),
             self::SOURCE_WEBSITE => __('Website'),
             self::SOURCE_REFERRAL => __('Referral'),
+            self::SOURCE_LANDING => __('Landing page'),
             self::SOURCE_OTHER => __('Other'),
         ];
     }

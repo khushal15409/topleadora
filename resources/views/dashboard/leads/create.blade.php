@@ -19,6 +19,7 @@
                 @csrf
                 @include('dashboard.leads._form', [
                     'submitLabel' => __('Save lead'),
+                    'nicheOptions' => $nicheOptions,
                 ])
             </form>
         </div>

@@ -1,17 +1,22 @@
 <?php
 
+use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\BroadcastUsageController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\IntegrationsController;
+use App\Http\Controllers\Admin\Marketing\CountryController as MarketingCountryController;
+use App\Http\Controllers\Admin\Marketing\FormFieldController as MarketingFormFieldController;
+use App\Http\Controllers\Admin\Marketing\LandingPageController as MarketingLandingPageController;
+use App\Http\Controllers\Admin\Marketing\MarketingLeadController;
+use App\Http\Controllers\Admin\Marketing\ServiceController as MarketingServiceController;
 use App\Http\Controllers\Admin\OnboardingController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OrganizationUserController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\BroadcastUsageController;
-use App\Http\Controllers\Admin\AnalyticsController;
-use App\Http\Controllers\Admin\IntegrationsController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\RevenueAnalyticsController;
 use App\Http\Controllers\Admin\RazorpayPaymentController;
+use App\Http\Controllers\Admin\RevenueAnalyticsController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\SubscriptionMonitoringController;
 use App\Http\Controllers\Auth\AuthController;
@@ -23,25 +28,27 @@ use App\Http\Controllers\Dashboard\LeadController as DashboardLeadController;
 use App\Http\Controllers\Dashboard\PipelineController as DashboardPipelineController;
 use App\Http\Controllers\Dashboard\ReportsController as DashboardReportsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LeadCaptureController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Webhooks\RazorpayWebhookController;
 use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Support\Roles;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/robots.txt', RobotsController::class)->name('robots');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::post('/webhooks/razorpay', RazorpayWebhookController::class)
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->withoutMiddleware([VerifyCsrfToken::class])
     ->name('webhooks.razorpay');
 
 Route::get('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'verify'])
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->withoutMiddleware([VerifyCsrfToken::class])
     ->name('webhooks.whatsapp.verify');
 Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'receive'])
-    ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class])
+    ->withoutMiddleware([VerifyCsrfToken::class])
     ->name('webhooks.whatsapp.receive');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -52,6 +59,19 @@ Route::get('/contact', [ContactFormController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactFormController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
+
+Route::get('/leads/{slug}', [LeadCaptureController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('leads.landing');
+Route::post('/leads', [LeadCaptureController::class, 'store'])
+    ->middleware('throttle:15,1')
+    ->name('leads.capture.store');
+Route::get('/get-quote/{slug}', function (string $slug) {
+    return redirect()->to('/leads/'.$slug, 301);
+})->where('slug', '[a-z0-9-]+');
+Route::post('/get-quote', [LeadCaptureController::class, 'store'])
+    ->middleware('throttle:15,1')
+    ->name('landing.lead.store');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -124,6 +144,19 @@ Route::prefix('admin')
 
             Route::get('integrations', [IntegrationsController::class, 'index'])->name('integrations.index');
             Route::put('integrations', [IntegrationsController::class, 'update'])->name('integrations.update');
+
+            Route::prefix('marketing')->name('marketing.')->group(function () {
+                Route::resource('services', MarketingServiceController::class)->except(['show']);
+                Route::resource('countries', MarketingCountryController::class)->except(['show']);
+                Route::resource('landing-pages', MarketingLandingPageController::class)
+                    ->parameters(['landing-pages' => 'landing_page'])
+                    ->except(['show']);
+                Route::resource('form-fields', MarketingFormFieldController::class)
+                    ->parameters(['form-fields' => 'form_field'])
+                    ->except(['show']);
+                Route::get('leads/export', [MarketingLeadController::class, 'export'])->name('leads.export');
+                Route::get('leads', [MarketingLeadController::class, 'index'])->name('leads.index');
+            });
 
             Route::get('contacts', [ContactMessageController::class, 'index'])->name('contacts.index');
             Route::patch('contacts/{contact}/read', [ContactMessageController::class, 'markAsRead'])->name('contacts.mark-read');

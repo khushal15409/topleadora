@@ -1,7 +1,7 @@
 <!doctype html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="layout-menu-fixed layout-compact"
+    class="layout-menu-fixed layout-compact layout-navbar-fixed"
     data-assets-path="{{ asset('materio/assets/') }}/"
     data-template="vertical-menu-template-free"
 >
@@ -35,7 +35,18 @@
     <script src="{{ asset('materio/assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('materio/assets/js/config.js') }}"></script>
 </head>
-<body>
+@php
+    $saasUser = auth()->user();
+    $saasIsSuper = $saasUser && $saasUser->hasRole(\App\Support\Roles::SUPER_ADMIN);
+    $saasIsOrg = $saasUser && $saasUser->hasRole(\App\Support\Roles::ORGANIZATION);
+@endphp
+<body
+    @class([
+        'saas-admin',
+        'saas-admin--super' => $saasIsSuper,
+        'saas-admin--org' => $saasIsOrg && ! $saasIsSuper,
+    ])
+>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             @include('layouts.partials.sidebar')

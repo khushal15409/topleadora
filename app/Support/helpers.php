@@ -44,6 +44,80 @@ if (! function_exists('isPaymentEnabled')) {
     }
 }
 
+if (! function_exists('leadImageFallbackUrl')) {
+    /**
+     * Global fallback URL when hero / section images fail.
+     */
+    function leadImageFallbackUrl(): string
+    {
+        return (string) config('leads.image_fallback_url');
+    }
+}
+
+if (! function_exists('leadLocalPlaceholderImageUrl')) {
+    /**
+     * Local placeholder used as the final onerror target when remote images fail.
+     */
+    function leadLocalPlaceholderImageUrl(): string
+    {
+        return asset('front/images/leads-placeholder.svg');
+    }
+}
+
+if (! function_exists('leadPublicImageUrl')) {
+    /**
+     * Normalize image URLs for marketing pages (full URL, storage path, or relative asset).
+     */
+    function leadPublicImageUrl(?string $url): string
+    {
+        if ($url === null || trim((string) $url) === '') {
+            return '';
+        }
+
+        $u = trim((string) $url);
+        if (str_starts_with($u, 'http://') || str_starts_with($u, 'https://')) {
+            return $u;
+        }
+        if (str_starts_with($u, '//')) {
+            return 'https:'.$u;
+        }
+
+        $u = ltrim($u, '/');
+        if (str_starts_with($u, 'public/')) {
+            $u = substr($u, strlen('public/'));
+        }
+
+        return asset($u);
+    }
+}
+
+if (! function_exists('leadResponsiveSrcset')) {
+    /**
+     * Build a srcset for Unsplash URLs (width variants). Returns empty string if not Unsplash.
+     */
+    function leadResponsiveSrcset(?string $url): string
+    {
+        if ($url === null || $url === '' || ! str_contains($url, 'images.unsplash.com')) {
+            return '';
+        }
+
+        $parsed = parse_url($url);
+        if (! is_array($parsed) || ! isset($parsed['host'], $parsed['path'])) {
+            return '';
+        }
+
+        $scheme = $parsed['scheme'] ?? 'https';
+        $basePath = $scheme.'://'.$parsed['host'].$parsed['path'];
+        $widths = [640, 960, 1280, 1920];
+        $parts = [];
+        foreach ($widths as $w) {
+            $parts[] = $basePath.'?auto=format&fit=crop&w='.$w.'&q=80 '.$w.'w';
+        }
+
+        return implode(', ', $parts);
+    }
+}
+
 if (! function_exists('paymentEnabled')) {
     /**
      * Alias used across blades/controllers for billing toggle.
@@ -53,4 +127,3 @@ if (! function_exists('paymentEnabled')) {
         return isPaymentEnabled();
     }
 }
-

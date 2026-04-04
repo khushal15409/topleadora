@@ -9,8 +9,8 @@
                 <img
                     src="{{ asset('front/images/logo.png') }}"
                     alt="{{ config('app.name', 'WP-CRM') }}"
-                    width="400"
-                    height="96"
+                    width="160"
+                    height="40"
                     class="sidebar-logo-brand__img"
                     loading="eager"
                 >
@@ -47,6 +47,29 @@
                     <i class="menu-icon icon-base ri ri-mail-line"></i>
                     <div>Contact Messages</div>
                 </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.marketing.*') ? 'active open' : '' }}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon icon-base ri ri-advertisement-line"></i>
+                    <div>Marketing</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item {{ request()->routeIs('admin.marketing.services.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.marketing.services.index') }}" class="menu-link"><div>Services</div></a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.marketing.countries.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.marketing.countries.index') }}" class="menu-link"><div>Countries</div></a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.marketing.landing-pages.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.marketing.landing-pages.index') }}" class="menu-link"><div>Landing pages</div></a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.marketing.form-fields.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.marketing.form-fields.index') }}" class="menu-link"><div>Form fields</div></a>
+                    </li>
+                    <li class="menu-item {{ request()->routeIs('admin.marketing.leads.*') ? 'active' : '' }}">
+                        <a href="{{ route('admin.marketing.leads.index') }}" class="menu-link"><div>Marketing Leads</div></a>
+                    </li>
+                </ul>
             </li>
             <li class="menu-item {{ request()->routeIs('admin.subscriptions.*') ? 'active' : '' }}">
                 <a href="{{ route('admin.subscriptions.index') }}" class="menu-link">

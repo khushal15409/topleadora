@@ -26,10 +26,17 @@ class UpdateLeadRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
+            'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['required', 'string', 'max:32'],
+            'city' => ['nullable', 'string', 'max:128'],
+            'country' => ['nullable', 'string', 'max:120'],
+            'niche' => ['nullable', 'string', 'max:128', Rule::exists('lead_niches', 'slug')],
             'source' => ['required', 'string', Rule::in($sources)],
+            'source_page' => ['nullable', 'string', 'max:128'],
+            'campaign' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'string', Rule::in($stages)],
             'notes' => ['nullable', 'string', 'max:10000'],
+            'message' => ['nullable', 'string', 'max:5000'],
             'next_followup_at' => ['nullable', 'date'],
             'assigned_to' => [
                 'nullable',

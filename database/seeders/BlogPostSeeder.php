@@ -62,6 +62,22 @@ class BlogPostSeeder extends Seeder
                 'meta_description' => 'Learn why every business needs a CRM: lead management system, pipeline visibility, follow-ups, and better conversion.',
                 'body' => $this->bodyWhyCrm(),
             ],
+            [
+                'title' => 'How to Get a Loan Fast (Without Hurting Your Score)',
+                'excerpt' => 'A practical checklist for faster loan decisions: documents, credit checks, and how to avoid delays when you need money quickly.',
+                'image' => 'front/images/landify/features/features-3.webp',
+                'meta_title' => 'How to Get a Loan Fast — Credit-Safe Tips',
+                'meta_description' => 'Learn how to get a loan faster: organize documents, time your applications wisely, and compare options by total cost — not hype.',
+                'body' => $this->bodyHowToGetLoanFast(),
+            ],
+            [
+                'title' => 'Best Insurance Plans: Compare Coverage Like a Pro',
+                'excerpt' => 'Cut through marketing jargon. Use this framework to compare health and life coverage, exclusions, and claim experience before you buy.',
+                'image' => 'front/images/landify/features/features-4.webp',
+                'meta_title' => 'Best Insurance Plans — Smart Comparison Guide',
+                'meta_description' => 'How to pick better insurance plans: sum insured, networks, exclusions, riders, and questions to ask before you pay the premium.',
+                'body' => $this->bodyBestInsurancePlans(),
+            ],
         ];
 
         foreach ($posts as $i => $data) {
@@ -290,6 +306,59 @@ HTML;
   <li>Review <a href="{$features}">Features</a></li>
   <li>Read more on the <a href="{$blog}">Blog</a></li>
 </ul>
+HTML;
+    }
+
+    private function bodyHowToGetLoanFast(): string
+    {
+        $loanUsa = route('leads.landing', 'loan');
+        $loanIndia = route('leads.landing', 'loan-india');
+        $loanUk = route('leads.landing', 'loan-uk');
+
+        return <<<HTML
+<p><strong>Speed comes from preparation.</strong> Lenders and intermediaries move faster when your story is consistent, documents are complete, and you have not triggered unnecessary checks. This guide is written for borrowers who want a loan quickly — but still want predictable outcomes.</p>
+
+<h2>1) Know the difference: pre-qualification vs. a hard decision</h2>
+<p>Some products offer soft checks or indicative eligibility. Others require a full underwriting packet. Ask upfront what kind of review will happen and how it appears on your credit profile (rules vary by country and product).</p>
+
+<h2>2) Build a “document pack” before you apply</h2>
+<p>Most delays are administrative: missing salary proofs, unclear address history, or mismatched names across IDs. Create a single folder (PDFs) with identity, address, income, and bank statements for the last 3–6 months where applicable.</p>
+
+<h2>3) Compare total cost — not just monthly EMI</h2>
+<p>Lower monthly payments can hide longer tenure, higher fees, or restrictive prepayment rules. Ask for APR / effective cost, origination fees, late fees, and foreclosure terms in writing.</p>
+
+<h2>4) Tell the truth about existing obligations</h2>
+<p>Hiding active loans or cards tends to create reversals after verification. That wastes days and can burn bridges with brokers who could have structured a better plan if they had complete information.</p>
+
+<h2>Ready to apply?</h2>
+<p>If you want a matched introduction, start from a dedicated landing page for your region — for example <a href="{$loanUsa}">loan help in the United States</a>, <a href="{$loanIndia}">loan help in India</a>, or <a href="{$loanUk}">loan help in the United Kingdom</a>.</p>
+HTML;
+    }
+
+    private function bodyBestInsurancePlans(): string
+    {
+        $insUsa = route('leads.landing', 'insurance');
+        $insIndia = route('leads.landing', 'insurance-india');
+        $insUae = route('leads.landing', 'insurance-uae');
+
+        return <<<HTML
+<p><strong>The “best” insurance plan is the one that pays when you need it,</strong> with exclusions you understand, at a premium you can sustain for years. Marketing slogans rarely capture that nuance — so use a simple comparison framework.</p>
+
+<h2>Health insurance: networks, exclusions, and room rent limits</h2>
+<p>Check hospital networks near your home and workplace. Read permanent exclusions carefully — especially around pre-existing conditions, waiting periods, and outpatient care. If room rent is capped, understand how it reduces claim payable amounts.</p>
+
+<h2>Life insurance: match the sum assured to real liabilities</h2>
+<p>Term coverage is often the baseline tool for income replacement. Compare premium stability, rider quality (if any), claim settlement reputation, and whether the issuer is licensed in your region.</p>
+
+<h2>Ask three questions on every quote</h2>
+<ul>
+  <li>What is not covered?</li>
+  <li>What documents are needed for claims?</li>
+  <li>How does pricing change at renewal?</li>
+</ul>
+
+<h2>Explore region-specific guidance pages</h2>
+<p>When you are ready to request introductions, use our SEO landing pages tailored by region — such as <a href="{$insUsa}">insurance in the United States</a>, <a href="{$insIndia}">insurance in India</a>, or <a href="{$insUae}">insurance in the UAE</a>.</p>
 HTML;
     }
 }

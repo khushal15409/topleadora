@@ -1,5 +1,6 @@
 @php
     $canAssign = $assignableUsers->isNotEmpty();
+    $nicheOptions = $nicheOptions ?? [];
 @endphp
 
 <div class="row g-4">
@@ -18,6 +19,20 @@
         @enderror
     </div>
     <div class="col-md-6">
+        <label class="form-label" for="lead-email">{{ __('Email') }}</label>
+        <input
+            type="email"
+            name="email"
+            id="lead-email"
+            value="{{ old('email', $lead->email) }}"
+            class="form-control @error('email') is-invalid @enderror"
+            autocomplete="email"
+        >
+        @error('email')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="col-md-6">
         <label class="form-label" for="lead-phone">{{ __('Phone') }} <span class="text-danger">*</span></label>
         <input
             type="text"
@@ -28,6 +43,76 @@
             required
         >
         @error('phone')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="lead-city">{{ __('City') }}</label>
+        <input
+            type="text"
+            name="city"
+            id="lead-city"
+            value="{{ old('city', $lead->city) }}"
+            class="form-control @error('city') is-invalid @enderror"
+            autocomplete="address-level2"
+        >
+        @error('city')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    <div class="col-md-6">
+        <label class="form-label" for="lead-country">{{ __('Country') }}</label>
+        <input
+            type="text"
+            name="country"
+            id="lead-country"
+            value="{{ old('country', $lead->country) }}"
+            class="form-control @error('country') is-invalid @enderror"
+            autocomplete="country-name"
+        >
+        @error('country')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+    @if (count($nicheOptions) > 0)
+        <div class="col-md-6">
+            <label class="form-label" for="lead-niche">{{ __('Interest / niche') }}</label>
+            <select name="niche" id="lead-niche" class="form-select @error('niche') is-invalid @enderror">
+                <option value="">{{ __('— None —') }}</option>
+                @foreach ($nicheOptions as $slug => $label)
+                    <option value="{{ $slug }}" @selected(old('niche', $lead->niche) === $slug)>{{ $label }}</option>
+                @endforeach
+            </select>
+            @error('niche')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="lead-source-page">{{ __('Source page slug') }}</label>
+            <input
+                type="text"
+                name="source_page"
+                id="lead-source-page"
+                value="{{ old('source_page', $lead->source_page) }}"
+                class="form-control @error('source_page') is-invalid @enderror"
+                placeholder="{{ __('e.g. loan') }}"
+            >
+            @error('source_page')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+    @endif
+    <div class="col-md-6">
+        <label class="form-label" for="lead-campaign">{{ __('Campaign / UTM') }}</label>
+        <input
+            type="text"
+            name="campaign"
+            id="lead-campaign"
+            value="{{ old('campaign', $lead->campaign) }}"
+            class="form-control @error('campaign') is-invalid @enderror"
+            placeholder="{{ __('e.g. spring_promo') }}"
+        >
+        @error('campaign')
             <div class="invalid-feedback">{{ $message }}</div>
         @enderror
     </div>
@@ -82,6 +167,19 @@
             @enderror
         </div>
     @endif
+    <div class="col-12">
+        <label class="form-label" for="lead-message">{{ __('Message (landing / customer)') }}</label>
+        <textarea
+            name="message"
+            id="lead-message"
+            rows="3"
+            class="form-control @error('message') is-invalid @enderror"
+            placeholder="{{ __('Optional message from lead form') }}"
+        >{{ old('message', $lead->message) }}</textarea>
+        @error('message')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
     <div class="col-12">
         <label class="form-label" for="lead-notes">{{ __('Notes') }}</label>
         <textarea
