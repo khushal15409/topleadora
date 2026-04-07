@@ -61,6 +61,7 @@ class RazorpayService
     {
         try {
             $this->api()->utility->verifyPaymentSignature($attributes);
+
             return true;
         } catch (SignatureVerificationError) {
             return false;
@@ -71,6 +72,7 @@ class RazorpayService
     {
         try {
             $this->api()->utility->verifyWebhookSignature($payload, $signatureHeader, $this->secret());
+
             return true;
         } catch (SignatureVerificationError) {
             return false;
@@ -88,4 +90,3 @@ class RazorpayService
         return Arr::only($orderPayload, ['id', 'amount', 'currency', 'receipt', 'status', 'created_at', 'notes']);
     }
 }
-

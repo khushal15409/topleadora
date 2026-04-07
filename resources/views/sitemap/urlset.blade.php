@@ -4,7 +4,10 @@
   <url>
     <loc>{{ $u['loc'] }}</loc>
     <lastmod>{{ $u['lastmod'] }}</lastmod>
+@if (! empty($u['changefreq']))    <changefreq>{{ $u['changefreq'] }}</changefreq>
+@endif
+@if (! empty($u['priority']))    <priority>{{ $u['priority'] }}</priority>
+@endif
   </url>
 @endforeach
 </urlset>
-

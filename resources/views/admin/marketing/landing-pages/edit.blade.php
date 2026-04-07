@@ -29,6 +29,17 @@
                 <label class="form-label">{{ __('URL slug') }} *</label>
                 <input type="text" name="slug" pattern="[a-z0-9\-]+" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug', $landingPage->slug) }}" required>
                 @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="form-text">{{ __('Unique path: /leads/{slug} — use city-style slugs for programmatic pages.') }}</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{{ __('City slug (optional)') }}</label>
+                <input type="text" name="city_slug" pattern="[a-z0-9\-]*" class="form-control @error('city_slug') is-invalid @enderror" value="{{ old('city_slug', $landingPage->city_slug) }}" placeholder="ahmedabad">
+                @error('city_slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{{ __('City label (optional)') }}</label>
+                <input type="text" name="city_label" maxlength="128" class="form-control @error('city_label') is-invalid @enderror" value="{{ old('city_label', $landingPage->city_label) }}" placeholder="Ahmedabad">
+                @error('city_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
             <div class="col-12">
                 <label class="form-label">{{ __('Meta title') }} *</label>

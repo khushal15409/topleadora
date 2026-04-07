@@ -42,4 +42,3 @@ class UpdateIntegrationsRequest extends FormRequest
         ];
     }
 }
-

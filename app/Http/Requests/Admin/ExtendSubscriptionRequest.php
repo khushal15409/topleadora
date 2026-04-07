@@ -2,13 +2,14 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\Roles;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ExtendSubscriptionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user() !== null && $this->user()->hasRole(\App\Support\Roles::SUPER_ADMIN);
+        return $this->user() !== null && $this->user()->hasRole(Roles::SUPER_ADMIN);
     }
 
     /**

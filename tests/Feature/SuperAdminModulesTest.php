@@ -101,4 +101,3 @@ class SuperAdminModulesTest extends TestCase
         $this->actingAs($u)->get(route('admin.integrations.index'))->assertForbidden();
     }
 }
-

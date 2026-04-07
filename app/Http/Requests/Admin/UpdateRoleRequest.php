@@ -33,4 +33,3 @@ class UpdateRoleRequest extends FormRequest
         ];
     }
 }
-

@@ -5,7 +5,7 @@
 @section('meta_keywords', $page['meta_keywords'])
 @section('meta_robots', $page['robots_meta'] ?? config('leads.default_meta_robots', 'index,follow'))
 @section('canonical_url', $canonicalUrl ?? url()->current())
-@section('meta_og_image', $page['og_image'] ?? leadImageFallbackUrl())
+@section('meta_og_image', \App\Support\SeoMeta::ogImageForLeadPage($page))
 
 @php
     $heroPreload = ! empty($page['hero_image']) ? leadPublicImageUrl((string) $page['hero_image']) : '';
@@ -30,6 +30,35 @@
 @push('json_ld')
     <script type="application/ld+json">
         {!! json_encode($schemaGraph ?? [], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}
+    </script>
+@endpush
+
+@push('json_ld')
+    @php
+        $crumbLabel = trim((string) ($page['hero_headline'] ?? $page['meta_title'] ?? 'Service'));
+        $crumbLabel = \Illuminate\Support\Str::limit($crumbLabel !== '' ? $crumbLabel : 'Leads', 80);
+        $crumbPageUrl = $canonicalUrl ?? url()->current();
+        $leadBreadcrumbLd = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Home',
+                    'item' => url('/'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => $crumbLabel,
+                    'item' => $crumbPageUrl,
+                ],
+            ],
+        ];
+    @endphp
+    <script type="application/ld+json">
+        {!! json_encode($leadBreadcrumbLd, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}
     </script>
 @endpush
 
@@ -74,6 +103,27 @@
 
     <x-leads.trust-section :page="$page" />
 
+    @if (isset($relatedBlogPosts) && $relatedBlogPosts->isNotEmpty())
+        <section class="leads-section ls-animate" aria-labelledby="leads-related-blog-title">
+            <div class="container">
+                <h2 id="leads-related-blog-title" class="h3 leads-section-title mb-4">{{ __('Related guides') }}</h2>
+                <ul class="row row-cols-1 row-cols-md-2 g-3 list-unstyled mb-0">
+                    @foreach ($relatedBlogPosts as $b)
+                        <li class="col">
+                            <a href="{{ route('blog.show', $b->slug) }}" class="d-block h-100 p-3 rounded-4 border bg-white text-decoration-none shadow-sm leads-internal-link">
+                                <span class="fw-semibold text-body d-block">{{ $b->title }}</span>
+                                @if ($b->published_at)
+                                    <time class="small text-muted d-block mt-1" datetime="{{ $b->published_at->toIso8601String() }}">{{ $b->published_at->format('M j, Y') }}</time>
+                                @endif
+                                <span class="small text-primary mt-2 d-inline-block">{{ __('Read on blog') }} →</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
     <x-leads.guide-accordion
         :slug="$slug"
         :show-share-risk="$showShareRisk"
@@ -107,8 +157,9 @@
     <x-leads.faq :page="$page" :slug="$slug" />
     <x-leads.final-cta :page="$page" />
 
+    {{-- Mobile sticky CTA: matches hero CTA for conversion consistency. --}}
     <div class="leads-mobile-sticky-cta d-lg-none" role="region" aria-label="{{ __('Quick apply') }}">
-        <a href="#lead-form" class="btn btn-leads-submit w-100 py-3">{{ __('Get free consultation') }}</a>
+        <a href="#lead-form" class="btn btn-leads-submit w-100 py-3">{{ $page['hero_cta'] ?? __('Apply now in 2 minutes') }}</a>
     </div>
 @endsection
 

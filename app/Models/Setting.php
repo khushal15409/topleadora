@@ -54,4 +54,3 @@ class Setting extends Model
         Cache::forget('setting:'.$key);
     }
 }
-

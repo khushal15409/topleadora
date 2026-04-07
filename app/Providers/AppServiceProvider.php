@@ -12,8 +12,10 @@ use App\Policies\BroadcastPolicy;
 use App\Policies\LeadPolicy;
 use App\Support\Roles;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -32,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if (config('seo.force_https', false)) {
+            URL::forceScheme('https');
+        }
+
         Paginator::useBootstrapFive();
 
         Gate::policy(Lead::class, LeadPolicy::class);
@@ -75,69 +81,72 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('layouts.leads', function (\Illuminate\View\View $view): void {
-            if (! Schema::hasTable('lead_niches')) {
-                $view->with('leadNavItems', collect());
+            // 300s TTL: `php artisan cache:forget lead_nav_items` after publishing landing page / niche changes.
+            $items = Cache::remember('lead_nav_items', 300, static function () {
+                if (! Schema::hasTable('lead_niches')) {
+                    return collect();
+                }
 
-                return;
-            }
+                $items = collect();
+                if (Schema::hasTable('landing_pages') && LandingPage::query()->where('is_active', true)->exists()) {
+                    $seenServiceIds = [];
+                    $items = LandingPage::query()
+                        ->activeOrdered()
+                        ->with(['service', 'country'])
+                        ->get()
+                        ->filter(function (LandingPage $l) use (&$seenServiceIds) {
+                            if ($l->service === null || $l->country === null) {
+                                return false;
+                            }
+                            if (isset($seenServiceIds[$l->service_id])) {
+                                return false;
+                            }
+                            $seenServiceIds[$l->service_id] = true;
 
-            $items = collect();
-            if (Schema::hasTable('landing_pages') && LandingPage::query()->where('is_active', true)->exists()) {
-                $seenServiceIds = [];
-                $items = LandingPage::query()
-                    ->activeOrdered()
-                    ->with(['service', 'country'])
-                    ->get()
-                    ->filter(function (LandingPage $l) use (&$seenServiceIds) {
-                        if ($l->service === null || $l->country === null) {
-                            return false;
-                        }
-                        if (isset($seenServiceIds[$l->service_id])) {
-                            return false;
-                        }
-                        $seenServiceIds[$l->service_id] = true;
+                            return true;
+                        })
+                        ->map(fn (LandingPage $l) => [
+                            'url' => route('leads.landing', $l->slug),
+                            'label' => $l->service->name,
+                        ])
+                        ->values();
+                } elseif (Schema::hasTable('lead_landing_pages') && LeadLandingPage::query()->where('is_active', true)->exists()) {
+                    $seenNicheIds = [];
+                    $items = LeadLandingPage::query()
+                        ->activeOrdered()
+                        ->with('niche')
+                        ->get()
+                        ->filter(function (LeadLandingPage $l) use (&$seenNicheIds) {
+                            $niche = $l->niche;
+                            if ($niche === null) {
+                                return false;
+                            }
+                            if (isset($seenNicheIds[$niche->id])) {
+                                return false;
+                            }
+                            $seenNicheIds[$niche->id] = true;
 
-                        return true;
-                    })
-                    ->map(fn (LandingPage $l) => [
-                        'url' => route('leads.landing', $l->slug),
-                        'label' => $l->service->name,
-                    ])
-                    ->values();
-            } elseif (Schema::hasTable('lead_landing_pages') && LeadLandingPage::query()->where('is_active', true)->exists()) {
-                $seenNicheIds = [];
-                $items = LeadLandingPage::query()
-                    ->activeOrdered()
-                    ->with('niche')
-                    ->get()
-                    ->filter(function (LeadLandingPage $l) use (&$seenNicheIds) {
-                        $niche = $l->niche;
-                        if ($niche === null) {
-                            return false;
-                        }
-                        if (isset($seenNicheIds[$niche->id])) {
-                            return false;
-                        }
-                        $seenNicheIds[$niche->id] = true;
+                            return true;
+                        })
+                        ->map(fn (LeadLandingPage $l) => [
+                            'url' => route('leads.landing', $l->slug),
+                            'label' => $l->niche->label,
+                        ])
+                        ->values();
+                }
 
-                        return true;
-                    })
-                    ->map(fn (LeadLandingPage $l) => [
-                        'url' => route('leads.landing', $l->slug),
-                        'label' => $l->niche->label,
-                    ])
-                    ->values();
-            }
+                if ($items->isEmpty()) {
+                    $items = LeadNiche::query()
+                        ->activeOrdered()
+                        ->get(['slug', 'label'])
+                        ->map(fn (LeadNiche $n) => [
+                            'url' => route('leads.landing', $n->slug),
+                            'label' => $n->label,
+                        ]);
+                }
 
-            if ($items->isEmpty()) {
-                $items = LeadNiche::query()
-                    ->activeOrdered()
-                    ->get(['slug', 'label'])
-                    ->map(fn (LeadNiche $n) => [
-                        'url' => route('leads.landing', $n->slug),
-                        'label' => $n->label,
-                    ]);
-            }
+                return $items;
+            });
 
             $view->with('leadNavItems', $items);
         });

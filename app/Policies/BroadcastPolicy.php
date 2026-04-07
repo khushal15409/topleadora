@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Models\Broadcast;
 use App\Models\User;
 use App\Support\Roles;
 

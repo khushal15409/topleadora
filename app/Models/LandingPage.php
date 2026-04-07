@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\MarketingLandingDefaults;
+use App\Support\SeoMeta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,6 +14,8 @@ class LandingPage extends Model
         'service_id',
         'country_id',
         'slug',
+        'city_slug',
+        'city_label',
         'meta_title',
         'meta_description',
         'meta_keywords',
@@ -71,8 +74,22 @@ class LandingPage extends Model
         $base['landing_slug'] = $this->slug;
         $base['niche_slug'] = $service?->slug ?? '';
         $base['niche_label'] = $service?->name ?? '';
-        $base['location_label'] = $this->country?->name ?? '';
+        $location = array_filter([
+            $this->country?->name,
+            filled($this->city_label) ? $this->city_label : null,
+        ]);
+        $base['location_label'] = $location !== [] ? implode(', ', $location) : ($this->country?->name ?? '');
         $base['location_slug'] = $this->country?->url_slug ?? '';
+
+        // Auto meta description when empty (programmatic SEO / city landings).
+        if (! filled(trim((string) $base['meta_description']))) {
+            $base['meta_description'] = SeoMeta::fallbackForMarketingLanding($this)['description'];
+        }
+
+        // Stronger default CTA for conversion when JSON omits hero_cta.
+        if (empty(trim((string) ($base['hero_cta'] ?? '')))) {
+            $base['hero_cta'] = __('Apply now — 2 minutes, secure form');
+        }
 
         foreach ([
             'hero_image',

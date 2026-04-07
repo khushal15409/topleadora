@@ -139,6 +139,17 @@
                     <div class="invalid-feedback d-none small" data-error-for="extra.{{ $field->field_key }}"></div>
                 </div>
             @endforeach
+            {{-- CRO: trust + speed microcopy (India lead-gen; keep factual for your actual SLA). --}}
+            <div class="leads-form-field leads-form-field--full leads-form-trust small text-muted mb-0">
+                <p class="mb-1">
+                    <i class="bi bi-shield-check text-success me-1" aria-hidden="true"></i>
+                    {{ __('100% secure — details are encrypted; we never sell your data.') }}
+                </p>
+                <p class="mb-0">
+                    <i class="bi bi-lightning-charge-fill text-primary me-1" aria-hidden="true"></i>
+                    {{ __('We respond in about 5 minutes during business hours.') }}
+                </p>
+            </div>
             <div class="leads-form-field leads-form-field--full leads-form-field--submit pt-1">
                 <button type="submit" class="btn btn-leads-submit w-100 py-3" id="lead-capture-submit">
                     <span class="lead-submit-label">{{ $submitLabel }}</span>

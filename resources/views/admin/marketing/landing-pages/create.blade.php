@@ -29,8 +29,20 @@
             </div>
             <div class="col-12">
                 <label class="form-label">{{ __('URL slug') }} *</label>
-                <input type="text" name="slug" pattern="[a-z0-9\-]+" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}" placeholder="loan-india" required>
+                <input type="text" name="slug" pattern="[a-z0-9\-]+" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}" placeholder="loan-ahmedabad" required>
                 @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="form-text">{{ __('Programmatic SEO: one row per URL. Same service + country with different slugs (e.g. loan-mumbai, loan-ahmedabad).') }}</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{{ __('City slug (optional)') }}</label>
+                <input type="text" name="city_slug" pattern="[a-z0-9\-]*" class="form-control @error('city_slug') is-invalid @enderror" value="{{ old('city_slug') }}" placeholder="ahmedabad">
+                @error('city_slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">{{ __('City label (optional)') }}</label>
+                <input type="text" name="city_label" maxlength="128" class="form-control @error('city_label') is-invalid @enderror" value="{{ old('city_label') }}" placeholder="Ahmedabad">
+                @error('city_label')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="form-text">{{ __('Shown when building meta fallbacks and location copy.') }}</div>
             </div>
             <div class="col-12">
                 <label class="form-label">{{ __('Meta title') }} *</label>

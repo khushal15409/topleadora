@@ -140,4 +140,3 @@ class RoleController extends Controller
         return array_values(array_filter($names, fn (string $n) => $n !== ''));
     }
 }
-

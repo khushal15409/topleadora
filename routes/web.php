@@ -39,7 +39,10 @@ use App\Support\Roles;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/robots.txt', RobotsController::class)->name('robots');
-Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap-main.xml', [SitemapController::class, 'main'])->name('sitemap.main');
+Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitemap.blog');
+Route::get('/sitemap-leads.xml', [SitemapController::class, 'leads'])->name('sitemap.leads');
 Route::post('/webhooks/razorpay', RazorpayWebhookController::class)
     ->withoutMiddleware([VerifyCsrfToken::class])
     ->name('webhooks.razorpay');
@@ -60,6 +63,7 @@ Route::post('/contact', [ContactFormController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('contact.store');
 
+// Programmatic city URLs use the same pattern: /leads/{serviceSlug}-{citySlug} (see ProgrammaticLeadResolver).
 Route::get('/leads/{slug}', [LeadCaptureController::class, 'show'])
     ->where('slug', '[a-z0-9-]+')
     ->name('leads.landing');

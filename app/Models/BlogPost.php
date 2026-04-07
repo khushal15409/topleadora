@@ -17,6 +17,7 @@ class BlogPost extends Model
         'is_published',
         'meta_title',
         'meta_description',
+        'faq_json',
     ];
 
     protected function casts(): array
@@ -24,6 +25,7 @@ class BlogPost extends Model
         return [
             'published_at' => 'datetime',
             'is_published' => 'boolean',
+            'faq_json' => 'array',
         ];
     }
 
@@ -35,5 +37,4 @@ class BlogPost extends Model
             ->where('published_at', '<=', now())
             ->orderByDesc('published_at');
     }
-
 }

@@ -18,11 +18,12 @@
     <div class="card">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
-                <thead><tr><th>{{ __('Slug') }}</th><th>{{ __('Service') }}</th><th>{{ __('Country') }}</th><th>{{ __('Active') }}</th><th class="text-end">{{ __('Actions') }}</th></tr></thead>
+                <thead><tr><th>{{ __('Slug') }}</th><th>{{ __('City') }}</th><th>{{ __('Service') }}</th><th>{{ __('Country') }}</th><th>{{ __('Active') }}</th><th class="text-end">{{ __('Actions') }}</th></tr></thead>
                 <tbody>
                 @forelse ($pages as $p)
                     <tr>
                         <td><code>{{ $p->slug }}</code></td>
+                        <td>{{ $p->city_label ?: '—' }}</td>
                         <td>{{ $p->service?->name }}</td>
                         <td>{{ $p->country?->name }}</td>
                         <td>@if ($p->is_active)<span class="badge bg-label-success">{{ __('Yes') }}</span>@else<span class="badge bg-label-secondary">{{ __('No') }}</span>@endif</td>
@@ -35,7 +36,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="text-body-secondary">{{ __('No landing pages.') }}</td></tr>
+                    <tr><td colspan="6" class="text-body-secondary">{{ __('No landing pages.') }}</td></tr>
                 @endforelse
                 </tbody>
             </table>

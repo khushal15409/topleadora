@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateIntegrationsRequest;
-use App\Support\Roles;
 use App\Services\IntegrationSettingsService;
+use App\Support\Roles;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -37,4 +37,3 @@ class IntegrationsController extends Controller
             ->with('success', __('Integrations saved.'));
     }
 }
-

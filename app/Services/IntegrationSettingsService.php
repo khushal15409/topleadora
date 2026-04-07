@@ -89,4 +89,3 @@ class IntegrationSettingsService
         Setting::putString('integrations.smtp.password', $data['smtp_password'] ?? null);
     }
 }
-

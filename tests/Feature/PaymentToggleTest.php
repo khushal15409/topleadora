@@ -42,4 +42,3 @@ class PaymentToggleTest extends TestCase
             ->assertOk();
     }
 }
-

@@ -31,4 +31,3 @@ class WhatsAppInboundMessage extends Model
         return $this->belongsTo(Organization::class);
     }
 }
-

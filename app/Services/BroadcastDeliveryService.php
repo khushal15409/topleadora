@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Lead;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class BroadcastDeliveryService
 {
     /**
-     * @param  Collection<int, \App\Models\Lead>  $leads
+     * @param  Collection<int, Lead>  $leads
      */
     public function sendBulk(Collection $leads, string $message, WhatsAppCloudApiService $wa): array
     {
@@ -32,6 +33,7 @@ class BroadcastDeliveryService
             if ($phone === '') {
                 $failed++;
                 $lastError = 'Missing phone number.';
+
                 continue;
             }
 
@@ -39,6 +41,7 @@ class BroadcastDeliveryService
             if (! ($res['ok'] ?? false)) {
                 $failed++;
                 $lastError = (string) ($res['error'] ?? 'Send failed');
+
                 continue;
             }
 

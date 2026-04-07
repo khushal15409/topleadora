@@ -98,4 +98,3 @@ class AnalyticsController extends Controller
         return ['labels' => $labels, 'series' => $series];
     }
 }
-

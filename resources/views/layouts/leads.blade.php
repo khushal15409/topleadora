@@ -13,7 +13,7 @@
         $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: 'leads, apply, quote, services';
         $canonicalSection = trim($__env->yieldContent('canonical_url'));
         $canonicalUrl = $canonicalSection !== '' ? $canonicalSection : url()->current();
-        $socialImage = trim($__env->yieldContent('meta_og_image')) ?: asset('front/images/logo.png');
+        $socialImage = trim($__env->yieldContent('meta_og_image')) ?: \App\Support\SeoMeta::defaultOgImageUrl();
     @endphp
 
     <title>{{ $pageTitle }}</title>

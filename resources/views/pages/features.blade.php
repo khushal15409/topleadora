@@ -5,6 +5,7 @@
 @section('meta_title', 'WhatsApp CRM Features | Lead Management System')
 @section('meta_description', 'Explore WhatsApp CRM features for lead capture, pipeline management, and follow-ups. Built for sales teams and real estate agents in India.')
 @section('meta_keywords', 'WhatsApp CRM features, lead management system, sales pipeline, follow ups, CRM for sales teams')
+@section('canonical_url', route('features', absolute: true))
 
 @section('content')
     <section class="section light-background pt-5 mt-5">
@@ -52,8 +53,10 @@
             </div>
 
             <div class="text-center mt-5">
-                <a href="{{ route('pricing') }}" class="btn btn-primary rounded-pill px-4">See pricing</a>
-                <a href="{{ route('blog.index') }}" class="btn btn-outline-primary rounded-pill px-4 ms-2">Read blog</a>
+                {{-- CRO: action-led labels (trial + pricing) for Indian SaaS funnel. --}}
+                <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">{{ __('Get set up in 2 minutes') }}</a>
+                <a href="{{ route('pricing') }}" class="btn btn-outline-primary rounded-pill px-4 ms-md-2 mt-2 mt-md-0">{{ __('Get free trial — view pricing') }}</a>
+                <a href="{{ route('blog.index') }}" class="btn btn-outline-secondary rounded-pill px-4 ms-md-2 mt-2 mt-md-0">{{ __('Read blog') }}</a>
             </div>
         </div>
     </section>

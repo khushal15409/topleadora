@@ -14,4 +14,14 @@ return [
 
     'favicon' => env('BRANDING_FAVICON', 'front/images/landify/favicon.png'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Public support email (marketing footer, contact snippets)
+    |--------------------------------------------------------------------------
+    |
+    | Replace with real business data in production. Set SUPPORT_EMAIL in .env.
+    |
+    */
+    'support_email' => env('SUPPORT_EMAIL'),
+
 ];

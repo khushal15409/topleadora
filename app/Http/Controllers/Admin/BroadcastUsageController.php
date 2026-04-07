@@ -81,4 +81,3 @@ class BroadcastUsageController extends Controller
         }
     }
 }
-

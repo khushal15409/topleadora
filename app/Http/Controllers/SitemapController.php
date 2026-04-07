@@ -6,26 +6,112 @@ use App\Models\BlogPost;
 use App\Models\LandingPage;
 use App\Models\LeadLandingPage;
 use App\Models\LeadNiche;
+use App\Models\Service;
+use App\Support\ProgrammaticLeadResolver;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
 
 class SitemapController extends Controller
 {
-    public function __invoke(): Response
+    /**
+     * Sitemap index: /sitemap.xml — points to split child sitemaps for crawl budget + organization.
+     */
+    public function index(): Response
     {
-        $base = url('/');
         $now = now()->toAtomString();
-
-        $static = [
-            ['loc' => $base.'/', 'lastmod' => $now],
-            ['loc' => url('/features'), 'lastmod' => $now],
-            ['loc' => url('/pricing'), 'lastmod' => $now],
-            ['loc' => route('blog.index'), 'lastmod' => $now],
+        $sitemaps = [
+            ['loc' => route('sitemap.main', absolute: true), 'lastmod' => $now],
+            ['loc' => route('sitemap.blog', absolute: true), 'lastmod' => $now],
+            ['loc' => route('sitemap.leads', absolute: true), 'lastmod' => $now],
         ];
 
-        $leadLandings = [];
+        $xml = view('sitemap.index', compact('sitemaps'))->render();
+
+        return $this->xmlResponse($xml);
+    }
+
+    /** Static marketing URLs: home, features, pricing, blog index, contact. */
+    public function main(): Response
+    {
+        $now = now()->toAtomString();
+        $sm = config('programmatic_seo.sitemap', []);
+
+        $urls = [
+            $this->entry(url('/'), $now, $sm['home_changefreq'] ?? 'daily', $sm['home_priority'] ?? '1.0'),
+            $this->entry(url('/features'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+            $this->entry(url('/pricing'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+            $this->entry(route('blog.index'), $now, $sm['blog_changefreq'] ?? 'weekly', $sm['blog_priority'] ?? '0.70'),
+            $this->entry(route('contact'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+        ];
+
+        return $this->urlsetResponse($urls);
+    }
+
+    public function blog(): Response
+    {
+        $sm = config('programmatic_seo.sitemap', []);
+        $urls = BlogPost::published()
+            ->get(['slug', 'updated_at'])
+            ->map(fn (BlogPost $p) => $this->entry(
+                route('blog.show', $p->slug),
+                ($p->updated_at ?? now())->toAtomString(),
+                $sm['default_changefreq'] ?? 'weekly',
+                $sm['post_priority'] ?? '0.65',
+            ))
+            ->all();
+
+        return $this->urlsetResponse($urls);
+    }
+
+    /**
+     * All /leads/{slug} URLs: DB landings + synthetic service–city pairs (deduped).
+     */
+    public function leads(): Response
+    {
+        $sm = config('programmatic_seo.sitemap', []);
+        $seen = [];
+        $urls = [];
+
+        foreach ($this->leadLandingUrls() as $row) {
+            $loc = $row['loc'];
+            if (isset($seen[$loc])) {
+                continue;
+            }
+            $seen[$loc] = true;
+            $urls[] = $this->entry(
+                $loc,
+                $row['lastmod'],
+                $sm['leads_changefreq'] ?? 'weekly',
+                $sm['leads_priority'] ?? '0.90',
+            );
+        }
+
+        foreach ($this->syntheticProgrammaticLeadUrls() as $row) {
+            $loc = $row['loc'];
+            if (isset($seen[$loc])) {
+                continue;
+            }
+            $seen[$loc] = true;
+            $urls[] = $this->entry(
+                $loc,
+                $row['lastmod'],
+                $sm['leads_changefreq'] ?? 'weekly',
+                $sm['leads_priority'] ?? '0.90',
+            );
+        }
+
+        return $this->urlsetResponse($urls);
+    }
+
+    /**
+     * @return list<array{loc: string, lastmod: string}>
+     */
+    private function leadLandingUrls(): array
+    {
+        $now = now()->toAtomString();
+
         if (Schema::hasTable('landing_pages') && LandingPage::query()->where('is_active', true)->exists()) {
-            $leadLandings = LandingPage::query()
+            return LandingPage::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->orderBy('slug')
@@ -35,8 +121,10 @@ class SitemapController extends Controller
                     'lastmod' => ($p->updated_at ?? now())->toAtomString(),
                 ])
                 ->all();
-        } elseif (Schema::hasTable('lead_landing_pages') && LeadLandingPage::query()->where('is_active', true)->exists()) {
-            $leadLandings = LeadLandingPage::query()
+        }
+
+        if (Schema::hasTable('lead_landing_pages') && LeadLandingPage::query()->where('is_active', true)->exists()) {
+            return LeadLandingPage::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')
                 ->orderBy('slug')
@@ -46,30 +134,77 @@ class SitemapController extends Controller
                     'lastmod' => ($p->updated_at ?? now())->toAtomString(),
                 ])
                 ->all();
-        } else {
-            $leadLandings = LeadNiche::query()
-                ->where('is_active', true)
-                ->orderBy('sort_order')
-                ->get(['slug', 'updated_at'])
-                ->map(fn (LeadNiche $n) => [
-                    'loc' => route('leads.landing', $n->slug),
-                    'lastmod' => ($n->updated_at ?? now())->toAtomString(),
-                ])
-                ->all();
         }
 
-        $posts = BlogPost::published()
+        return LeadNiche::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
             ->get(['slug', 'updated_at'])
-            ->map(fn (BlogPost $p) => [
-                'loc' => route('blog.show', $p->slug),
-                'lastmod' => ($p->updated_at ?? now())->toAtomString(),
+            ->map(fn (LeadNiche $n) => [
+                'loc' => route('leads.landing', $n->slug),
+                'lastmod' => ($n->updated_at ?? now())->toAtomString(),
             ])
             ->all();
+    }
 
-        $urls = array_merge($static, $leadLandings, $posts);
+    /**
+     * @return list<array{loc: string, lastmod: string}>
+     */
+    private function syntheticProgrammaticLeadUrls(): array
+    {
+        if (! ProgrammaticLeadResolver::enabled() || ! Schema::hasTable('services')) {
+            return [];
+        }
 
-        $xml = view('sitemap.xml', compact('urls'))->render();
+        $now = now()->toAtomString();
+        $dbSlugs = [];
+        if (Schema::hasTable('landing_pages')) {
+            $dbSlugs = LandingPage::query()->where('is_active', true)->pluck('slug')->all();
+        }
+        $dbSlugSet = array_fill_keys($dbSlugs, true);
 
+        $urls = [];
+        $services = Service::query()->activeOrdered()->get(['slug', 'updated_at']);
+        $cities = ProgrammaticLeadResolver::citySlugs();
+
+        foreach ($services as $service) {
+            foreach ($cities as $citySlug) {
+                $full = $service->slug.'-'.$citySlug;
+                if (isset($dbSlugSet[$full])) {
+                    continue;
+                }
+                $urls[] = [
+                    'loc' => route('leads.landing', $full),
+                    'lastmod' => $now,
+                ];
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @return array{loc: string, lastmod: string, changefreq: string, priority: string}
+     */
+    private function entry(string $loc, string $lastmod, string $changefreq, string $priority): array
+    {
+        return [
+            'loc' => $loc,
+            'lastmod' => $lastmod,
+            'changefreq' => $changefreq,
+            'priority' => $priority,
+        ];
+    }
+
+    private function urlsetResponse(array $urls): Response
+    {
+        $xml = view('sitemap.urlset', compact('urls'))->render();
+
+        return $this->xmlResponse($xml);
+    }
+
+    private function xmlResponse(string $xml): Response
+    {
         return response($xml, 200)
             ->header('Content-Type', 'application/xml; charset=UTF-8')
             ->header('Cache-Control', 'public, max-age=3600');

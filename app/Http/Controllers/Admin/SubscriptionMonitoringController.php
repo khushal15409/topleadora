@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ExtendSubscriptionRequest;
 use App\Http\Requests\Admin\SubscriptionChangePlanRequest;
 use App\Models\Organization;
 use App\Models\Plan;
+use App\Models\Subscription;
 use App\Services\SubscriptionMonitoringService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -46,7 +47,7 @@ class SubscriptionMonitoringController extends Controller
         if ($sub !== null) {
             $sub->update([
                 'end_date' => $sub->end_date->copy()->addDays($days),
-                'status' => \App\Models\Subscription::STATUS_ACTIVE,
+                'status' => Subscription::STATUS_ACTIVE,
             ]);
 
             return redirect()

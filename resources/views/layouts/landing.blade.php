@@ -12,13 +12,17 @@
         $pageTitle = trim($__env->yieldContent('meta_title')) ?: $defaultTitle;
         $pageDescription = trim($__env->yieldContent('meta_description')) ?: $defaultDescription;
         $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: $defaultKeywords;
-        $canonicalUrl = url()->current();
-        $socialImage = trim($__env->yieldContent('meta_og_image')) ?: asset('front/images/landify/illustration/illustration-15.webp');
+        $canonicalSection = trim($__env->yieldContent('canonical_url'));
+        // Prefer explicit canonical from each view to avoid ?query variants diluting signals.
+        $canonicalUrl = $canonicalSection !== '' ? $canonicalSection : url()->current();
+        // Single config-driven OG fallback (config/seo.php + SeoMeta::defaultOgImageUrl).
+        $socialImage = trim($__env->yieldContent('meta_og_image')) ?: \App\Support\SeoMeta::defaultOgImageUrl();
         $socialType = trim($__env->yieldContent('meta_og_type')) ?: 'website';
     @endphp
 
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
+    {{-- meta keywords are ignored by Google; kept for legacy tools only --}}
     <meta name="keywords" content="{{ $pageKeywords }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
@@ -61,7 +65,10 @@
     {!! json_encode($orgLd, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}
     </script>
 
+    @stack('json_ld')
+
     <!-- Fonts (Landify) -->
+    {{-- TODO: Consider self-hosting font files or using font subsetting to improve LCP and reduce third-party requests. --}}
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
@@ -70,9 +77,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     {{-- Self-hosted icons so fonts resolve on same origin (fixes missing icons when CDN/subpath blocks font files) --}}
     <link href="{{ asset('front/vendor/bootstrap-icons/bootstrap-icons.min.css') }}" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous">
+    {{-- Non-render-blocking: improves FCP/LCP vs synchronous third-party CSS (see Core Web Vitals). --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
+    <link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet" crossorigin="anonymous" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet" crossorigin="anonymous"></noscript>
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous"></noscript>
+    {{-- TODO: Audit defer/async and bundle strategy for AOS, GLightbox, Swiper if CLS or main-thread time regress. --}}
 
     <!-- Landify theme CSS -->
     <link href="{{ asset('front/css/landify-theme.css') }}" rel="stylesheet">
@@ -108,7 +120,9 @@
                     <li>
                         <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Blog</a>
                     </li>
-                    <li><a href="{{ $hash('contact') }}">Contact</a></li>
+                    <li>
+                        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                    </li>
                 </ul>
             </nav>
 
@@ -148,7 +162,7 @@
                     <a class="nav-link saas-offcanvas-link" href="{{ $hash('pricing') }}">Pricing</a>
                 @endif
                 <a class="nav-link saas-offcanvas-link" href="{{ route('blog.index') }}">Blog</a>
-                <a class="nav-link saas-offcanvas-link" href="{{ $hash('contact') }}">Contact</a>
+                <a class="nav-link saas-offcanvas-link" href="{{ route('contact') }}">Contact</a>
             </nav>
             <div class="mt-auto pt-4 d-flex flex-column gap-2">
                 @auth
@@ -173,11 +187,9 @@
                         <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'WP-CRM') }}" style="width: auto; height: 180px; max-height: 200px; object-fit: contain;">
                     </a>
                     <p>WhatsApp CRM for Real Estate & Sales. Manage leads, pipelines, and follow-ups in one place.</p>
-                    <div class="social-links d-flex mt-4">
-                        <a href="#"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#"><i class="bi bi-facebook"></i></a>
-                        <a href="#"><i class="bi bi-instagram"></i></a>
-                        <a href="#"><i class="bi bi-linkedin"></i></a>
+                    {{-- Replace with real business data: add profile URLs (see config/branding.php social_* or hard-code once verified). --}}
+                    <div class="social-links d-flex mt-4 gap-2" aria-label="Social media">
+                        {{-- Intentionally empty: placeholder # links hurt crawl budget and trust; wire real hrefs before launch. --}}
                     </div>
                 </div>
                 <div class="col-lg-2 col-6 footer-links">
@@ -191,6 +203,7 @@
                         @endif
                         <li><a href="{{ url('/') }}#faq">FAQ</a></li>
                         <li><a href="{{ route('blog.index') }}">Blog</a></li>
+                        <li><a href="{{ route('contact') }}">Contact</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 col-6 footer-links">
@@ -204,9 +217,14 @@
                         @endauth
                     </ul>
                 </div>
-                <div id="contact" class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+                <div id="footer-contact" class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
                     <h4>Contact</h4>
-                    <p>📧 support@example.com</p>
+                    {{-- Replace with real business data: set SUPPORT_EMAIL in .env (config/branding.php). --}}
+                    @if (filled(config('branding.support_email')))
+                        <p class="mb-0">📧 <a href="mailto:{{ config('branding.support_email') }}" class="link-light">{{ config('branding.support_email') }}</a></p>
+                    @else
+                        <p class="mb-0 small text-white-50">Configure public support email via <code>SUPPORT_EMAIL</code> in <code>.env</code>.</p>
+                    @endif
                 </div>
             </div>
         </div>

@@ -105,11 +105,12 @@ class WhatsAppCloudApiService
         // If it starts with '+', keep; else return digits only.
         if (str_starts_with($p, '+')) {
             $digits = '+'.preg_replace('/[^\d]/', '', substr($p, 1));
+
             return $digits === '+' ? '' : $digits;
         }
 
         $digits = preg_replace('/[^\d]/', '', $p) ?? '';
+
         return $digits;
     }
 }
-

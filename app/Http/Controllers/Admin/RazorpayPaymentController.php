@@ -42,6 +42,7 @@ class RazorpayPaymentController extends Controller
             ]);
         } catch (\Throwable $e) {
             report($e);
+
             return response()->json(['message' => 'Unable to create payment order.'], 500);
         }
 
@@ -164,4 +165,3 @@ class RazorpayPaymentController extends Controller
             ->with('track_google_conversion', true);
     }
 }
-
