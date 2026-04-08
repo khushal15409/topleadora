@@ -7,18 +7,6 @@
 @section('content')
     @push('styles')
         <style>
-            /* Remove any visual frame around hero image */
-            .hero-image-wrapper,
-            .hero-dashboard-float {
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                outline: none !important;
-                padding: 0 !important;
-                border-radius: 0 !important;
-                overflow: visible !important;
-            }
-
             /* Make hero image larger and clean */
             .hero-image {
                 width: 100% !important;
@@ -49,7 +37,10 @@
         };
     @endphp
     {{-- SECTION 1 — HERO --}}
-    <section id="hero" class="hero section hero-section-enhanced">
+    <section id="hero" class="hero section hero-section-enhanced hero-section-unique">
+        <div class="hero-ambient hero-ambient--one" aria-hidden="true"></div>
+        <div class="hero-ambient hero-ambient--two" aria-hidden="true"></div>
+        <div class="hero-ambient hero-ambient--grid" aria-hidden="true"></div>
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 order-2 order-lg-1 hero-content-col" data-aos="fade-up" data-aos-duration="700"
@@ -67,21 +58,23 @@
                 </div>
                 <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
                     <div class="hero-visual">
-                        <div class="hero-image-wrapper hero-dashboard-float">
-                            <img src="{{ asset('front/images/landify/sections-images/hero.png') }}"
-                                class="img-fluid hero-image" alt="WP-CRM dashboard preview" loading="eager">
-                            <div class="floating-elements">
-                                <div class="floating-card card-1 hero-float-card">
-                                    <i class="bi bi-lightbulb"></i>
-                                    <span>Smart Leads</span>
-                                </div>
-                                <div class="floating-card card-2 hero-float-card">
-                                    <i class="bi bi-kanban"></i>
-                                    <span>Pipeline</span>
-                                </div>
-                                <div class="floating-card card-3 hero-float-card">
-                                    <i class="bi bi-people"></i>
-                                    <span>Team</span>
+                        <div class="hero-visual-frame">
+                            <div class="hero-image-wrapper hero-dashboard-float">
+                                <img src="{{ asset('front/images/landify/sections-images/hero.png') }}"
+                                    class="img-fluid hero-image" alt="WP-CRM dashboard preview" loading="eager">
+                                <div class="floating-elements">
+                                    <div class="floating-card card-1 hero-float-card">
+                                        <i class="bi bi-lightbulb"></i>
+                                        <span>Smart Leads</span>
+                                    </div>
+                                    <div class="floating-card card-2 hero-float-card">
+                                        <i class="bi bi-kanban"></i>
+                                        <span>Pipeline</span>
+                                    </div>
+                                    <div class="floating-card card-3 hero-float-card">
+                                        <i class="bi bi-people"></i>
+                                        <span>Team</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
