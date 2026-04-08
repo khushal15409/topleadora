@@ -1,156 +1,176 @@
 @extends('layouts.admin')
 
-@section('title', 'My profile')
+@section('title', __('My Profile'))
 
 @section('content')
-    <div class="mb-4">
-        <h4 class="mb-1">My profile</h4>
-        <p class="mb-0 text-body-secondary">
-            Update how you appear in {{ config('app.name', 'WP-CRM') }} and keep your sign-in secure.
-        </p>
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('My Profile') }}</h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('User') }}
+                            <i
+                                class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Profile') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
     </div>
+    <!-- Page Header Close -->
 
     @if (session('status'))
-        <div class="alert alert-success alert-dismissible mb-4" role="alert">
+        <div class="bg-success/10 text-success border border-success/20 p-4 rounded-md mb-4 flex justify-between items-center"
+            role="alert">
             {{ session('status') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="text-success" data-bs-dismiss="alert" aria-label="Close">
+                <i class="ri-close-line"></i>
+            </button>
         </div>
     @endif
 
-    <div class="row gy-4">
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header border-bottom">
-                    <h5 class="mb-0">Account details</h5>
-                    <small class="text-body-secondary">Name, email, and optional phone for your workspace.</small>
+    <div class="grid grid-cols-12 gap-x-6">
+        <!-- Profile Banner -->
+        <div class="col-span-12 mb-6">
+            <div class="box !bg-primary/10 border border-primary/20 shadow-none overflow-hidden">
+                <div class="box-body !p-0">
+                    <div class="p-6 flex flex-wrap items-center gap-6">
+                        <div class="avatar avatar-xxl bg-primary text-white rounded-full text-2xl font-bold shadow-lg">
+                            {{ strtoupper(\Illuminate\Support\Str::substr($user->name, 0, 2)) }}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="text-xl font-bold text-defaulttextcolor mb-1">{{ $user->name }}</h4>
+                            <div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-textmuted">
+                                <span class="flex items-center"><i class="ri-mail-line me-1"></i> {{ $user->email }}</span>
+                                @if($user->phone)
+                                    <span class="flex items-center"><i class="ri-phone-line me-1"></i> {{ $user->phone }}</span>
+                                @endif
+                                @if ($user->roles->isNotEmpty())
+                                    <span class="flex items-center"><i class="ri-shield-user-line me-1"></i>
+                                        {{ $user->roles->pluck('name')->join(' · ') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <form method="post" action="{{ route('admin.profile.update') }}" class="card-body">
-                    @csrf
-                    @method('PUT')
-
-                    <div class="mb-3">
-                        <label for="profile_name" class="form-label">Full name</label>
-                        <input
-                            type="text"
-                            class="form-control @error('name') is-invalid @enderror"
-                            id="profile_name"
-                            name="name"
-                            value="{{ old('name', $user->name) }}"
-                            autocomplete="name"
-                            required
-                        >
-                        @error('name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="profile_email" class="form-label">Email</label>
-                        <input
-                            type="email"
-                            class="form-control @error('email') is-invalid @enderror"
-                            id="profile_email"
-                            name="email"
-                            value="{{ old('email', $user->email) }}"
-                            autocomplete="email"
-                            required
-                        >
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="profile_phone" class="form-label">Phone <span class="text-muted fw-normal">(optional)</span></label>
-                        <input
-                            type="text"
-                            class="form-control @error('phone') is-invalid @enderror"
-                            id="profile_phone"
-                            name="phone"
-                            value="{{ old('phone', $user->phone) }}"
-                            autocomplete="tel"
-                            placeholder="+1 555 0100"
-                        >
-                        @error('phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </form>
             </div>
         </div>
 
-        <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header border-bottom">
-                    <h5 class="mb-0">Security</h5>
-                    <small class="text-body-secondary">Use a strong password you do not reuse elsewhere.</small>
+        <!-- Account Details -->
+        <div class="col-span-12 lg:col-span-6">
+            <div class="box h-full">
+                <div class="box-header border-b">
+                    <h5 class="box-title font-semibold">{{ __('Account Details') }}</h5>
+                    <p class="text-textmuted text-xs mt-1">{{ __('Update your personal information and contact details.') }}
+                    </p>
                 </div>
-                <form method="post" action="{{ route('admin.profile.password') }}" class="card-body">
-                    @csrf
-                    @method('PUT')
+                <div class="box-body">
+                    <form method="post" action="{{ route('admin.profile.update') }}">
+                        @csrf
+                        @method('PUT')
 
-                    <div class="mb-3">
-                        <label for="current_password" class="form-label">Current password</label>
-                        <input
-                            type="password"
-                            class="form-control @error('current_password') is-invalid @enderror"
-                            id="current_password"
-                            name="current_password"
-                            autocomplete="current-password"
-                            required
-                        >
-                        @error('current_password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="profile_name"
+                                    class="block text-sm font-medium mb-2">{{ __('Full Name') }}</label>
+                                <input type="text" class="ti-form-input @error('name') !border-danger @enderror"
+                                    id="profile_name" name="name" value="{{ old('name', $user->name) }}" required
+                                    autocomplete="name">
+                                @error('name')
+                                    <p class="text-danger text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="mb-3">
-                        <label for="password" class="form-label">New password</label>
-                        <input
-                            type="password"
-                            class="form-control @error('password') is-invalid @enderror"
-                            id="password"
-                            name="password"
-                            autocomplete="new-password"
-                            required
-                        >
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
+                            <div>
+                                <label for="profile_email"
+                                    class="block text-sm font-medium mb-2">{{ __('Email Address') }}</label>
+                                <input type="email" class="ti-form-input @error('email') !border-danger @enderror"
+                                    id="profile_email" name="email" value="{{ old('email', $user->email) }}" required
+                                    autocomplete="email">
+                                @error('email')
+                                    <p class="text-danger text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                    <div class="mb-4">
-                        <label for="password_confirmation" class="form-label">Confirm new password</label>
-                        <input
-                            type="password"
-                            class="form-control"
-                            id="password_confirmation"
-                            name="password_confirmation"
-                            autocomplete="new-password"
-                            required
-                        >
-                    </div>
+                            <div>
+                                <label for="profile_phone" class="block text-sm font-medium mb-2">{{ __('Phone Number') }}
+                                    <span class="text-textmuted text-xs font-normal">({{ __('Optional') }})</span></label>
+                                <input type="text" class="ti-form-input @error('phone') !border-danger @enderror"
+                                    id="profile_phone" name="phone" value="{{ old('phone', $user->phone) }}"
+                                    autocomplete="tel" placeholder="+1 555 0000">
+                                @error('phone')
+                                    <p class="text-danger text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
 
-                    <button type="submit" class="btn btn-primary">Update password</button>
-                </form>
+                        <div class="mt-8">
+                            <button type="submit" class="ti-btn ti-btn-primary px-6">
+                                {{ __('Save Changes') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <div class="col-12">
-            <div class="card border border-primary border-opacity-25 bg-label-primary bg-opacity-10">
-                <div class="card-body py-3 d-flex flex-wrap align-items-center gap-3">
-                    <div class="avatar avatar-md">
-                        <span class="avatar-initial rounded-circle bg-primary">{{ strtoupper(\Illuminate\Support\Str::substr($user->name, 0, 2)) }}</span>
-                    </div>
-                    <div class="flex-grow-1 min-w-0">
-                        <div class="fw-medium">{{ $user->name }}</div>
-                        <small class="text-body-secondary d-block text-truncate">{{ $user->email }}</small>
-                        @if ($user->roles->isNotEmpty())
-                            <small class="text-muted">{{ $user->roles->pluck('name')->join(' · ') }}</small>
-                        @endif
-                    </div>
+        <!-- Security -->
+        <div class="col-span-12 lg:col-span-6">
+            <div class="box h-full">
+                <div class="box-header border-b">
+                    <h5 class="box-title font-semibold">{{ __('Security Settings') }}</h5>
+                    <p class="text-textmuted text-xs mt-1">
+                        {{ __('Update your password regularly to keep your account secure.') }}</p>
+                </div>
+                <div class="box-body">
+                    <form method="post" action="{{ route('admin.profile.password') }}">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="space-y-4">
+                            <div>
+                                <label for="current_password"
+                                    class="block text-sm font-medium mb-2">{{ __('Current Password') }}</label>
+                                <input type="password"
+                                    class="ti-form-input @error('current_password') !border-danger @enderror"
+                                    id="current_password" name="current_password" required autocomplete="current-password">
+                                @error('current_password')
+                                    <p class="text-danger text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password"
+                                    class="block text-sm font-medium mb-2">{{ __('New Password') }}</label>
+                                <input type="password" class="ti-form-input @error('password') !border-danger @enderror"
+                                    id="password" name="password" required autocomplete="new-password">
+                                @error('password')
+                                    <p class="text-danger text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation"
+                                    class="block text-sm font-medium mb-2">{{ __('Confirm New Password') }}</label>
+                                <input type="password" class="ti-form-input" id="password_confirmation"
+                                    name="password_confirmation" required autocomplete="new-password">
+                            </div>
+                        </div>
+
+                        <div class="mt-8">
+                            <button type="submit" class="ti-btn ti-btn-primary px-6">
+                                {{ __('Update Password') }}
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

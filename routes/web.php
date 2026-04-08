@@ -86,6 +86,13 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
+// GCC UI shell smoke test (same auth/roles as admin app); remove or restrict by env when rollout is complete.
+Route::middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
+    ->get('/ui-test', function () {
+        return view('gcc.ui-test');
+    })
+    ->name('ui.test');
+
 Route::middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
     ->prefix('dashboard')
     ->name('dashboard.')

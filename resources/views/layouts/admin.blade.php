@@ -1,91 +1,111 @@
-<!doctype html>
-<html
-    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="layout-menu-fixed layout-compact layout-navbar-fixed"
-    data-assets-path="{{ asset('materio/assets/') }}/"
-    data-template="vertical-menu-template-free"
->
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" data-nav-layout="vertical" class="light"
+    data-header-styles="light" data-menu-styles="light">
+
 <head>
-    <meta charset="utf-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
-    >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin Dashboard') — {{ config('app.name', 'WP-CRM') }}</title>
+    <title> @yield('title', 'Admin Dashboard') — {{ config('app.name', 'WP-CRM') }} </title>
+
+    <!-- Favicon -->
     @include('layouts.partials.favicon')
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap"
-        rel="stylesheet"
-    >
+    <!-- Main Theme Js -->
+    <script src="{{asset('build/assets/main.js')}}"></script>
 
-    <link rel="stylesheet" href="{{ asset('materio/assets/vendor/fonts/iconify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('materio/assets/vendor/libs/node-waves/node-waves.css') }}">
-    <link rel="stylesheet" href="{{ asset('materio/assets/vendor/css/core.css') }}">
-    <link rel="stylesheet" href="{{ asset('materio/assets/css/demo.css') }}">
-    <link rel="stylesheet" href="{{ asset('materio/assets/css/admin-custom.css') }}">
-    <link rel="stylesheet" href="{{ asset('materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <!-- ICONS CSS -->
+    <link href="{{asset('build/assets/iconfonts/icons.css')}}" rel="stylesheet">
+
+    <!-- APP CSS & APP SCSS -->
+    <link rel="stylesheet" href="{{ asset('build/assets/app-C1ug_Vkx.css') }}">
+
+    @include('layouts.components.styles')
+
     @stack('vendor-css')
+    @stack('styles')
+    @stack('json_ld')
 
     @include('layouts.partials.google-ads')
 
-    <script src="{{ asset('materio/assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ asset('materio/assets/js/config.js') }}"></script>
 </head>
+
 @php
     $saasUser = auth()->user();
     $saasIsSuper = $saasUser && $saasUser->hasRole(\App\Support\Roles::SUPER_ADMIN);
     $saasIsOrg = $saasUser && $saasUser->hasRole(\App\Support\Roles::ORGANIZATION);
 @endphp
+
 <body
-    @class([
-        'saas-admin',
-        'saas-admin--super' => $saasIsSuper,
-        'saas-admin--org' => $saasIsOrg && ! $saasIsSuper,
-    ])
->
-    <div class="layout-wrapper layout-content-navbar">
-        <div class="layout-container">
-            @include('layouts.partials.sidebar')
+    class="gcc-admin-theme {{ $saasIsSuper ? 'saas-admin--super' : '' }} {{ ($saasIsOrg && !$saasIsSuper) ? 'saas-admin--org' : '' }}">
 
-            <div class="layout-page">
-                @include('layouts.partials.navbar')
+    <!-- Switcher -->
+    @include('layouts.components.switcher')
+    <!-- End switcher -->
 
-                <div class="content-wrapper">
-                    @include('layouts.partials.plan-expired-banner')
-                    <div class="container-xxl flex-grow-1 container-p-y">
-                        @stack('page-header')
-                        @yield('content')
-                    </div>
+    <!-- Loader -->
+    <div id="loader">
+        <img src="{{asset('build/assets/images/media/loader.svg')}}" alt="">
+    </div>
+    <!-- Loader -->
 
-                    @include('layouts.partials.footer')
+    <div class="page">
 
-                    <div class="content-backdrop fade"></div>
-                </div>
+        <!-- Main-Header -->
+        @include('layouts.components.main-header')
+        <!-- End Main-Header -->
+
+        <!-- Country-selector modal -->
+        @include('layouts.components.modal')
+        <!-- End Country-selector modal -->
+
+        <!--Main-Sidebar-->
+        @include('layouts.components.main-sidebar')
+        <!-- End Main-Sidebar-->
+
+        <!-- Start::content  -->
+        <div class="content">
+            <!-- Start::main-content -->
+            <div class="main-content">
+                @stack('page-header')
+
+                @if (session()->pull('track_google_conversion'))
+                    <script>
+                        trackGoogleConversion();
+                    </script>
+                @endif
+
+                @yield('content')
+
             </div>
         </div>
+        <!-- End::content  -->
 
-        <div class="layout-overlay layout-menu-toggle"></div>
+        <!-- Footer opened -->
+        @include('layouts.components.footer')
+        <!-- End Footer -->
+
+        @yield('modals')
+
     </div>
 
-    <script src="{{ asset('materio/assets/vendor/libs/jquery/jquery.js') }}"></script>
-    <script src="{{ asset('materio/assets/vendor/libs/popper/popper.js') }}"></script>
-    <script src="{{ asset('materio/assets/vendor/js/bootstrap.js') }}"></script>
-    <script src="{{ asset('materio/assets/vendor/libs/node-waves/node-waves.js') }}"></script>
-    <script src="{{ asset('materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-    <script src="{{ asset('materio/assets/vendor/js/menu.js') }}"></script>
-    <script src="{{ asset('materio/assets/js/main.js') }}"></script>
+    <!-- SCRIPTS -->
+    @include('layouts.components.scripts')
+
+    <!-- Sticky JS -->
+    <script src="{{asset('build/assets/sticky.js')}}"></script>
+
+    <!-- Custom-Switcher JS -->
+    <script type="module" src="{{ asset('build/assets/custom-switcher-MctniY9g.js') }}"></script>
+
+    <!-- APP JS-->
+    <script type="module" src="{{ asset('build/assets/app-QCoZG1M9.js') }}"></script>
 
     @stack('vendor-js')
     @stack('page-js')
+    @stack('scripts')
+    <!-- END SCRIPTS -->
 
-    @if (session()->pull('track_google_conversion'))
-        <script>
-            trackGoogleConversion();
-        </script>
-    @endif
 </body>
+
 </html>

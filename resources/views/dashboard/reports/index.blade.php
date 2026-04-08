@@ -1,132 +1,157 @@
 @extends('layouts.admin')
 
-@section('title', __('Reports'))
-
-@push('vendor-css')
-    <link rel="stylesheet" href="{{ asset('materio/assets/vendor/libs/apex-charts/apex-charts.css') }}">
-@endpush
+@section('title', __('Analytics Reports'))
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">{{ __('Reports') }}</h4>
-            <p class="mb-0 text-body-secondary">{{ __('Leads and pipeline for your workspace.') }}</p>
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('Analytics Reports') }}
+            </h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('Dashboard') }}
+                            <i
+                                class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Reports') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <div class="btn-group" role="group">
-            @foreach (['today' => __('Today'), 'week' => __('This week'), 'month' => __('This month')] as $key => $label)
-                <a
-                    href="{{ route('dashboard.reports.index', ['period' => $key]) }}"
-                    class="btn btn-sm {{ $period === $key ? 'btn-primary' : 'btn-label-secondary' }}"
-                >{{ $label }}</a>
-            @endforeach
+
+        <div class="flex xl:my-auto right-content align-items-center">
+            <div class="inline-flex rounded-md shadow-sm" role="group">
+                @foreach (['today' => __('Today'), 'week' => __('Week'), 'month' => __('Month')] as $key => $label)
+                    <a href="{{ route('dashboard.reports.index', ['period' => $key]) }}"
+                        class="ti-btn !mb-0 px-4 py-2 text-sm font-medium {{ $period === $key ? 'ti-btn-primary z-10' : 'ti-btn-light border-defaultborder group-first:rounded-s-md group-last:rounded-e-md' }}">
+                        {{ $label }}
+                    </a>
+                @endforeach
+            </div>
         </div>
     </div>
+    <!-- Page Header Close -->
 
     @php
-        $toneBorder = [
-            'primary' => 'border-primary border-opacity-50',
-            'success' => 'border-success border-opacity-50',
-            'info' => 'border-info border-opacity-50',
-            'warning' => 'border-warning border-opacity-50',
-        ];
-        $toneIcon = [
-            'primary' => 'text-primary',
-            'success' => 'text-success',
-            'info' => 'text-info',
-            'warning' => 'text-warning',
-        ];
         $cards = [
-           ['label' => __('Total leads'), 'value' => number_format($summary['total_leads']), 'hint' => __('Created in period'), 'icon' => 'ri-user-search-line', 'tone' => 'primary'],
-           ['label' => __('New leads'), 'value' => number_format($summary['new_leads']), 'hint' => __('Status: New'), 'icon' => 'ri-sparkling-line', 'tone' => 'success'],
-           ['label' => __('Follow-ups pending'), 'value' => number_format($summary['followups_pending']), 'hint' => __('Due in period'), 'icon' => 'ri-calendar-todo-line', 'tone' => 'info'],
-           ['label' => __('Closed deals'), 'value' => number_format($summary['closed_deals']), 'hint' => __('Updated in period'), 'icon' => 'ri-checkbox-circle-line', 'tone' => 'warning'],
+            ['label' => __('Total Leads'), 'value' => number_format($summary['total_leads']), 'hint' => __('Created in period'), 'icon' => 'ri-user-search-line', 'color' => 'primary'],
+            ['label' => __('New Leads'), 'value' => number_format($summary['new_leads']), 'hint' => __('Status: New'), 'icon' => 'ri-sparkling-line', 'color' => 'success'],
+            ['label' => __('Follow-ups'), 'value' => number_format($summary['followups_pending']), 'hint' => __('Due in period'), 'icon' => 'ri-calendar-todo-line', 'color' => 'info'],
+            ['label' => __('Closed Deals'), 'value' => number_format($summary['closed_deals']), 'hint' => __('Won / Converted'), 'icon' => 'ri-checkbox-circle-line', 'color' => 'warning'],
         ];
     @endphp
 
-    <div class="row g-4 mb-4">
+    <div class="grid grid-cols-12 gap-x-6">
         @foreach ($cards as $stat)
-            @php
-                $b = $stat['tone'] ?? 'primary';
-                $borderClass = $toneBorder[$b] ?? $toneBorder['primary'];
-                $iconClass = $toneIcon[$b] ?? $toneIcon['primary'];
-            @endphp
-            <div class="col-sm-6 col-xl-3">
-                <div class="card h-100 border-0 shadow-sm rounded-4 border-start border-4 {{ $borderClass }}">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="fw-semibold text-heading">{{ $stat['label'] }}</span>
-                            <span class="rounded-3 d-inline-flex align-items-center justify-content-center p-2 bg-lighter {{ $iconClass }}">
-                                <i class="icon-base {{ $stat['icon'] }} icon-md"></i>
-                            </span>
+            <div class="col-span-12 sm:col-span-6 xl:col-span-3">
+                <div class="box">
+                    <div class="box-body !p-5">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <p class="text-textmuted text-xs font-semibold mb-1 uppercase tracking-wider">
+                                    {{ $stat['label'] }}</p>
+                                <h4 class="text-2xl font-bold mb-0">{{ $stat['value'] }}</h4>
+                            </div>
+                            <div class="avatar avatar-lg bg-{{ $stat['color'] }}/10 text-{{ $stat['color'] }} rounded-md">
+                                <i class="{{ $stat['icon'] }} text-2xl"></i>
+                            </div>
                         </div>
-                        <h3 class="mb-1 fw-semibold">{{ $stat['value'] }}</h3>
-                        <small class="text-body-secondary">{{ $stat['hint'] }}</small>
+                        <div class="flex items-center text-xs text-textmuted">
+                            <span class="text-{{ $stat['color'] }} me-1 font-medium"><i class="ri-arrow-right-line"></i></span>
+                            {{ $stat['hint'] }}
+                        </div>
                     </div>
                 </div>
             </div>
         @endforeach
-    </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-7">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
-                    <h5 class="mb-0">{{ __('Leads growth') }}</h5>
-                    <small class="text-body-secondary">{{ __('New leads per day') }}</small>
+        <!-- Chart Section -->
+        <div class="col-span-12 lg:col-span-7">
+            <div class="box">
+                <div class="box-header !border-b-0">
+                    <h4 class="box-title font-semibold">{{ __('Leads Growth') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">{{ __('New leads acquired per day in this period.') }}</p>
                 </div>
-                <div class="card-body pt-2" style="min-height: 300px;">
-                    <div id="reportLeadsLineChart"></div>
+                <div class="box-body !pt-0">
+                    <div id="reportLeadsLineChart" style="min-height: 320px;"></div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-header bg-transparent border-0 pb-0 pt-4 px-4">
-                    <h5 class="mb-0">{{ __('Pipeline in period') }}</h5>
-                    <small class="text-body-secondary">{{ __('New · Interested · Follow-up · Closed') }}</small>
+
+        <div class="col-span-12 lg:col-span-5">
+            <div class="box">
+                <div class="box-header !border-b-0">
+                    <h4 class="box-title font-semibold">{{ __('Pipeline Distribution') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">{{ __('Lead distribution across pipeline stages.') }}</p>
                 </div>
-                <div class="card-body pt-2" style="min-height: 300px;">
-                    <div id="reportPipelineBarChart"></div>
+                <div class="box-body !pt-0">
+                    <div id="reportPipelineBarChart" style="min-height: 320px;"></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-header bg-transparent border-0 pt-4 px-4">
-            <h5 class="mb-0">{{ __('Recent leads') }}</h5>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0 align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>{{ __('Name') }}</th>
-                        <th>{{ __('Phone') }}</th>
-                        <th>{{ __('Status') }}</th>
-                        <th>{{ __('Date') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($recentLeads as $l)
-                        <tr>
-                            <td class="fw-medium">{{ $l->name }}</td>
-                            <td>{{ $l->phone ?? '—' }}</td>
-                            <td><span class="badge bg-label-primary rounded-pill">{{ $l->statusLabel() }}</span></td>
-                            <td class="small text-body-secondary">{{ $l->created_at?->format('M j, Y') }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-body-secondary py-4">{{ __('No leads in this period.') }}</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <!-- Recent Leads Table -->
+        <div class="col-span-12">
+            <div class="box">
+                <div class="box-header !border-b-0">
+                    <h4 class="box-title font-semibold">{{ __('Recent Lead Activity') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">{{ __('The most recent leads captured in this period.') }}</p>
+                </div>
+                <div class="box-body !p-0">
+                    <div class="table-responsive">
+                        <table class="ti-custom-table table-hover text-nowrap w-full">
+                            <thead class="bg-gray-50 border-y dark:bg-black/10">
+                                <tr>
+                                    <th scope="col" class="!py-3 !px-4">{{ __('Lead Name') }}</th>
+                                    <th scope="col" class="!py-3 !px-4">{{ __('Phone Number') }}</th>
+                                    <th scope="col" class="!py-3 !px-4">{{ __('Status') }}</th>
+                                    <th scope="col" class="!py-3 !px-4">{{ __('Date Captured') }}</th>
+                                    <th scope="col" class="!py-3 !px-4 text-end">{{ __('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($recentLeads as $l)
+                                    <tr class="border-b last:border-0 hover:bg-gray-50/50 transition-colors h-14">
+                                        <td class="!px-4 font-medium">{{ $l->name }}</td>
+                                        <td class="!px-4 text-sm text-textmuted">{{ $l->phone ?? '—' }}</td>
+                                        <td class="!px-4">
+                                            <span
+                                                class="badge bg-primary/10 text-primary rounded-full px-3">{{ $l->statusLabel() }}</span>
+                                        </td>
+                                        <td class="!px-4 text-sm text-textmuted">
+                                            {{ $l->created_at?->format('M j, Y') }}
+                                        </td>
+                                        <td class="!px-4 text-end">
+                                            <a href="{{ route('dashboard.leads.edit', $l) }}"
+                                                class="ti-btn ti-btn-sm ti-btn-soft-primary !border-0 p-2">
+                                                <i class="ri-eye-line text-lg"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-textmuted py-12">
+                                            {{ __('No recent leads found.') }}</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
 
 @push('vendor-js')
-    <script src="{{ asset('materio/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+    <script src="{{ asset('build/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 @endpush
 
 @push('page-js')
@@ -144,56 +169,57 @@
     <script>
         (function () {
             const payload = window.__WP_CRM_REPORTS;
-            if (!payload || typeof ApexCharts === 'undefined' || typeof config === 'undefined') return;
-            const labelColor = config.colors.textMuted;
-            const borderColor = config.colors.borderColor;
-            const fontFamily = config.fontFamily;
+            if (!payload || typeof ApexCharts === 'undefined') return;
 
-            const lineEl = document.querySelector('#reportLeadsLineChart');
-            if (lineEl && payload.growthLabels.length) {
-                new ApexCharts(lineEl, {
-                    chart: { type: 'area', height: 280, toolbar: { show: false }, zoom: { enabled: false }, fontFamily },
-                    stroke: { curve: 'smooth', width: 2 },
-                    fill: {
-                        type: 'gradient',
-                        gradient: { shadeIntensity: 0.5, opacityFrom: 0.35, opacityTo: 0.05 },
-                    },
-                    colors: [config.colors.primary],
-                    series: [{ name: '{{ __('Leads') }}', data: payload.growthCounts }],
-                    xaxis: {
-                        categories: payload.growthLabels,
-                        labels: { style: { colors: labelColor, fontFamily, fontSize: '11px' } },
-                    },
-                    yaxis: {
-                        min: 0,
-                        labels: { style: { colors: labelColor, fontFamily } },
-                    },
-                    dataLabels: { enabled: false },
-                    grid: { borderColor, strokeDashArray: 4 },
-                    tooltip: { theme: 'light' },
-                }).render();
-            }
+            const primaryColor = '#845adf';
+            const textMuted = '#8c9097';
+            const borderColor = '#f3f3f3';
 
-            const barEl = document.querySelector('#reportPipelineBarChart');
-            if (barEl) {
-                new ApexCharts(barEl, {
-                    chart: { type: 'bar', height: 280, toolbar: { show: false }, fontFamily },
-                    plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
-                    colors: [config.colors.primary],
-                    series: [{ name: '{{ __('Leads') }}', data: payload.pipelineCounts }],
-                    xaxis: {
-                        categories: payload.pipelineLabels,
-                        labels: { style: { colors: labelColor, fontFamily, fontSize: '11px' } },
-                    },
-                    yaxis: {
-                        min: 0,
-                        labels: { style: { colors: labelColor, fontFamily } },
-                    },
-                    dataLabels: { enabled: false },
-                    grid: { borderColor, strokeDashArray: 4 },
-                    tooltip: { theme: 'light' },
-                }).render();
-            }
+            // Area Chart
+            const areaOptions = {
+                chart: { type: 'area', height: 320, toolbar: { show: false }, zoom: { enabled: false } },
+                stroke: { curve: 'smooth', width: 3 },
+                fill: {
+                    type: 'gradient',
+                    gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.1, stops: [0, 90, 100] }
+                },
+                colors: [primaryColor],
+                series: [{ name: '{{ __('New Leads') }}', data: payload.growthCounts }],
+                xaxis: {
+                    categories: payload.growthLabels,
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: { style: { colors: textMuted, fontSize: '11px', fontWeight: 500 } }
+                },
+                yaxis: {
+                    labels: { style: { colors: textMuted, fontSize: '11px', fontWeight: 500 } }
+                },
+                dataLabels: { enabled: false },
+                grid: { borderColor: borderColor, strokeDashArray: 4 },
+                tooltip: { x: { show: true }, theme: 'light' }
+            };
+            new ApexCharts(document.querySelector('#reportLeadsLineChart'), areaOptions).render();
+
+            // Bar Chart
+            const barOptions = {
+                chart: { type: 'bar', height: 320, toolbar: { show: false } },
+                plotOptions: { bar: { borderRadius: 4, columnWidth: '40%', distributed: true } },
+                colors: [primaryColor, '#23b7e5', '#f5b849', '#49b6f5', '#26bf94'],
+                series: [{ name: '{{ __('Count') }}', data: payload.pipelineCounts }],
+                xaxis: {
+                    categories: payload.pipelineLabels,
+                    axisBorder: { show: false },
+                    axisTicks: { show: false },
+                    labels: { style: { colors: textMuted, fontSize: '11px', fontWeight: 500 } }
+                },
+                yaxis: {
+                    labels: { style: { colors: textMuted, fontSize: '11px', fontWeight: 500 } }
+                },
+                dataLabels: { enabled: false },
+                grid: { borderColor: borderColor, strokeDashArray: 4 },
+                legend: { show: false }
+            };
+            new ApexCharts(document.querySelector('#reportPipelineBarChart'), barOptions).render();
         })();
     </script>
 @endpush

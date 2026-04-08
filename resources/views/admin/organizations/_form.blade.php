@@ -4,118 +4,90 @@
     $isEdit = $organization !== null;
 @endphp
 
-<div class="row g-4">
-    <div class="col-md-6">
-        <label class="form-label" for="org-name">Organization name <span class="text-danger">*</span></label>
-        <input
-            type="text"
-            name="name"
-            id="org-name"
-            class="form-control @error('name') is-invalid @enderror"
-            value="{{ old('name', optional($organization)->name) }}"
-            required
-        >
+<div class="grid grid-cols-12 gap-6">
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-name">{{ __('Organization name') }} <span
+                class="text-danger">*</span></label>
+        <input type="text" name="name" id="org-name" class="ti-form-input @error('name') !border-danger @enderror"
+            value="{{ old('name', optional($organization)->name) }}" required
+            placeholder="{{ __('Enter organization name') }}">
         @error('name')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="org-slug">Slug</label>
-        <input
-            type="text"
-            name="slug"
-            id="org-slug"
-            class="form-control @error('slug') is-invalid @enderror"
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-slug">{{ __('Slug') }}</label>
+        <input type="text" name="slug" id="org-slug" class="ti-form-input @error('slug') !border-danger @enderror"
             value="{{ old('slug', optional($organization)->slug) }}"
-            placeholder="Auto from name if empty"
-        >
+            placeholder="{{ __('Auto-generated from name if empty') }}">
         @error('slug')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="org-status">Status <span class="text-danger">*</span></label>
-        <select name="status" id="org-status" class="form-select @error('status') is-invalid @enderror" required>
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-status">{{ __('Status') }} <span
+                class="text-danger">*</span></label>
+        <select name="status" id="org-status" class="ti-form-select @error('status') !border-danger @enderror" required>
             @foreach (['active' => 'Active', 'inactive' => 'Inactive'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('status', optional($organization)->status ?? 'active') === $value)>{{ $label }}</option>
+                <option value="{{ $value }}" @selected(old('status', optional($organization)->status ?? 'active') === $value)>
+                    {{ $label }}</option>
             @endforeach
         </select>
         @error('status')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="org-plan">Plan</label>
-        <select name="plan_id" id="org-plan" class="form-select @error('plan_id') is-invalid @enderror">
-            <option value="">— No plan (trial) —</option>
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-plan">{{ __('Plan') }}</label>
+        <select name="plan_id" id="org-plan" class="ti-form-select @error('plan_id') !border-danger @enderror">
+            <option value="">— {{ __('No plan (trial)') }} —</option>
             @foreach ($plans as $plan)
-                <option
-                    value="{{ $plan->id }}"
-                    @selected((string) old('plan_id', optional($organization)->plan_id) === (string) $plan->id)
-                >
+                <option value="{{ $plan->id }}" @selected((string) old('plan_id', optional($organization)->plan_id) === (string) $plan->id)>
                     {{ $plan->name }} ({{ $plan->currency }} {{ number_format((float) $plan->price_monthly, 0) }}/mo)
                 </option>
             @endforeach
         </select>
         @error('plan_id')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
-        <div class="form-text">Assigning a plan clears trial dates and grants paid access.</div>
+        <p class="text-textmuted text-[11px] mt-1">
+            {{ __('Assigning a plan clears trial dates and grants paid access.') }}</p>
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="org-trial-ends">Trial ends at</label>
-        <input
-            type="datetime-local"
-            name="trial_ends_at"
-            id="org-trial-ends"
-            class="form-control @error('trial_ends_at') is-invalid @enderror"
-            value="{{ old('trial_ends_at', optional($organization)->trial_ends_at?->format('Y-m-d\TH:i')) }}"
-        >
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-trial-ends">{{ __('Trial ends at') }}</label>
+        <input type="datetime-local" name="trial_ends_at" id="org-trial-ends"
+            class="ti-form-input @error('trial_ends_at') !border-danger @enderror"
+            value="{{ old('trial_ends_at', optional($organization)->trial_ends_at?->format('Y-m-d\TH:i')) }}">
         @error('trial_ends_at')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="col-md-6">
-        <label class="form-label" for="org-mobile">WhatsApp / mobile</label>
-        <input
-            type="text"
-            name="mobile_number"
-            id="org-mobile"
-            class="form-control @error('mobile_number') is-invalid @enderror"
+    <div class="col-span-12 lg:col-span-6">
+        <label class="block text-sm font-medium mb-2" for="org-mobile">{{ __('WhatsApp / mobile') }}</label>
+        <input type="text" name="mobile_number" id="org-mobile"
+            class="ti-form-input @error('mobile_number') !border-danger @enderror"
             value="{{ old('mobile_number', optional($organization)->mobile_number) }}"
-        >
+            placeholder="{{ __('e.g. +1234567890') }}">
         @error('mobile_number')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <p class="text-danger text-xs mt-1">{{ $message }}</p>
         @enderror
     </div>
 
-    <div class="col-12">
-        <div class="form-check">
-            <input
-                class="form-check-input"
-                type="checkbox"
-                name="is_trial"
-                id="org-is-trial"
-                value="1"
-                @checked(old('is_trial', optional($organization)->is_trial ?? true))
-            >
-            <label class="form-check-label" for="org-is-trial">Trial mode (when no plan)</label>
+    <div class="col-span-12 space-y-4 pt-2">
+        <div class="flex items-center">
+            <input class="ti-form-checkbox rounded-sm" type="checkbox" name="is_trial" id="org-is-trial" value="1"
+                @checked(old('is_trial', optional($organization)->is_trial ?? true))>
+            <label class="ms-3 text-sm font-medium" for="org-is-trial">{{ __('Trial mode (when no plan)') }}</label>
         </div>
-        <div class="form-check mt-2">
-            <input
-                class="form-check-input"
-                type="checkbox"
-                name="onboarding_completed"
-                id="org-onboarding"
-                value="1"
-                @checked(old('onboarding_completed', optional($organization)->onboarding_completed ?? false))
-            >
-            <label class="form-check-label" for="org-onboarding">Onboarding completed</label>
+        <div class="flex items-center">
+            <input class="ti-form-checkbox rounded-sm" type="checkbox" name="onboarding_completed" id="org-onboarding"
+                value="1" @checked(old('onboarding_completed', optional($organization)->onboarding_completed ?? false))>
+            <label class="ms-3 text-sm font-medium" for="org-onboarding">{{ __('Onboarding completed') }}</label>
         </div>
     </div>
 </div>

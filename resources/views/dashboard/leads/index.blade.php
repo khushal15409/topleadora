@@ -2,175 +2,244 @@
 
 @section('title', __('Leads'))
 
-@push('vendor-css')
-    <style>
-        .wp-crm-lead-card {
-            border-radius: 1rem;
-            box-shadow: 0 0.25rem 1rem rgba(67, 89, 113, 0.08);
-        }
-        .wp-crm-table-wrap {
-            border-radius: 1rem;
-            overflow: hidden;
-        }
-    </style>
-@endpush
-
 @section('content')
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('CRM Leads') }}</h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('Dashboard') }}
+                            <i
+                                class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Leads') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="flex xl:my-auto right-content align-items-center">
+            @can('create', \App\Models\Lead::class)
+                <a href="{{ route('dashboard.leads.create') }}" class="ti-btn ti-btn-primary font-medium">
+                    <i class="ri-add-line me-1"></i>{{ __('Add lead') }}
+                </a>
+            @endcan
+        </div>
+    </div>
+    <!-- Page Header Close -->
+
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible mb-4" role="alert">
+        <div class="bg-success/10 text-success border border-success/20 p-4 rounded-md mb-4 flex justify-between items-center"
+            role="alert">
             {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="text-success" data-bs-dismiss="alert" aria-label="Close">
+                <i class="ri-close-line"></i>
+            </button>
         </div>
     @endif
 
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">{{ __('Leads') }}</h4>
-            <p class="mb-0 text-body-secondary">{{ __('Your organization’s leads — search and filter in one place.') }}</p>
-        </div>
-        @can('create', \App\Models\Lead::class)
-            <a href="{{ route('dashboard.leads.create') }}" class="btn btn-primary">
-                <i class="icon-base ri ri-add-line me-1"></i>{{ __('Add lead') }}
-            </a>
-        @endcan
-    </div>
-
-    <div class="card border-0 shadow-sm rounded-4 mb-4 wp-crm-lead-card">
-        <div class="card-body">
-            <form method="get" action="{{ route('dashboard.leads.index') }}" class="row g-3 align-items-end">
-                <div class="col-12 col-md-4">
-                    <label class="form-label small text-muted mb-1" for="q">{{ __('Search') }}</label>
-                    <input
-                        type="search"
-                        name="q"
-                        id="q"
-                        value="{{ request('q') }}"
-                        class="form-control"
-                        placeholder="{{ __('Name, phone or email') }}"
-                    >
+    <div class="grid grid-cols-12 gap-x-6">
+        <!-- Filter Box -->
+        <div class="col-span-12 mb-6">
+            <div class="box">
+                <div class="box-body">
+                    <form method="get" action="{{ route('dashboard.leads.index') }}">
+                        <div class="grid grid-cols-12 gap-4 items-end">
+                            <div class="col-span-12 md:col-span-5">
+                                <label class="block text-xs font-bold uppercase text-textmuted mb-2"
+                                    for="q">{{ __('Search') }}</label>
+                                <input type="search" name="q" id="q" value="{{ request('q') }}" class="ti-form-input"
+                                    placeholder="{{ __('Name, phone or email') }}">
+                            </div>
+                            <div class="col-span-12 md:col-span-4">
+                                <label class="block text-xs font-bold uppercase text-textmuted mb-2"
+                                    for="filt-status">{{ __('Status') }}</label>
+                                <select name="status" id="filt-status" class="ti-form-select">
+                                    <option value="">{{ __('All Statuses') }}</option>
+                                    @foreach ($statusOptions as $value => $label)
+                                        <option value="{{ $value }}" @selected($statusFilter === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-span-12 md:col-span-3">
+                                <div class="flex gap-2">
+                                    <button type="submit" class="ti-btn ti-btn-primary flex-grow !mb-0">
+                                        <i class="ri-filter-line me-1"></i>{{ __('Apply') }}
+                                    </button>
+                                    <a href="{{ route('dashboard.leads.index') }}" class="ti-btn ti-btn-light !mb-0">
+                                        <i class="ri-refresh-line"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="col-12 col-md-3">
-                    <label class="form-label small text-muted mb-1" for="filt-status">{{ __('Status') }}</label>
-                    <select name="status" id="filt-status" class="form-select">
-                        <option value="">{{ __('All') }}</option>
-                        @foreach ($statusOptions as $value => $label)
-                            <option value="{{ $value }}" @selected($statusFilter === $value)>{{ $label }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 col-md-5 d-flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-primary">{{ __('Apply') }}</button>
-                    <a href="{{ route('dashboard.leads.index') }}" class="btn btn-label-secondary">{{ __('Reset') }}</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @if ($leads->isEmpty())
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body text-body-secondary">
-                {{ __('No leads yet. Add one to get started.') }}
-            </div>
-        </div>
-    @else
-        <div class="card border-0 shadow-sm rounded-4 wp-crm-lead-card wp-crm-table-wrap">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>{{ __('Name') }}</th>
-                            <th class="d-none d-lg-table-cell">{{ __('Email') }}</th>
-                            <th>{{ __('Phone') }}</th>
-                            <th class="d-none d-md-table-cell">{{ __('Niche') }}</th>
-                            <th>{{ __('Source') }}</th>
-                            <th>{{ __('Status') }}</th>
-                            <th>{{ __('Next follow-up') }}</th>
-                            <th>{{ __('Assigned to') }}</th>
-                            <th class="text-end">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($leads as $lead)
-                            <tr>
-                                <td class="fw-medium">{{ $lead->name }}</td>
-                                <td class="d-none d-lg-table-cell small text-body-secondary">{{ $lead->email ?? '—' }}</td>
-                                <td>{{ $lead->phone ?? '—' }}</td>
-                                <td class="d-none d-md-table-cell small">{{ $lead->niche ? ($nicheLabels[$lead->niche] ?? $lead->niche) : '—' }}</td>
-                                <td>{{ $lead->sourceLabel() }}</td>
-                                <td>
-                                    <span class="badge bg-label-primary rounded-pill">{{ $lead->statusLabel() }}</span>
-                                </td>
-                                <td class="text-body-secondary small">
-                                    {{ $lead->next_followup_at?->format('M j, Y H:i') ?? '—' }}
-                                </td>
-                                <td>{{ $lead->assignee?->name ?? '—' }}</td>
-                                <td class="text-end">
-                                    <div class="btn-group btn-group-sm">
-                                        @can('update', $lead)
-                                            <button
-                                                type="button"
-                                                class="btn btn-sm btn-label-primary js-open-quick"
-                                                data-lead-id="{{ $lead->id }}"
-                                            >
-                                                {{ __('Quick') }}
-                                            </button>
-                                            <a href="{{ route('dashboard.leads.edit', $lead) }}" class="btn btn-sm btn-text-secondary">
-                                                {{ __('Edit') }}
-                                            </a>
-                                        @endcan
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
             </div>
         </div>
 
-        <div class="mt-3">
-            {{ $leads->links() }}
+        <!-- Leads Table -->
+        <div class="col-span-12">
+            <div class="box">
+                <div class="box-header !border-b-0">
+                    <h4 class="box-title font-semibold">{{ __('All Leads') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">
+                        {{ __('Your organization’s leads — search and filter in one place.') }}</p>
+                </div>
+                <div class="box-body !p-0">
+                    @if ($leads->isEmpty())
+                        <div class="p-12 text-center text-textmuted">
+                            <i class="ri-user-search-line text-4xl mb-2 block opacity-20"></i>
+                            {{ __('No leads yet. Add one to get started.') }}
+                        </div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="ti-custom-table table-hover text-nowrap w-full">
+                                <thead class="bg-gray-50 border-y dark:bg-black/10">
+                                    <tr>
+                                        <th scope="col" class="!py-3 !px-4">{{ __('Lead Name') }}</th>
+                                        <th scope="col" class="!py-3 !px-4">{{ __('Contact Info') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 d-none d-md-table-cell">{{ __('Niche') }}</th>
+                                        <th scope="col" class="!py-3 !px-4">{{ __('Status') }}</th>
+                                        <th scope="col" class="!py-3 !px-4">{{ __('Next Follow-up') }}</th>
+                                        <th scope="col" class="!py-3 !px-4">{{ __('Assignee') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-end">{{ __('Actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($leads as $lead)
+                                        <tr class="border-b last:border-0 hover:bg-gray-50/50 transition-colors h-14">
+                                            <td class="!px-4 font-medium">
+                                                {{ $lead->name }}
+                                                <div class="text-[10px] text-textmuted mt-0.5">{{ $lead->sourceLabel() }}</div>
+                                            </td>
+                                            <td class="!px-4">
+                                                <div class="flex flex-col text-sm">
+                                                    <span class="font-medium">{{ $lead->phone ?? '—' }}</span>
+                                                    <span
+                                                        class="text-xs text-textmuted truncate max-w-[150px]">{{ $lead->email ?? '—' }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="!px-4 text-sm d-none d-md-table-cell">
+                                                {{ $lead->niche ? ($nicheLabels[$lead->niche] ?? $lead->niche) : '—' }}
+                                            </td>
+                                            <td class="!px-4">
+                                                <span
+                                                    class="badge bg-primary/10 text-primary rounded-full px-3">{{ $lead->statusLabel() }}</span>
+                                            </td>
+                                            <td class="!px-4 text-sm text-textmuted">
+                                                @if($lead->next_followup_at)
+                                                    {{ $lead->next_followup_at->format('M j, Y') }}<br>
+                                                    <small>{{ $lead->next_followup_at->format('H:i') }}</small>
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>
+                                            <td class="!px-4 text-sm">
+                                                @if($lead->assignee)
+                                                    <div class="flex items-center">
+                                                        <span class="avatar avatar-xs bg-gray-100 rounded-full me-2">
+                                                            {{ strtoupper(substr($lead->assignee->name, 0, 1)) }}
+                                                        </span>
+                                                        {{ $lead->assignee->name }}
+                                                    </div>
+                                                @else
+                                                    —
+                                                @endif
+                                            </td>
+                                            <td class="text-end !px-4">
+                                                <div class="flex justify-end gap-2">
+                                                    @can('update', $lead)
+                                                        <button type="button"
+                                                            class="ti-btn ti-btn-sm ti-btn-soft-primary !border-0 p-2 js-open-quick"
+                                                            data-lead-id="{{ $lead->id }}" title="{{ __('Quick Update') }}">
+                                                            <i class="ri-flashlight-line text-lg"></i>
+                                                        </button>
+                                                        <a href="{{ route('dashboard.leads.edit', $lead) }}"
+                                                            class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0 p-2"
+                                                            title="{{ __('Edit Detail') }}">
+                                                            <i class="ri-pencil-line text-lg"></i>
+                                                        </a>
+                                                    @endcan
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+                @if ($leads->hasPages())
+                    <div class="box-footer p-4 border-t">
+                        {{ $leads->links() }}
+                    </div>
+                @endif
+            </div>
         </div>
-    @endif
+    </div>
 
     @can('viewAny', \App\Models\Lead::class)
-        <div class="modal fade" id="quickLeadModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content rounded-4 border-0 shadow">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title">{{ __('Quick update') }}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Quick Lead Modal -->
+        <div id="quickLeadModal"
+            class="hs-overlay hidden w-full h-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto">
+            <div
+                class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto min-h-[calc(100%-3.5rem)] flex items-center">
+                <div
+                    class="flex flex-col bg-white border shadow-sm rounded-xl dark:bg-gray-800 dark:border-gray-700 dark:shadow-slate-700/[.7] w-full">
+                    <div class="flex justify-between items-center py-3 px-4 border-b dark:border-gray-700">
+                        <h3 class="font-bold text-gray-800 dark:text-white">{{ __('Quick Update Lead') }}</h3>
+                        <button type="button"
+                            class="hs-dropdown-toggle inline-flex flex-shrink-0 justify-center items-center h-8 w-8 rounded-md text-gray-500 hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-white transition-all text-sm dark:focus:ring-gray-700 dark:focus:ring-offset-gray-800"
+                            data-hs-overlay="#quickLeadModal">
+                            <span class="sr-only">{{ __('Close') }}</span>
+                            <i class="ri-close-line text-xl"></i>
+                        </button>
                     </div>
-                    <div class="modal-body pt-2">
+                    <div class="p-6 overflow-y-auto space-y-4">
                         <input type="hidden" id="quick-lead-id" value="">
-                        <div class="mb-3">
-                            <label class="form-label small" for="quick-action">{{ __('Action') }}</label>
-                            <select id="quick-action" class="form-select">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="quick-action">{{ __('Select Action') }}</label>
+                            <select id="quick-action" class="ti-form-select">
                                 <option value="status">{{ __('Change status') }}</option>
                                 <option value="followup">{{ __('Add follow-up date') }}</option>
                                 <option value="note">{{ __('Add note') }}</option>
                             </select>
                         </div>
+
                         <div id="quick-block-status" class="quick-block">
-                            <label class="form-label small" for="quick-status">{{ __('Status') }}</label>
-                            <select id="quick-status" class="form-select">
+                            <label class="block text-sm font-medium mb-2" for="quick-status">{{ __('Status') }}</label>
+                            <select id="quick-status" class="ti-form-select">
                                 @foreach ($statusOptions as $value => $label)
                                     <option value="{{ $value }}">{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <div id="quick-block-followup" class="quick-block d-none">
-                            <label class="form-label small" for="quick-followup">{{ __('Next follow-up') }}</label>
-                            <input type="datetime-local" id="quick-followup" class="form-control">
+
+                        <div id="quick-block-followup" class="quick-block hidden">
+                            <label class="block text-sm font-medium mb-2"
+                                for="quick-followup">{{ __('Next follow-up') }}</label>
+                            <input type="datetime-local" id="quick-followup" class="ti-form-input">
                         </div>
-                        <div id="quick-block-note" class="quick-block d-none">
-                            <label class="form-label small" for="quick-note">{{ __('Note') }}</label>
-                            <textarea id="quick-note" class="form-control" rows="3"></textarea>
+
+                        <div id="quick-block-note" class="quick-block hidden">
+                            <label class="block text-sm font-medium mb-2" for="quick-note">{{ __('Note') }}</label>
+                            <textarea id="quick-note" class="ti-form-input" rows="3"
+                                placeholder="{{ __('Type your note here...') }}"></textarea>
                         </div>
-                        <div id="quick-error" class="alert alert-danger small d-none mt-2" role="alert"></div>
+
+                        <div id="quick-error" class="bg-danger/10 text-danger text-xs p-3 rounded hidden"></div>
                     </div>
-                    <div class="modal-footer border-0 pt-0">
-                        <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
-                        <button type="button" class="btn btn-primary" id="quick-submit">{{ __('Save') }}</button>
+                    <div class="flex justify-end items-center gap-x-2 py-3 px-4 border-t dark:border-gray-700">
+                        <button type="button" class="ti-btn ti-btn-light"
+                            data-hs-overlay="#quickLeadModal">{{ __('Cancel') }}</button>
+                        <button type="button" class="ti-btn ti-btn-primary" id="quick-submit">{{ __('Save Changes') }}</button>
                     </div>
                 </div>
             </div>
@@ -183,8 +252,8 @@
         <script>
             (function () {
                 const modalEl = document.getElementById('quickLeadModal');
-                if (!modalEl || typeof bootstrap === 'undefined') return;
-                const modal = new bootstrap.Modal(modalEl);
+                if (!modalEl) return;
+
                 const idInput = document.getElementById('quick-lead-id');
                 const actionSel = document.getElementById('quick-action');
                 const blocks = {
@@ -197,7 +266,11 @@
                 function toggleBlocks() {
                     const v = actionSel.value;
                     Object.keys(blocks).forEach(function (k) {
-                        blocks[k].classList.toggle('d-none', k !== v);
+                        if (k === v) {
+                            blocks[k].classList.remove('hidden');
+                        } else {
+                            blocks[k].classList.add('hidden');
+                        }
                     });
                 }
                 actionSel.addEventListener('change', toggleBlocks);
@@ -206,8 +279,10 @@
                 document.querySelectorAll('.js-open-quick').forEach(function (btn) {
                     btn.addEventListener('click', function () {
                         idInput.value = btn.getAttribute('data-lead-id');
-                        errEl.classList.add('d-none');
-                        modal.show();
+                        errEl.classList.add('hidden');
+                        if (window.HSOverlay) {
+                            HSOverlay.open(modalEl);
+                        }
                     });
                 });
 
@@ -219,7 +294,9 @@
                     if (action === 'status') body.status = document.getElementById('quick-status').value;
                     if (action === 'followup') body.next_followup_at = document.getElementById('quick-followup').value;
                     if (action === 'note') body.note = document.getElementById('quick-note').value;
-                    errEl.classList.add('d-none');
+
+                    errEl.classList.add('hidden');
+
                     fetch('/dashboard/leads/' + id + '/quick', {
                         method: 'POST',
                         headers: {
@@ -236,12 +313,12 @@
                             return r.json();
                         })
                         .then(function () {
-                            modal.hide();
+                            if (window.HSOverlay) HSOverlay.close(modalEl);
                             window.location.reload();
                         })
                         .catch(function (e) {
                             errEl.textContent = e.message || 'Request failed';
-                            errEl.classList.remove('d-none');
+                            errEl.classList.remove('hidden');
                         });
                 });
             })();

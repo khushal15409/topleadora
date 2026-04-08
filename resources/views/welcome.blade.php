@@ -5,6 +5,40 @@
 @section('meta_keywords', 'WhatsApp CRM, Lead Management Software, CRM India, Sales CRM, Real Estate CRM')
 
 @section('content')
+    @push('styles')
+        <style>
+            /* Remove any visual frame around hero image */
+            .hero-image-wrapper,
+            .hero-dashboard-float {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                overflow: visible !important;
+            }
+
+            /* Make hero image larger and clean */
+            .hero-image {
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                object-fit: contain !important;
+                display: block;
+                margin: 0 auto;
+                border: none !important;
+                box-shadow: none !important;
+                background: transparent !important;
+            }
+
+            /* Hide floating title cards over image as requested */
+            .hero-image-wrapper .floating-elements {
+                display: none !important;
+            }
+        </style>
+    @endpush
+
     @php
         $landingCta = static function (array $query = []): string {
             if (auth()->check()) {
@@ -34,7 +68,7 @@
                 <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
                     <div class="hero-visual">
                         <div class="hero-image-wrapper hero-dashboard-float">
-                            <img src="{{ asset('front/images/landify/illustration/illustration-15.webp') }}"
+                            <img src="{{ asset('front/images/landify/sections-images/hero.png') }}"
                                 class="img-fluid hero-image" alt="WP-CRM dashboard preview" loading="eager">
                             <div class="floating-elements">
                                 <div class="floating-card card-1 hero-float-card">
