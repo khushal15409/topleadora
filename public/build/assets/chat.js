@@ -43,7 +43,7 @@ let changeTheInfo = (element, name, img, status) => {
     document.querySelectorAll(".chatnameperson").forEach((ele) => {
         ele.innerText = name
     })
-    let image = `http://127.0.0.1:8000/build/assets/images/faces/${img}.jpg`
+    let image = `/build/assets/images/faces/${img}.jpg`
     document.querySelectorAll(".chatimageperson").forEach((ele) => {
         ele.src = image
     })
