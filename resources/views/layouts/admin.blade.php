@@ -17,6 +17,9 @@
     <!-- ICONS CSS -->
     <link href="{{asset('assets/iconfonts/icons.css')}}" rel="stylesheet">
 
+    <!-- Legacy admin theme stylesheet required by dashboard UI -->
+    <link rel="stylesheet" href="{{ asset('assets/app-C1ug_Vkx.css') }}">
+
     @vite(['resources/css/app.css','resources/js/app.js'])
 
     @include('layouts.components.styles')
@@ -104,6 +107,8 @@
             }
         })();
     </script>
+
+    <script type="module" src="{{ asset('assets/custom-switcher-MctniY9g.js') }}"></script>
 
     @stack('vendor-js')
     @stack('page-js')
