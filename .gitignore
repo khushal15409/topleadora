@@ -48,7 +48,8 @@ Homestead.json
 Homestead.yaml
 
 # Build / Vite
-/public/build
+/public/build/*
+!/public/build/.gitignore
 /dist
 
 # Misc
