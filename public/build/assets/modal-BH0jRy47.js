@@ -1,0 +1,1 @@
+(function(){document.querySelectorAll(".modal-effect").forEach(e=>{e.addEventListener("click",function(t){t.preventDefault();let c=this.getAttribute("data-bs-effect");document.querySelector("#modaldemo8").classList.add(c)})})})();

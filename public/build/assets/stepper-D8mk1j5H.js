@@ -1,0 +1,1 @@
+(function(){window.addEventListener("load",()=>{const e=HSStepper.getInstance("#ctc-component-error-tab-preview [data-hs-stepper]");let r=1;e.on("beforeNext",t=>{t===2&&(e.setProcessedNavItem(t),setTimeout(()=>{e.unsetProcessedNavItem(t),e.enableButtons(),r?e.goToNext():e.setErrorNavItem(t),r=!r},2e3))})})})();

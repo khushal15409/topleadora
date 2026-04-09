@@ -1,0 +1,1 @@
+const l=document.querySelector("#navbar-collapse-basic"),s=document.querySelector('[data-hs-scrollspy="#scrollspy-1"]');s.addEventListener("scroll.hs.scrollspy",()=>{window.outerWidth<=639&&l.classList.contains("open")&&HSCollapse.hide(l)});

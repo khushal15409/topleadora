@@ -1,0 +1,1 @@
+(function(){var t=document.getElementById("terms-scroll");new SimpleBar(t,{autoHide:!0});let l=".terms-box";document.querySelectorAll(".terms-fullscreen").forEach(s=>{s.addEventListener("click",function(r){let e=this.closest(l);return e.classList.toggle("box-fullscreen"),e.classList.remove("box-collapsed"),r.preventDefault(),!1})})})();
