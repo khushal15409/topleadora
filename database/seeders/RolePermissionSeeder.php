@@ -27,7 +27,7 @@ class RolePermissionSeeder extends Seeder
             Permissions::SETTINGS_MANAGE,
             'manage_users',
             'manage_leads',
-            'manage_plans',
+            'manage_plans', 
             'view_reports',
             'manage_broadcast',
         ];
