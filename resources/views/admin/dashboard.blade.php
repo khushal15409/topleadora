@@ -471,7 +471,6 @@
         };
 
         $analyticsDashboardJs = $resolveBuildAsset('analyticsdashboard-*.js');
-        $dashboardChartsJs = $resolveBuildAsset('dashboards-charts-*.js');
     @endphp
     <script>
         window.__WP_CRM_DASHBOARD = @json($chartPayload);
@@ -495,9 +494,6 @@
     {{-- GCC Analytics Dashboard Logic (Contains the chart definitions for 'activeusers', etc.) --}}
     @if ($analyticsDashboardJs)
         <script src="{{ $analyticsDashboardJs }}"></script>
-    @endif
-    @if ($dashboardChartsJs)
-        <script src="{{ $dashboardChartsJs }}"></script>
     @endif
 
     <script>

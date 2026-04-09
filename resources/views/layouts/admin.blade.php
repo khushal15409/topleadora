@@ -113,6 +113,17 @@
     <!-- Sticky JS -->
     <script src="{{asset('build/assets/sticky.js')}}"></script>
 
+    <script>
+        (function () {
+            const root = document.documentElement;
+            const rgb = getComputedStyle(root).getPropertyValue('--primary-rgb').trim();
+            if (!rgb) {
+                root.style.setProperty('--primary-rgb', '1, 98, 232');
+                root.style.setProperty('--primary', '1 98 232');
+            }
+        })();
+    </script>
+
     <!-- Custom-Switcher JS -->
     @if ($adminCustomSwitcher)
         <script type="module" src="{{ $adminCustomSwitcher }}"></script>
