@@ -1,1 +1,0 @@
-(()=>{window.addEventListener("scroll",n);var e=document.getElementById("sidebar");e.offsetTop;function n(){window.scrollY>=75?e.classList.add("sticky-pin"):e.classList.remove("sticky-pin")}window.addEventListener("scroll",n),window.addEventListener("DOMContentLoaded",n)})();
