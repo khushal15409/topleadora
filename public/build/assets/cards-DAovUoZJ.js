@@ -1,0 +1,1 @@
+(function(){let l=".terms-box";document.querySelectorAll(".terms-fullscreen").forEach(t=>{t.addEventListener("click",function(s){let e=this.closest(l);return e.classList.toggle("box-fullscreen"),e.classList.remove("box-collapsed"),s.preventDefault(),!1})})})();
