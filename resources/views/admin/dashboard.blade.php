@@ -459,6 +459,20 @@
 @endpush
 
 @push('page-js')
+    @php
+        $resolveBuildAsset = static function (string $pattern): ?string {
+            $files = glob(public_path("build/assets/{$pattern}"));
+            if (! $files) {
+                return null;
+            }
+            usort($files, static fn ($a, $b) => filemtime($a) <=> filemtime($b));
+            $file = end($files);
+            return $file ? asset('build/assets/' . basename($file)) : null;
+        };
+
+        $analyticsDashboardJs = $resolveBuildAsset('analyticsdashboard-*.js');
+        $dashboardChartsJs = $resolveBuildAsset('dashboards-charts-*.js');
+    @endphp
     <script>
         window.__WP_CRM_DASHBOARD = @json($chartPayload);
         
@@ -479,8 +493,12 @@
     </script>
 
     {{-- GCC Analytics Dashboard Logic (Contains the chart definitions for 'activeusers', etc.) --}}
-    <script src="{{ asset('build/assets/analyticsdashboard-DG-P-kPr.js') }}"></script>
-    <script src="{{ asset('build/assets/dashboards-charts-5djxGJbf.js') }}"></script>
+    @if ($analyticsDashboardJs)
+        <script src="{{ $analyticsDashboardJs }}"></script>
+    @endif
+    @if ($dashboardChartsJs)
+        <script src="{{ $dashboardChartsJs }}"></script>
+    @endif
 
     <script>
         // Custom override to inject CRM data into the GCC charts if they exist

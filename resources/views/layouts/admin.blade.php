@@ -11,14 +11,32 @@
     <!-- Favicon -->
     @include('layouts.partials.favicon')
 
+    @php
+        $resolveBuildAsset = static function (string $pattern): ?string {
+            $files = glob(public_path("build/assets/{$pattern}"));
+            if (! $files) {
+                return null;
+            }
+            usort($files, static fn ($a, $b) => filemtime($a) <=> filemtime($b));
+            $file = end($files);
+            return $file ? asset('build/assets/' . basename($file)) : null;
+        };
+
+        $adminAppCss = $resolveBuildAsset('app-*.css');
+        $adminAppJs = $resolveBuildAsset('app-*.js');
+        $adminCustomSwitcher = $resolveBuildAsset('custom-switcher-*.js');
+    @endphp
+
     <!-- Main Theme Js -->
-    <script src="{{asset('build/assets/main.js')}}"></script>
+    <script src="{{ asset('build/assets/main.js') }}"></script>
 
     <!-- ICONS CSS -->
     <link href="{{asset('build/assets/iconfonts/icons.css')}}" rel="stylesheet">
 
     <!-- APP CSS & APP SCSS -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-C1ug_Vkx.css') }}">
+    @if ($adminAppCss)
+        <link rel="stylesheet" href="{{ $adminAppCss }}">
+    @endif
 
     @include('layouts.components.styles')
 
@@ -96,10 +114,14 @@
     <script src="{{asset('build/assets/sticky.js')}}"></script>
 
     <!-- Custom-Switcher JS -->
-    <script type="module" src="{{ asset('build/assets/custom-switcher-MctniY9g.js') }}"></script>
+    @if ($adminCustomSwitcher)
+        <script type="module" src="{{ $adminCustomSwitcher }}"></script>
+    @endif
 
     <!-- APP JS-->
-    <script type="module" src="{{ asset('build/assets/app-QCoZG1M9.js') }}"></script>
+    @if ($adminAppJs)
+        <script type="module" src="{{ $adminAppJs }}"></script>
+    @endif
 
     @stack('vendor-js')
     @stack('page-js')
