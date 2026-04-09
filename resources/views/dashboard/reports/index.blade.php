@@ -151,7 +151,7 @@
 @endsection
 
 @push('vendor-js')
-    <script src="{{ asset('build/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 @endpush
 
 @push('page-js')

@@ -7,10 +7,10 @@
                         <div class="landing-logo-container my-auto hidden lg:block">
                             <div class="responsive-logo">
                                 <a class="responsive-logo-light" href="{{url('index')}}" aria-label="Brand"><img
-                                        src="{{asset('build/assets/images/brand-logos/desktop-logo.png')}}" alt="logo"
+                                        src="{{asset('assets/images/brand-logos/desktop-logo.png')}}" alt="logo"
                                         class="mx-auto h-[2rem]"></a>
                                 <a class="responsive-logo-dark" href="{{url('index')}}" aria-label="Brand"><img
-                                        src="{{asset('build/assets/images/brand-logos/desktop-white.png')}}" alt="logo"
+                                        src="{{asset('assets/images/brand-logos/desktop-white.png')}}" alt="logo"
                                         class="mx-auto h-[2rem]"></a>
                             </div>
                         </div>

@@ -32,7 +32,7 @@
     <link rel="stylesheet" href="{{ asset('materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}">
     @stack('vendor-css')
 
-    @vite(['resources/gcc/css/gcc-app.scss'])
+    @vite(['resources/css/app.css','resources/js/app.js'])
 
     @stack('styles')
     @stack('json_ld')

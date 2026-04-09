@@ -11,32 +11,13 @@
     <!-- Favicon -->
     @include('layouts.partials.favicon')
 
-    @php
-        $resolveBuildAsset = static function (string $pattern): ?string {
-            $files = glob(public_path("build/assets/{$pattern}"));
-            if (! $files) {
-                return null;
-            }
-            usort($files, static fn ($a, $b) => filemtime($a) <=> filemtime($b));
-            $file = end($files);
-            return $file ? asset('build/assets/' . basename($file)) : null;
-        };
-
-        $adminAppCss = $resolveBuildAsset('app-*.css');
-        $adminAppJs = $resolveBuildAsset('app-*.js');
-        $adminCustomSwitcher = $resolveBuildAsset('custom-switcher-*.js');
-    @endphp
-
     <!-- Main Theme Js -->
-    <script src="{{ asset('build/assets/main.js') }}"></script>
+    <script src="{{ asset('assets/main.js') }}"></script>
 
     <!-- ICONS CSS -->
-    <link href="{{asset('build/assets/iconfonts/icons.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/iconfonts/icons.css')}}" rel="stylesheet">
 
-    <!-- APP CSS & APP SCSS -->
-    @if ($adminAppCss)
-        <link rel="stylesheet" href="{{ $adminAppCss }}">
-    @endif
+    @vite(['resources/css/app.css','resources/js/app.js'])
 
     @include('layouts.components.styles')
 
@@ -63,7 +44,7 @@
 
     <!-- Loader -->
     <div id="loader">
-        <img src="{{asset('build/assets/images/media/loader.svg')}}" alt="">
+        <img src="{{asset('assets/images/media/loader.svg')}}" alt="">
     </div>
     <!-- Loader -->
 
@@ -111,7 +92,7 @@
     @include('layouts.components.scripts')
 
     <!-- Sticky JS -->
-    <script src="{{asset('build/assets/sticky.js')}}"></script>
+    <script src="{{asset('assets/sticky.js')}}"></script>
 
     <script>
         (function () {
@@ -123,16 +104,6 @@
             }
         })();
     </script>
-
-    <!-- Custom-Switcher JS -->
-    @if ($adminCustomSwitcher)
-        <script type="module" src="{{ $adminCustomSwitcher }}"></script>
-    @endif
-
-    <!-- APP JS-->
-    @if ($adminAppJs)
-        <script type="module" src="{{ $adminAppJs }}"></script>
-    @endif
 
     @stack('vendor-js')
     @stack('page-js')

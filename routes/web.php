@@ -37,26 +37,12 @@ use App\Http\Controllers\Webhooks\WhatsAppWebhookController;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Support\Roles;
 use Illuminate\Support\Facades\Route;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 Route::get('/robots.txt', RobotsController::class)->name('robots');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/sitemap-main.xml', [SitemapController::class, 'main'])->name('sitemap.main');
 Route::get('/sitemap-blog.xml', [SitemapController::class, 'blog'])->name('sitemap.blog');
 Route::get('/sitemap-leads.xml', [SitemapController::class, 'leads'])->name('sitemap.leads');
-
-// Fallback static asset serving when web server docroot is not the Laravel public/ directory.
-Route::get('/build/{path}', function (string $path): BinaryFileResponse {
-    $base = realpath(public_path('build'));
-    abort_if($base === false, 404);
-
-    $requested = realpath(public_path('build/'.$path));
-    abort_if($requested === false, 404);
-    abort_if(! str_starts_with($requested, $base.DIRECTORY_SEPARATOR) && $requested !== $base, 404);
-    abort_unless(is_file($requested), 404);
-
-    return response()->file($requested);
-})->where('path', '.*')->name('build.assets.fallback');
 
 Route::post('/webhooks/razorpay', RazorpayWebhookController::class)
     ->withoutMiddleware([VerifyCsrfToken::class])

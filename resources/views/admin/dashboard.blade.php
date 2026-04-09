@@ -455,19 +455,19 @@
 @endsection
 
 @push('vendor-js')
-    <script src="{{ asset('build/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 @endpush
 
 @push('page-js')
     @php
         $resolveBuildAsset = static function (string $pattern): ?string {
-            $files = glob(public_path("build/assets/{$pattern}"));
+            $files = glob(public_path("assets/{$pattern}"));
             if (! $files) {
                 return null;
             }
             usort($files, static fn ($a, $b) => filemtime($a) <=> filemtime($b));
             $file = end($files);
-            return $file ? asset('build/assets/' . basename($file)) : null;
+            return $file ? asset('assets/' . basename($file)) : null;
         };
 
         $analyticsDashboardJs = $resolveBuildAsset('analyticsdashboard-*.js');
@@ -512,5 +512,5 @@
     </script>
 
     {{-- Preline for dropdowns/overlays --}}
-    <script src="{{ asset('build/assets/libs/preline/preline.js') }}"></script>
+    <script src="{{ asset('assets/libs/preline/preline.js') }}"></script>
 @endpush

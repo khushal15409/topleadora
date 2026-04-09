@@ -177,7 +177,7 @@
 						<div class="ti-list-group ti-list-group-flush ">
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/1.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/1.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Madeleine</strong> Hey! there I' am available....
@@ -188,7 +188,7 @@
 						</div>
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/2.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/2.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Anthony</strong> New product Launching...
@@ -199,7 +199,7 @@
 						</div>
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/3.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/3.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Olivia</strong> New Schedule Realease......
@@ -210,7 +210,7 @@
 						</div>
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/4.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/4.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Madeleine</strong> Hey! there I' am available....
@@ -221,7 +221,7 @@
 						</div>
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/5.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/5.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Anthony</strong> New product Launching...
@@ -232,7 +232,7 @@
 						</div>
 						<div class="ti-list-group-item !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/6.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/6.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Olivia</strong> New Schedule Realease......
@@ -244,7 +244,7 @@
 						<div
 							class="ti-list-group-item  !border-b border-defaultborder dark:border-defaultborder/10 !border-s-0 !border-e-0 !border-t-0 flex  items-center">
 							<span class="avatar avatar-lg avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/7.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/7.jpg')}}" alt="img">
 							</span>
 							<div class="ms-3">
 							<strong>Olivia</strong> Hey! there I' am available....
@@ -261,7 +261,7 @@
 						<div class="ti-list-group ti-list-group-flush ">
 						<div class="ti-list-group-item flex !border-t-0 items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/1.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/1.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Mozelle Belt</div>
@@ -273,7 +273,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/2.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/2.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Florinda Carasco</div>
@@ -285,7 +285,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/5.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/5.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Alina Bernier</div>
@@ -297,7 +297,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/6.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/6.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Zula Mclaughin</div>
@@ -309,7 +309,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/8.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/8.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Isidro Heide</div>
@@ -321,7 +321,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/8.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/8.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Mozelle Belt</div>
@@ -333,7 +333,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/9.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/9.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Florinda Carasco</div>
@@ -345,7 +345,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/10.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/10.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Alina Bernier</div>
@@ -357,7 +357,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/11.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/11.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Zula Mclaughin</div>
@@ -369,7 +369,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/12.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/12.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Isidro Heide</div>
@@ -381,7 +381,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/2.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/2.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Florinda Carasco</div>
@@ -393,7 +393,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/2.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/2.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Alina Bernier</div>
@@ -405,7 +405,7 @@
 						</div>
 						<div class="ti-list-group-item flex  items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/3.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/3.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Zula Mclaughin</div>
@@ -417,7 +417,7 @@
 						</div>
 						<div class="ti-list-group-item flex !border-b border-defaultborder dark:border-defaultborder/10 items-center">
 							<span class="avatar avatar-md online avatar-rounded flex-shrink-0">
-							<img src="{{asset('build/assets/images/faces/4.jpg')}}" alt="img">
+							<img src="{{asset('assets/images/faces/4.jpg')}}" alt="img">
 							</span>
 							<div class="ms-2">
 							<div class="font-semibold" data-hs-overlay="#chatmodel">Isidro Heide</div>
@@ -441,7 +441,7 @@
 					<div class="box overflow-hidden !mb-0 !border-0 !shadow-none">
 						<div class="action-header  flex items-center clearfix">
 						<div class="float-start xs:hidden flex">
-							<div class="avatar avatar-lg rounded-circle me-3"> <img src="{{asset('build/assets/images/faces/6.jpg')}}"
+							<div class="avatar avatar-lg rounded-circle me-3"> <img src="{{asset('assets/images/faces/6.jpg')}}"
 								class="rounded-circle user_img" alt="img"> </div>
 							<div class="items-center">
 							<h5 class="text-fixed-white mb-0">Daneil Scott</h5> <span class="dot-label bg-success"></span><span
@@ -470,18 +470,18 @@
 						<div class="chat-box-single-line"> <abbr
 							class="timestamp !text-defaulttextcolor dark:!text-defaulttextcolor/70">February 1st, 2019</abbr> </div>
 						<div class="flex justify-start">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> Hi, how are you Jenna Side? <span class="msg_time">8:40 AM, Today</span> </div>
 						</div>
 						<div class="flex justify-end ">
 							<div class="msg_cotainer_send"> Hi Connor Paige i am good tnx how about you? <span
 								class="msg_time_send">8:55 AM, Today</span> </div>
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 						</div>
 						<div class="flex justify-start ">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> I am good too, thank you for your chat template <span class="msg_time">9:00 AM,
 								Today</span> </div>
@@ -489,44 +489,44 @@
 						<div class="flex justify-end ">
 							<div class="msg_cotainer_send"> You welcome Connor Paige <span class="msg_time_send">9:05 AM, Today</span>
 							</div>
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 						</div>
 						<div class="flex justify-start ">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> Yo, Can you update Views? <span class="msg_time">9:07 AM, Today</span> </div>
 						</div>
 						<div class="flex justify-end mb-4">
 							<div class="msg_cotainer_send"> But I must explain to you how all this mistaken born and I will give <span
 								class="msg_time_send">9:10 AM, Today</span> </div>
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 						</div>
 						<div class="flex justify-start ">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> Yo, Can you update Views? <span class="msg_time">9:07 AM, Today</span> </div>
 						</div>
 						<div class="flex justify-end mb-4">
 							<div class="msg_cotainer_send"> But I must explain to you how all this mistaken born and I will give <span
 								class="msg_time_send">9:10 AM, Today</span> </div>
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 						</div>
 						<div class="flex justify-start ">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> Yo, Can you update Views? <span class="msg_time">9:07 AM, Today</span> </div>
 						</div>
 						<div class="flex justify-end mb-4">
 							<div class="msg_cotainer_send"> But I must explain to you how all this mistaken born and I will give <span
 								class="msg_time_send">9:10 AM, Today</span> </div>
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/9.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 						</div>
 						<div class="flex justify-start">
-							<div class="img_cont_msg"> <img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
+							<div class="img_cont_msg"> <img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-circle user_img_msg"
 								alt="img"> </div>
 							<div class="msg_cotainer"> Okay Bye, text you later.. <span class="msg_time">9:12 AM, Today</span> </div>
 						</div>
@@ -557,7 +557,7 @@
 						<i class="bi bi-x"></i>
 						</button>
 						<h5 class="text-white">Valex Video call</h5>
-						<img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-full !h-[90px]  mt-4 mb-3 inline-flex" alt="img">
+						<img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-full !h-[90px]  mt-4 mb-3 inline-flex" alt="img">
 						<h4 class="mb-1 font-semibold text-white">Daneil Scott</h4>
 						<h6 class="loading animate-loadingtext text-white">Calling...</h6>
 						<div class="mt-[3rem] mb-[2rem]">
@@ -598,7 +598,7 @@
 						<i class="bi bi-x"></i>
 						</button>
 						<h6 class="text-defaulttextcolor dark:text-defaulttextcolor/70">Valex Voice call</h6>
-						<img src="{{asset('build/assets/images/faces/6.jpg')}}" class="rounded-full !h-[90px] mt-6 mb-4 inline-flex" alt="img">
+						<img src="{{asset('assets/images/faces/6.jpg')}}" class="rounded-full !h-[90px] mt-6 mb-4 inline-flex" alt="img">
 						<h5 class="mb-1 font-medium text-defaulttextcolor dark:text-defaulttextcolor/70">Daneil Scott</h5>
 						<h6 class="loading animate-loadingtext text-defaulttextcolor dark:text-defaulttextcolor/70">Calling...</h6>
 						<div class="mt-[2rem] mb-[2rem]">

@@ -8,11 +8,11 @@
 							<div class="header-element">
 							<div class="horizontal-logo">
 								<a href="{{url('index')}}" class="header-logo">
-								<img src="{{asset('build/assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo">
-								<img src="{{asset('build/assets/images/brand-logos/toggle-logo.png')}}" alt="logo" class="toggle-logo">
-								<img src="{{asset('build/assets/images/brand-logos/desktop-dark.png')}}" alt="logo" class="desktop-dark">
-								<img src="{{asset('build/assets/images/brand-logos/toggle-dark.png')}}" alt="logo" class="toggle-dark">
-								<img src="{{asset('build/assets/images/brand-logos/desktop-white.png')}}" alt="logo" class="desktop-white">
+								<img src="{{asset('assets/images/brand-logos/desktop-logo.png')}}" alt="logo" class="desktop-logo">
+								<img src="{{asset('assets/images/brand-logos/toggle-logo.png')}}" alt="logo" class="toggle-logo">
+								<img src="{{asset('assets/images/brand-logos/desktop-dark.png')}}" alt="logo" class="desktop-dark">
+								<img src="{{asset('assets/images/brand-logos/toggle-dark.png')}}" alt="logo" class="toggle-dark">
+								<img src="{{asset('assets/images/brand-logos/desktop-white.png')}}" alt="logo" class="desktop-white">
 								</a>
 							</div>
 							</div>
@@ -84,7 +84,7 @@
 									<div class="ti-dropdown-item !p-[0.65rem] ">
 									<div class="flex items-center space-x-2 rtl:space-x-reverse w-full">
 										<div class="flex items-center rounded-full">
-										<img src="{{asset('build/assets/images/flags/french_flag.jpg')}}" alt="flag-img"
+										<img src="{{asset('assets/images/flags/french_flag.jpg')}}" alt="flag-img"
 											class="h-[1.1875rem] w-[1.1875rem] rounded-full">
 										</div>
 										<div>
@@ -97,7 +97,7 @@
 									<div class="ti-dropdown-item !p-[0.65rem]">
 									<div class="flex items-center space-x-2 rtl:space-x-reverse w-full">
 										<div class="flex items-center rounded-full">
-										<img src="{{asset('build/assets/images/flags/germany_flag.jpg')}}" alt="flag-img"
+										<img src="{{asset('assets/images/flags/germany_flag.jpg')}}" alt="flag-img"
 											class="h-[1.1875rem] w-[1.1875rem] rounded-full">
 										</div>
 										<div>
@@ -110,7 +110,7 @@
 									<div class="ti-dropdown-item !p-[0.65rem]">
 									<div class="flex items-center space-x-2 rtl:space-x-reverse w-full">
 										<div class="flex items-center rounded-full">
-										<img src="{{asset('build/assets/images/flags/italy_flag.jpg')}}" alt="flag-img"
+										<img src="{{asset('assets/images/flags/italy_flag.jpg')}}" alt="flag-img"
 											class="h-[1.1875rem] w-[1.1875rem] rounded-full">
 										</div>
 										<div>
@@ -123,7 +123,7 @@
 									<div class="ti-dropdown-item !p-[0.65rem]">
 									<div class="flex items-center space-x-2 rtl:space-x-reverse w-full">
 										<div class="flex items-center rounded-full">
-										<img src="{{asset('build/assets/images/flags/russia_flag.jpg')}}" alt="flag-img"
+										<img src="{{asset('assets/images/flags/russia_flag.jpg')}}" alt="flag-img"
 											class="h-[1.1875rem] w-[1.1875rem] rounded-full">
 										</div>
 										<div>
@@ -136,7 +136,7 @@
 									<div class="ti-dropdown-item !p-[0.65rem]">
 									<div class="flex items-center space-x-2 rtl:space-x-reverse w-full">
 										<div class="flex items-center rounded-full">
-										<img src="{{asset('build/assets/images/flags/spain_flag.jpg')}}" alt="flag-img"
+										<img src="{{asset('assets/images/flags/spain_flag.jpg')}}" alt="flag-img"
 											class="h-[1.1875rem] w-[1.1875rem] rounded-full">
 										</div>
 										<div>
@@ -205,7 +205,7 @@
 									<li class="dropdown-item">
 										<div class="flex messages">
 										<span class="avatar avatar-md me-2 online avatar-rounded flex-shrink-0">
-											<img src="{{asset('build/assets/images/faces/12.jpg')}}" alt="img">
+											<img src="{{asset('assets/images/faces/12.jpg')}}" alt="img">
 										</span>
 										<div>
 											<div class="flex">
@@ -221,7 +221,7 @@
 									<li class="dropdown-item">
 										<div class="flex messages">
 										<span class="avatar avatar-md me-2 online avatar-rounded flex-shrink-0">
-											<img src="{{asset('build/assets/images/faces/3.jpg')}}" alt="img">
+											<img src="{{asset('assets/images/faces/3.jpg')}}" alt="img">
 										</span>
 										<div>
 											<div class="flex">
@@ -238,7 +238,7 @@
 									<li class="dropdown-item">
 										<div class="flex messages">
 										<span class="avatar avatar-md me-2 online avatar-rounded flex-shrink-0">
-											<img src="{{asset('build/assets/images/faces/5.jpg')}}" alt="img">
+											<img src="{{asset('assets/images/faces/5.jpg')}}" alt="img">
 										</span>
 										<div>
 											<div class="flex">
@@ -254,7 +254,7 @@
 									<li class="dropdown-item">
 										<div class="flex messages">
 										<span class="avatar avatar-md me-2 online avatar-rounded flex-shrink-0">
-											<img src="{{asset('build/assets/images/faces/4.jpg')}}" alt="img">
+											<img src="{{asset('assets/images/faces/4.jpg')}}" alt="img">
 										</span>
 										<div>
 											<div class="flex">
@@ -270,7 +270,7 @@
 									<li class="dropdown-item !rounded-bl-md !rounded-br-md">
 										<div class="flex messages">
 										<span class="avatar avatar-md me-2 online avatar-rounded flex-shrink-0">
-											<img src="{{asset('build/assets/images/faces/1.jpg')}}" alt="img">
+											<img src="{{asset('assets/images/faces/1.jpg')}}" alt="img">
 										</span>
 										<div>
 											<div class="flex">
@@ -456,7 +456,7 @@
 
 								<button id="dropdown-profile" type="button"
 									class="hs-dropdown-toggle ti-dropdown-toggle !gap-2 !p-0 flex-shrink-0 me-0 !rounded-full !shadow-none text-xs align-middle !border-0 !shadow-transparent ">
-									<img class="inline-block rounded-full " src="{{asset('build/assets/images/faces/6.jpg')}}" width="37" height="37"
+									<img class="inline-block rounded-full " src="{{asset('assets/images/faces/6.jpg')}}" width="37" height="37"
 									alt="Image Description">
 								</button>
 								<div

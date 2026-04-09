@@ -7,27 +7,27 @@
         <div id="responsive-overlay"></div>
         
         <!-- popperjs -->
-        <script src="{{asset('build/assets/libs/@popperjs/core/umd/popper.min.js')}}"></script>
+        <script src="{{asset('assets/libs/@popperjs/core/umd/popper.min.js')}}"></script>
 
         <!-- Color Picker JS -->
-        <script src="{{asset('build/assets/libs/@simonwep/pickr/pickr.es5.min.js')}}"></script>
+        <script src="{{asset('assets/libs/@simonwep/pickr/pickr.es5.min.js')}}"></script>
 
         <!-- Swiper JS -->
-        <script src="{{asset('build/assets/libs/swiper/swiper-bundle.min.js')}}"></script>
+        <script src="{{asset('assets/libs/swiper/swiper-bundle.min.js')}}"></script>
 
         <!-- sidebar JS -->
-        @vite('resources/assets/js/defaultmenu.js')
+        <script src="{{asset('assets/defaultmenu-D_VgoL3A.js')}}"></script>
 
         <!-- Internal Landing JS -->
-        @vite('resources/assets/js/landing.js')
+        <script src="{{asset('assets/landing-_LEeqpq4.js')}}"></script>
 
         <!-- Switch JS -->
-        <script src="{{asset('build/assets/switch.js')}}"></script>
+        <script src="{{asset('assets/switch.js')}}"></script>
 
         <!-- Preline JS -->
-        <script src="{{asset('build/assets/libs/preline/preline.js')}}"></script>
+        <script src="{{asset('assets/libs/preline/preline.js')}}"></script>
 
         <!-- Simplebar JS -->
-        <script src="{{asset('build/assets/libs/simplebar/simplebar.min.js')}}"></script>
+        <script src="{{asset('assets/libs/simplebar/simplebar.min.js')}}"></script>
 
-        <script src="{{asset('build/assets/sticky.js')}}"></script>
+        <script src="{{asset('assets/sticky.js')}}"></script>
