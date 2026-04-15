@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,22 +69,36 @@
     @stack('json_ld')
 
     <!-- Fonts (Landify) -->
-    {{-- TODO: Consider self-hosting font files or using font subsetting to improve LCP and reduce third-party requests. --}}
+    {{-- TODO: Consider self-hosting font files or using font subsetting to improve LCP and reduce third-party requests.
+    --}}
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap"
+        rel="stylesheet">
 
     <!-- Vendor CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
     {{-- Self-hosted icons so fonts resolve on same origin (fixes missing icons when CDN/subpath blocks font files) --}}
     <link href="{{ asset('front/vendor/bootstrap-icons/bootstrap-icons.min.css') }}" rel="stylesheet">
     {{-- Non-render-blocking: improves FCP/LCP vs synchronous third-party CSS (see Core Web Vitals). --}}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript><link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"></noscript>
-    <link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet" crossorigin="anonymous" media="print" onload="this.media='all'">
-    <noscript><link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet" crossorigin="anonymous"></noscript>
-    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous" media="print" onload="this.media='all'">
-    <noscript><link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous"></noscript>
+    <noscript>
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    </noscript>
+    <link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet"
+        crossorigin="anonymous" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" rel="stylesheet"
+            crossorigin="anonymous">
+    </noscript>
+    <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet" crossorigin="anonymous"
+        media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" rel="stylesheet"
+            crossorigin="anonymous">
+    </noscript>
     {{-- TODO: Audit defer/async and bundle strategy for AOS, GLightbox, Swiper if CLS or main-thread time regress. --}}
 
     <!-- Landify theme CSS -->
@@ -94,16 +109,18 @@
 
     @include('layouts.partials.google-ads')
 </head>
+
 <body class="@yield('body_class', 'index-page')">
 
     @php
-        $hash = static fn (string $id) => request()->is('/') ? '#'.$id : url('/#'.$id);
+        $hash = static fn(string $id) => request()->is('/') ? '#' . $id : url('/#' . $id);
         $getStartedHref = auth()->check() ? route('admin.dashboard') : route('register');
         $paymentEnabled = paymentEnabled();
     @endphp
 
     <header id="header" class="header header-saas navbar-saas d-flex align-items-center fixed-top">
-        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between gap-3 py-1 py-lg-0">
+        <div
+            class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between gap-3 py-1 py-lg-0">
             <a href="{{ url('/') }}" class="logo d-flex align-items-center flex-shrink-0 navbar-saas-logo">
                 <img src="{{ asset('front/images/logo.png') }}" alt="WhatsApp CRM Software in India">
             </a>
@@ -114,14 +131,18 @@
                         <a href="{{ $hash('hero') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
                     </li>
                     <li><a href="{{ $hash('features') }}">Features</a></li>
+                    <li><a href="{{ route('otp-whatsapp-api') }}"
+                            class="{{ request()->routeIs('otp-whatsapp-api') ? 'active' : '' }}">API Service</a></li>
                     @if ($paymentEnabled)
                         <li><a href="{{ $hash('pricing') }}">Pricing</a></li>
                     @endif
                     <li>
-                        <a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Blog</a>
+                        <a href="{{ route('blog.index') }}"
+                            class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Blog</a>
                     </li>
                     <li>
-                        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        <a href="{{ route('contact') }}"
+                            class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
                     </li>
                 </ul>
             </nav>
@@ -129,27 +150,23 @@
             <div class="d-flex align-items-center gap-2 gap-lg-3 flex-shrink-0 navbar-saas-actions">
                 @auth
                     <a href="{{ route('admin.dashboard') }}" class="btn-navbar-cta d-none d-sm-inline-flex">Dashboard</a>
-                    <a href="{{ route('admin.dashboard') }}" class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="navbar-saas-login d-none d-sm-inline-flex">Login</a>
                     <a href="{{ $getStartedHref }}" class="btn-navbar-cta d-none d-sm-inline-flex">Get Started</a>
                     <a href="{{ $getStartedHref }}" class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Get Started</a>
                 @endauth
-                <button
-                    class="btn btn-saas-menu d-xl-none"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#saasNavOffcanvas"
-                    aria-controls="saasNavOffcanvas"
-                    aria-label="Open menu"
-                >
+                <button class="btn btn-saas-menu d-xl-none" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#saasNavOffcanvas" aria-controls="saasNavOffcanvas" aria-label="Open menu">
                     <i class="bi bi-list fs-4"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <div class="offcanvas offcanvas-end saas-nav-offcanvas" tabindex="-1" id="saasNavOffcanvas" aria-labelledby="saasNavOffcanvasLabel">
+    <div class="offcanvas offcanvas-end saas-nav-offcanvas" tabindex="-1" id="saasNavOffcanvas"
+        aria-labelledby="saasNavOffcanvasLabel">
         <div class="offcanvas-header border-bottom">
             <h2 class="offcanvas-title h5 mb-0" id="saasNavOffcanvasLabel">Menu</h2>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -166,7 +183,8 @@
             </nav>
             <div class="mt-auto pt-4 d-flex flex-column gap-2">
                 @auth
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-navbar-cta w-100 justify-content-center">Dashboard</a>
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="btn btn-navbar-cta w-100 justify-content-center">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-outline-secondary rounded-pill">Login</a>
                     <a href="{{ $getStartedHref }}" class="btn btn-navbar-cta w-100 justify-content-center">Get Started</a>
@@ -184,12 +202,15 @@
             <div class="row gy-4 gx-lg-5 align-items-start">
                 <div class="col-lg-5 col-md-12 footer-about">
                     <a href="{{ url('/') }}" class="logo d-flex align-items-center" style="max-width: 720px;">
-                        <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'WP-CRM') }}" style="width: auto; height: 180px; max-height: 200px; object-fit: contain;">
+                        <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'WP-CRM') }}"
+                            style="width: auto; height: 180px; max-height: 200px; object-fit: contain;">
                     </a>
                     <p>WhatsApp CRM for Real Estate & Sales. Manage leads, pipelines, and follow-ups in one place.</p>
-                    {{-- Replace with real business data: add profile URLs (see config/branding.php social_* or hard-code once verified). --}}
+                    {{-- Replace with real business data: add profile URLs (see config/branding.php social_* or
+                    hard-code once verified). --}}
                     <div class="social-links d-flex mt-4 gap-2" aria-label="Social media">
-                        {{-- Intentionally empty: placeholder # links hurt crawl budget and trust; wire real hrefs before launch. --}}
+                        {{-- Intentionally empty: placeholder # links hurt crawl budget and trust; wire real hrefs
+                        before launch. --}}
                     </div>
                 </div>
                 <div class="col-lg-2 col-6 footer-links">
@@ -221,9 +242,11 @@
                     <h4>Contact</h4>
                     {{-- Replace with real business data: set SUPPORT_EMAIL in .env (config/branding.php). --}}
                     @if (filled(config('branding.support_email')))
-                        <p class="mb-0">📧 <a href="mailto:{{ config('branding.support_email') }}" class="link-light">{{ config('branding.support_email') }}</a></p>
+                        <p class="mb-0">📧 <a href="mailto:{{ config('branding.support_email') }}"
+                                class="link-light">{{ config('branding.support_email') }}</a></p>
                     @else
-                        <p class="mb-0 small text-white-50">Configure public support email via <code>SUPPORT_EMAIL</code> in <code>.env</code>.</p>
+                        <p class="mb-0 small text-white-50">Configure public support email via <code>SUPPORT_EMAIL</code> in
+                            <code>.env</code>.</p>
                     @endif
                 </div>
             </div>
@@ -233,28 +256,32 @@
         </div>
     </footer>
 
-    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
 
     <!-- Vendor JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"
+        defer></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js" crossorigin="anonymous"
+        defer></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" crossorigin="anonymous" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs@1.5.0/dist/purecounter.js" crossorigin="anonymous" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@srexi/purecounterjs@1.5.0/dist/purecounter.js" crossorigin="anonymous"
+        defer></script>
 
     <!-- Landify theme JS -->
     <script src="{{ asset('front/js/landify.js') }}" defer></script>
     <script defer>
-      document.addEventListener('DOMContentLoaded', function () {
-        var panel = document.getElementById('saasNavOffcanvas');
-        if (!panel || typeof bootstrap === 'undefined' || !bootstrap.Offcanvas) return;
-        var oc = bootstrap.Offcanvas.getOrCreateInstance(panel);
-        panel.querySelectorAll('a[href]').forEach(function (link) {
-          link.addEventListener('click', function () {
-            oc.hide();
-          });
+        document.addEventListener('DOMContentLoaded', function () {
+            var panel = document.getElementById('saasNavOffcanvas');
+            if (!panel || typeof bootstrap === 'undefined' || !bootstrap.Offcanvas) return;
+            var oc = bootstrap.Offcanvas.getOrCreateInstance(panel);
+            panel.querySelectorAll('a[href]').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    oc.hide();
+                });
+            });
         });
-      });
     </script>
 
     @stack('scripts')
@@ -265,4 +292,5 @@
         </script>
     @endif
 </body>
+
 </html>

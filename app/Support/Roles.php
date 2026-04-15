@@ -16,4 +16,7 @@ final class Roles
 
     /** Sales rep: leads assigned_to this user only */
     public const SALES = 'Sales';
+
+    /** API Client: primarily uses OTP/WhatsApp API services */
+    public const API_CLIENT = 'API Client';
 }

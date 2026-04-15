@@ -13,7 +13,7 @@ class OnboardingController extends Controller
     public function show(Request $request): View
     {
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
 
         $user->loadMissing('organization');
         $organization = $user->organization;

@@ -1,6 +1,6 @@
-@extends('gcc.layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Organization users')
+@section('title', 'Organization Users')
 
 @push('vendor-css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/dataTables.bootstrap5.min.css" crossorigin="anonymous">
@@ -8,119 +8,167 @@
 @endpush
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">Organization users</h4>
-            <p class="mb-0 text-body-secondary">
-                All tenant accounts (excluding platform Super Admin). Filter by workspace or role.
-            </p>
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('Organization Users') }}</h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('Admin') }}
+                            <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Users') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
         </div>
-    </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" action="{{ route('admin.users.index') }}" class="row g-3 align-items-end">
-                <div class="col-12 col-md-4">
-                    <label class="form-label" for="filter-org">Organization</label>
-                    <select name="organization_id" id="filter-org" class="form-select">
-                        <option value="">All organizations</option>
-                        @foreach ($organizations as $org)
-                            <option value="{{ $org->id }}" @selected((string) $organizationId === (string) $org->id)>
-                                {{ $org->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 col-md-4">
-                    <label class="form-label" for="filter-role">Role</label>
-                    <select name="role" id="filter-role" class="form-select">
-                        <option value="">All roles</option>
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->name }}" @selected((string) $roleFilter === (string) $role->name)>
-                                {{ $role->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12 col-md-4 d-flex flex-wrap gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="icon-base ri ri-filter-3-line me-1"></i>
-                        Apply filters
-                    </button>
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-label-secondary">Reset</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    @if ($users->isEmpty())
-        <div class="card">
-            <div class="card-body text-body-secondary">
-                No users match the current filters.
+        <div class="flex xl:my-auto right-content align-items-center">
+            <div class="pe-1 xl:mb-0">
+                <button type="button" class="ti-btn ti-btn-warning-full text-white ti-btn-icon me-2 !mb-0" onclick="window.location.reload()" title="{{ __('Refresh') }}">
+                    <i class="ri-refresh-line"></i>
+                </button>
             </div>
         </div>
-    @else
-        <div class="card">
-            <div class="card-datatable table-responsive">
-                <table id="dt-org-users" class="table table-hover table-sm border-top">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Organization</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Created</th>
-                            <th class="text-end">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $u)
-                            <tr>
-                                <td class="text-body-secondary">{{ $u->id }}</td>
-                                <td class="fw-medium">{{ $u->name }}</td>
-                                <td>{{ $u->email }}</td>
-                                <td>{{ $u->organization?->name ?? '—' }}</td>
-                                <td>
-                                    @forelse ($u->roles as $role)
-                                        <span class="badge rounded-pill bg-label-primary me-1">{{ $role->name }}</span>
-                                    @empty
-                                        <span class="text-body-secondary">—</span>
-                                    @endforelse
-                                </td>
-                                <td>
-                                    @if ($u->status === \App\Models\User::STATUS_ACTIVE)
-                                        <span class="badge rounded-pill bg-label-success">Active</span>
-                                    @else
-                                        <span class="badge rounded-pill bg-label-secondary">Inactive</span>
-                                    @endif
-                                </td>
-                                <td data-order="{{ $u->created_at?->timestamp ?? 0 }}">
-                                    <span class="text-body-secondary small">{{ $u->created_at?->format('M j, Y H:i') ?? '—' }}</span>
-                                </td>
-                                <td class="text-end">
-                                    <a
-                                        href="{{ route('admin.users.show', $u) }}"
-                                        class="btn btn-sm btn-text-primary"
-                                    >
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+    </div>
+    <!-- Page Header Close -->
+
+    <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12">
+            {{-- Filter Box --}}
+            <div class="box shadow-none border border-defaultborder/10 mb-6">
+                <div class="box-body">
+                    <form method="get" action="{{ route('admin.users.index') }}" class="grid grid-cols-12 gap-4 items-end">
+                        <div class="col-span-12 md:col-span-4">
+                            <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider" for="filter-org">{{ __('Organization') }}</label>
+                            <select name="organization_id" id="filter-org" class="ti-form-select !py-2 !px-3">
+                                <option value="">{{ __('All organizations') }}</option>
+                                @foreach ($organizations as $org)
+                                    <option value="{{ $org->id }}" @selected((string) $organizationId === (string) $org->id)>
+                                        {{ $org->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-span-12 md:col-span-3">
+                            <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider" for="filter-role">{{ __('Role') }}</label>
+                            <select name="role" id="filter-role" class="ti-form-select !py-2 !px-3">
+                                <option value="">{{ __('All roles') }}</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->name }}" @selected((string) $roleFilter === (string) $role->name)>
+                                        {{ $role->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-span-12 md:col-span-5 flex flex-wrap gap-2">
+                            <button type="submit" class="ti-btn ti-btn-primary-full font-medium !mb-0">
+                                <i class="ri-filter-3-line me-1"></i>
+                                {{ __('Apply filters') }}
+                            </button>
+                            <a href="{{ route('admin.users.index') }}" class="ti-btn ti-btn-light font-medium !mb-0">{{ __('Reset') }}</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-header !border-b !border-defaultborder/10">
+                    <h4 class="box-title font-semibold">{{ __('All Tenant Accounts') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">
+                        {{ __('Excluding platform Super Admin. Manage user access across all organization workspaces.') }}
+                    </p>
+                </div>
+                <div class="box-body !p-0">
+                    @if ($users->isEmpty())
+                        <div class="p-12 text-center">
+                            <div class="avatar avatar-xl bg-gray-100 text-textmuted rounded-full mb-3 mx-auto shadow-none">
+                                <i class="ri-user-unfollow-line text-2xl"></i>
+                            </div>
+                            <h6 class="font-bold text-[14px] mb-1">{{ __('No users found') }}</h6>
+                            <p class="text-textmuted text-[12px] mb-0">{{ __('No users match the current filtrations.') }}</p>
+                        </div>
+                    @else
+                        <div class="table-responsive p-4">
+                            <table id="dt-org-users" class="ti-custom-table table-hover text-nowrap w-full">
+                                <thead class="bg-gray-100/50 dark:bg-black/20 border-b border-defaultborder/10">
+                                    <tr>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('User info') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('Organization') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('Roles') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('Status') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('Joined') }}</th>
+                                        <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider text-end">{{ __('Actions') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($users as $u)
+                                        <tr class="border-b last:border-0 hover:bg-gray-50/50 transition-colors h-14">
+                                            <td class="!px-4">
+                                                <div class="flex items-center">
+                                                    <span class="avatar avatar-sm bg-primary/10 text-primary rounded-full me-3">
+                                                        {{ strtoupper(substr($u->name, 0, 1)) }}
+                                                    </span>
+                                                    <div class="flex flex-col">
+                                                        <span class="font-bold text-sm text-defaulttextcolor">{{ $u->name }}</span>
+                                                        <span class="text-[11px] text-textmuted">{{ $u->email }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="!px-4">
+                                                <span class="text-sm font-medium">{{ $u->organization?->name ?? '—' }}</span>
+                                            </td>
+                                            <td class="!px-4">
+                                                <div class="flex flex-wrap gap-1">
+                                                    @forelse ($u->roles as $role)
+                                                        <span class="badge bg-primary/10 text-primary rounded-full px-2 py-1 text-[10px] border border-primary/20">{{ $role->name }}</span>
+                                                    @empty
+                                                        <span class="text-textmuted text-xs">—</span>
+                                                    @endforelse
+                                                </div>
+                                            </td>
+                                            <td class="!px-4">
+                                                @if ($u->status === \App\Models\User::STATUS_ACTIVE)
+                                                    <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[10px] border border-success/20">
+                                                        <i class="ri-checkbox-circle-line me-1"></i>{{ __('Active') }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-danger/10 text-danger rounded-full px-2 py-1 text-[10px] border border-danger/20">
+                                                        <i class="ri-close-circle-line me-1"></i>{{ __('Inactive') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="!px-4 text-sm text-textmuted" data-order="{{ $u->created_at?->timestamp ?? 0 }}">
+                                                {{ $u->created_at?->format('M j, Y') ?? '—' }}
+                                            </td>
+                                            <td class="text-end !px-4">
+                                                <a href="{{ route('admin.users.show', $u) }}" class="ti-btn ti-btn-sm ti-btn-soft-primary !border-0 p-2" title="{{ __('View Details') }}">
+                                                    <i class="ri-eye-line text-lg"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
-    @endif
+    </div>
 @endsection
 
 @push('vendor-js')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js" crossorigin="anonymous"></script>
 @endpush
 
 @push('page-js')
@@ -140,7 +188,7 @@
                     [10, 25, 50, 100, -1],
                     [10, 25, 50, 100, 'All'],
                 ],
-                order: [[0, 'desc']],
+                order: [[4, 'desc']],
                 columnDefs: [
                     { orderable: false, searchable: false, targets: -1 },
                     { className: 'align-middle', targets: '_all' },
@@ -148,7 +196,7 @@
                 language: {
                     search: '',
                     searchPlaceholder: 'Search…',
-                    lengthMenu: 'Show _MENU_ entries',
+                    lengthMenu: 'Show _MENU_',
                     info: 'Showing _START_ to _END_ of _TOTAL_',
                     infoEmpty: 'No users',
                     infoFiltered: '(filtered from _MAX_)',
@@ -156,10 +204,14 @@
                     paginate: { next: 'Next', previous: 'Prev' },
                 },
                 dom:
-                    "<'row align-items-center justify-content-between g-2 mb-3 px-3 pt-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-md-end'f>>" +
+                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center text-xs'l><'flex items-center'f>>" +
                     "<'table-responsive'tr>" +
-                    "<'row align-items-center justify-content-between g-2 px-3 pb-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 d-flex justify-content-md-end'p>>",
+                    "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
             });
+            
+            // Re-style for compatibility
+            jQuery('.dataTables_filter input').addClass('ti-form-input !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md');
+            jQuery('.dataTables_length select').addClass('ti-form-select !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md !w-20 mx-2');
         })();
     </script>
 @endpush

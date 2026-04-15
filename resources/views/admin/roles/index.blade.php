@@ -75,39 +75,43 @@
                                         ];
                                         $json = json_encode($payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE);
                                     @endphp
-                                    <tr class="border-b last:border-0 hover:bg-gray-50/50 transition-colors h-14">
+                                    <tr class="border-b last:border-0 hover:bg-gray-50/20 transition-colors h-14">
                                         <td class="font-medium !px-4">
                                             <div class="flex items-center">
-                                                <i class="ri-shield-user-line text-primary me-2"></i>
-                                                {{ $role->name }}
-                                                @if($isLocked)
-                                                    <i class="ri-lock-2-line text-textmuted text-xs ms-2"
-                                                        title="{{ __('System Locked') }}"></i>
-                                                @endif
+                                                <div class="ti-avatar ti-avatar-sm bg-primary/10 text-primary rounded-md me-3">
+                                                    <i class="ri-shield-user-line"></i>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="font-bold text-sm text-defaulttextcolor">{{ $role->name }}</span>
+                                                    @if($isLocked)
+                                                        <span class="text-[10px] text-orange-500 flex items-center gap-1">
+                                                            <i class="ri-lock-password-line"></i> {{ __('System Protected') }}
+                                                        </span>
+                                                    @endif
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="!px-4">
-                                            <span
-                                                class="badge bg-primary/10 text-primary rounded-full px-3">{{ number_format($role->permissions_count) }}</span>
+                                            <span class="badge bg-primary/10 text-primary rounded-full px-2 py-1 text-[10px] border border-primary/20">{{ number_format($role->permissions_count) }} {{ __('Perms') }}</span>
                                         </td>
-                                        <td class="text-textmuted text-sm !px-4">
+                                        <td class="text-textmuted text-[12px] !px-4">
                                             {{ $role->created_at?->format('M j, Y') ?? '—' }}
                                         </td>
                                         <td class="text-end !px-4">
-                                            <div class="flex justify-end gap-2">
+                                            <div class="flex justify-end gap-1">
                                                 <button type="button"
-                                                    class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0 p-2 js-role-edit"
+                                                    class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0 js-role-edit"
                                                     data-role="{{ $json }}" title="{{ __('Edit') }}">
-                                                    <i class="ri-pencil-line text-lg"></i>
+                                                    <i class="ri-pencil-line"></i>
                                                 </button>
                                                 <form method="post" action="{{ route('admin.roles.destroy', $role) }}"
                                                     class="inline" onsubmit="return confirm('{{ __('Delete this role?') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
-                                                        class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0 p-2"
+                                                        class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0"
                                                         title="{{ __('Delete') }}" @disabled($isLocked)>
-                                                        <i class="ri-delete-bin-line text-lg"></i>
+                                                        <i class="ri-delete-bin-line"></i>
                                                     </button>
                                                 </form>
                                             </div>

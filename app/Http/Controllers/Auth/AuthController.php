@@ -28,7 +28,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors([
                 'email' => __('The provided credentials do not match our records.'),
             ])->onlyInput('email');
@@ -47,7 +47,7 @@ class AuthController extends Controller
                     ->onlyInput('email');
             }
 
-            if (! $user->organization->isActiveAccount()) {
+            if (!$user->organization->isActiveAccount()) {
                 Auth::logout();
 
                 return back()
@@ -57,6 +57,10 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+
+        if ($user->hasRole(Roles::API_CLIENT)) {
+            return redirect()->intended(route('dashboard.api.overview'));
+        }
 
         return redirect()->intended(route('admin.dashboard'));
     }
@@ -71,11 +75,14 @@ class AuthController extends Controller
         $validated = $request->validate([
             'organization_name' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'account_type' => ['required', 'in:crm,api'],
         ]);
 
         $user = DB::transaction(function () use ($validated) {
+            $isApiType = $validated['account_type'] === 'api';
+
             $organization = Organization::query()->create([
                 'name' => $validated['organization_name'],
                 'slug' => Organization::uniqueSlugFromName($validated['organization_name']),
@@ -85,6 +92,8 @@ class AuthController extends Controller
                 'is_trial' => true,
                 'mobile_number' => null,
                 'onboarding_completed' => false,
+                'api_access_enabled' => $isApiType,
+                'wallet_balance' => $isApiType ? 0.00 : 0.00,
             ]);
 
             $user = User::query()->create([
@@ -93,7 +102,12 @@ class AuthController extends Controller
                 'email' => $validated['email'],
                 'password' => $validated['password'],
             ]);
-            $user->syncRoles([Roles::ORGANIZATION, Roles::ORG_ADMIN]);
+
+            if ($isApiType) {
+                $user->syncRoles([Roles::API_CLIENT]);
+            } else {
+                $user->syncRoles([Roles::ORGANIZATION, Roles::ORG_ADMIN]);
+            }
 
             return $user;
         });
@@ -101,6 +115,10 @@ class AuthController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
+
+        if ($user->hasRole(Roles::API_CLIENT)) {
+            return redirect()->route('dashboard.api.overview');
+        }
 
         return redirect()
             ->route('admin.dashboard')

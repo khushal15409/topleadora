@@ -11,7 +11,7 @@ class LeadPolicy
     public function viewAny(User $user): bool
     {
         if ($user->hasRole(Roles::SUPER_ADMIN)) {
-            return false;
+            return true;
         }
 
         return $user->organization_id !== null
@@ -21,7 +21,7 @@ class LeadPolicy
     public function view(User $user, Lead $lead): bool
     {
         if ($user->hasRole(Roles::SUPER_ADMIN)) {
-            return false;
+            return true;
         }
 
         if ((int) $lead->organization_id !== (int) $user->organization_id) {

@@ -27,7 +27,7 @@ class RolePermissionSeeder extends Seeder
             Permissions::SETTINGS_MANAGE,
             'manage_users',
             'manage_leads',
-            'manage_plans', 
+            'manage_plans',
             'view_reports',
             'manage_broadcast',
         ];
@@ -40,6 +40,7 @@ class RolePermissionSeeder extends Seeder
         $organization = Role::findOrCreate(Roles::ORGANIZATION, $guard);
         $orgAdmin = Role::findOrCreate(Roles::ORG_ADMIN, $guard);
         $sales = Role::findOrCreate(Roles::SALES, $guard);
+        $apiClient = Role::findOrCreate(Roles::API_CLIENT, $guard);
 
         $superAdmin->syncPermissions(Permission::query()->where('guard_name', $guard)->get());
 
@@ -51,6 +52,7 @@ class RolePermissionSeeder extends Seeder
         $organization->syncPermissions($tenantPerms);
         $orgAdmin->syncPermissions($tenantPerms);
         $sales->syncPermissions($tenantPerms);
+        $apiClient->syncPermissions([Permissions::DASHBOARD_VIEW]);
 
         User::query()->whereDoesntHave('roles')->each(function (User $user) use ($organization): void {
             $user->assignRole($organization);

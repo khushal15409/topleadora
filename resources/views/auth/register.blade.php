@@ -91,11 +91,76 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-auth-submit mt-4">
+                <div class="mb-4 mt-4">
+                    <label class="form-label d-block mb-3">What will you use {{ config('app.name') }} for?</label>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <input type="radio" name="account_type" value="crm" id="type-crm" class="btn-check" checked autocomplete="off">
+                            <label class="active-type-card h-100" for="type-crm">
+                                <div class="type-icon"><i class="bi bi-person-workspace text-primary"></i></div>
+                                <div class="type-content">
+                                    <h6 class="mb-1">Use CRM</h6>
+                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">Manage leads, pipeline, and team follow-ups.</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <input type="radio" name="account_type" value="api" id="type-api" class="btn-check" autocomplete="off">
+                            <label class="active-type-card h-100" for="type-api">
+                                <div class="type-icon"><i class="bi bi-code-slash text-success"></i></div>
+                                <div class="type-content">
+                                    <h6 class="mb-1">API Services</h6>
+                                    <p class="mb-0 text-muted" style="font-size: 0.75rem;">OTP & WhatsApp API for developer integrations.</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-auth-submit mt-2">
                     {{ __('Create Account') }}
                     <i class="bi bi-arrow-right"></i>
                 </button>
             </form>
+
+            @push('styles')
+            <style>
+                .active-type-card {
+                    display: flex;
+                    align-items: center;
+                    padding: 1rem;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 0.75rem;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    background: #fff;
+                }
+                .btn-check:checked + .active-type-card {
+                    border-color: var(--bs-primary);
+                    background: rgba(var(--bs-primary-rgb), 0.04);
+                    box-shadow: 0 0 0 2px rgba(var(--bs-primary-rgb), 0.1);
+                }
+                .type-icon {
+                    width: 40px;
+                    height: 40px;
+                    background: #f3f4f6;
+                    border-radius: 0.5rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 1rem;
+                    font-size: 1.25rem;
+                    flex-shrink: 0;
+                }
+                .btn-check:checked + .active-type-card .type-icon {
+                    background: #fff;
+                }
+                .type-content h6 {
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                }
+            </style>
+            @endpush
 
             <div class="auth-footer-links text-center mt-4">
                 <p class="mb-2">

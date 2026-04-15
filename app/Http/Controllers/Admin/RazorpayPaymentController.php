@@ -10,16 +10,17 @@ use App\Support\Roles;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class RazorpayPaymentController extends Controller
 {
     public function createOrder(Request $request, Plan $plan, RazorpayService $razorpay): JsonResponse
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
         abort_unless($plan->is_active, 404);
         abort_unless($razorpay->isConfigured(), 422);
 
@@ -32,7 +33,7 @@ class RazorpayPaymentController extends Controller
         $amountPaise = (int) round($amount * 100);
         abort_if($amountPaise <= 0, 422);
 
-        $receipt = 'sub_'.$organization->id.'_plan_'.$plan->id.'_'.Str::random(10);
+        $receipt = 'sub_' . $organization->id . '_plan_' . $plan->id . '_' . Str::random(10);
 
         try {
             $orderPayload = $razorpay->createOrder($amountPaise, $currency, $receipt, [
@@ -40,10 +41,16 @@ class RazorpayPaymentController extends Controller
                 'plan_id' => (string) $plan->id,
                 'user_id' => (string) $user->id,
             ]);
+
+            Log::info('[Subscription] Razorpay Order Created', [
+                'order_id' => $orderPayload['id'] ?? 'N/A',
+                'amount' => $orderPayload['amount'] ?? 0,
+                'plan_id' => $plan->id
+            ]);
+
         } catch (\Throwable $e) {
             report($e);
-
-            return response()->json(['message' => 'Unable to create payment order.'], 500);
+            return response()->json(['message' => 'Unable to create payment order: ' . $e->getMessage()], 500);
         }
 
         $payment = Payment::query()->create([
@@ -62,11 +69,11 @@ class RazorpayPaymentController extends Controller
 
         return response()->json([
             'key' => $razorpay->key(),
-            'amount' => $amountPaise,
-            'currency' => $currency,
+            'amount' => $orderPayload['amount'],
+            'currency' => $orderPayload['currency'],
             'order_id' => $payment->razorpay_order_id,
             'name' => config('app.name', 'CRM'),
-            'description' => 'Subscription: '.$plan->name,
+            'description' => 'Subscription: ' . $plan->name,
             'prefill' => [
                 'name' => (string) ($user->name ?? ''),
                 'email' => (string) ($user->email ?? ''),
@@ -82,7 +89,7 @@ class RazorpayPaymentController extends Controller
 
     public function verify(Request $request, RazorpayService $razorpay): RedirectResponse|JsonResponse
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
         abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
@@ -120,7 +127,7 @@ class RazorpayPaymentController extends Controller
             'razorpay_signature' => $data['razorpay_signature'],
         ]);
 
-        if (! $isValid) {
+        if (!$isValid) {
             $payment->forceFill([
                 'razorpay_payment_id' => $data['razorpay_payment_id'],
                 'razorpay_signature' => $data['razorpay_signature'],
@@ -149,7 +156,7 @@ class RazorpayPaymentController extends Controller
         ])->save();
 
         $plan = Plan::query()->whereKey($payment->plan_id)->first();
-        abort_if($plan === null || ! $plan->is_active, 404);
+        abort_if($plan === null || !$plan->is_active, 404);
 
         if ($payment->subscription_id === null) {
             $organization->activateSubscriptionFromPayment($plan, $payment);

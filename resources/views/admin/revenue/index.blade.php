@@ -15,242 +15,302 @@
 @endphp
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">{{ __('Revenue Analytics') }}</h4>
-            <p class="mb-0 text-body-secondary">
-                {{ __('Payments tied to subscription checkouts — totals, trends, and plan mix.') }}
-            </p>
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('Revenue Analytics') }}</h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('Admin') }}
+                            <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Revenue') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <a href="{{ route('admin.revenue.index', $exportQuery) }}" class="btn btn-label-secondary">
-            <i class="icon-base ri ri-file-excel-2-line me-1"></i>{{ __('Export CSV') }}
-        </a>
-    </div>
 
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" action="{{ route('admin.revenue.index') }}" class="row g-3 align-items-end">
-                <div class="col-12">
-                    <span class="text-uppercase small text-muted fw-semibold">{{ __('Date range') }}</span>
-                    <div class="d-flex flex-wrap gap-2 mt-2">
-                        @foreach (['today' => __('Today'), 'week' => __('This week'), 'month' => __('This month'), 'year' => __('This year'), 'custom' => __('Custom')] as $key => $lbl)
-                            <input
-                                type="radio"
-                                class="btn-check"
-                                name="range"
-                                id="revenue-range-{{ $key }}"
-                                value="{{ $key }}"
-                                @checked((string) $range === $key)
-                                onchange="this.form.submit()"
-                            >
-                            <label class="btn btn-sm btn-outline-secondary" for="revenue-range-{{ $key }}">{{ $lbl }}</label>
+        <div class="flex xl:my-auto right-content align-items-center">
+            <a href="{{ route('admin.revenue.index', $exportQuery) }}" class="ti-btn ti-btn-light font-medium !mb-0 shadow-sm border border-defaultborder/10">
+                <i class="ri-file-excel-2-line me-1"></i>{{ __('Export CSV') }}
+            </a>
+            <button type="button" class="ti-btn ti-btn-warning-full text-white ti-btn-icon ms-2 !mb-0" onclick="window.location.reload()" title="{{ __('Refresh') }}">
+                <i class="ri-refresh-line"></i>
+            </button>
+        </div>
+    </div>
+    <!-- Page Header Close -->
+
+    {{-- Filter Section --}}
+    <div class="box shadow-none border border-defaultborder/10 mb-6">
+        <div class="box-body">
+            <form method="get" action="{{ route('admin.revenue.index') }}" class="grid grid-cols-12 gap-x-6 gap-y-4 items-end">
+                <div class="col-span-12 lg:col-span-6">
+                    <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider mb-2 block">{{ __('Quick Range') }}</label>
+                    <div class="flex flex-wrap gap-2">
+                        @foreach (['today' => __('Today'), 'week' => __('Week'), 'month' => __('Month'), 'year' => __('Year'), 'custom' => __('Custom')] as $key => $lbl)
+                            <div class="ti-form-radio-group">
+                                <input
+                                    type="radio"
+                                    class="ti-form-radio hidden peer"
+                                    name="range"
+                                    id="revenue-range-{{ $key }}"
+                                    value="{{ $key }}"
+                                    @checked((string) $range === $key)
+                                    onchange="this.form.submit()"
+                                >
+                                <label class="ti-btn ti-btn-soft-secondary !py-1 !px-3 !text-[12px] peer-checked:!bg-primary peer-checked:!text-white cursor-pointer" for="revenue-range-{{ $key }}">{{ $lbl }}</label>
+                            </div>
                         @endforeach
                     </div>
                 </div>
+
                 @if ((string) $range === 'custom')
-                    <div class="col-md-3">
-                        <label class="form-label">{{ __('From') }}</label>
-                        <input type="date" name="date_from" class="form-control" value="{{ $dateFrom }}">
+                    <div class="col-span-12 md:col-span-3 lg:col-span-2">
+                        <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider">{{ __('From') }}</label>
+                        <input type="date" name="date_from" class="ti-form-input !py-2" value="{{ $dateFrom }}">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">{{ __('To') }}</label>
-                        <input type="date" name="date_to" class="form-control" value="{{ $dateTo }}">
+                    <div class="col-span-12 md:col-span-3 lg:col-span-2">
+                        <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider">{{ __('To') }}</label>
+                        <input type="date" name="date_to" class="ti-form-input !py-2" value="{{ $dateTo }}">
                     </div>
                 @endif
-                <div class="col-md-3">
-                    <label class="form-label">{{ __('Payment status') }}</label>
-                    <select name="payment_status" class="form-select" onchange="this.form.submit()">
+
+                <div class="col-span-12 md:col-span-4 lg:col-span-2">
+                    <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider">{{ __('Status') }}</label>
+                    <select name="payment_status" class="ti-form-select !py-2" onchange="this.form.submit()">
                         <option value="{{ \App\Models\Payment::STATUS_SUCCESS }}" @selected((string) $paymentStatus === \App\Models\Payment::STATUS_SUCCESS)>{{ __('Success') }}</option>
                         <option value="{{ \App\Models\Payment::STATUS_FAILED }}" @selected((string) $paymentStatus === \App\Models\Payment::STATUS_FAILED)>{{ __('Failed') }}</option>
                         <option value="{{ \App\Models\Payment::STATUS_PENDING }}" @selected((string) $paymentStatus === \App\Models\Payment::STATUS_PENDING)>{{ __('Pending') }}</option>
                         <option value="all" @selected((string) $paymentStatus === 'all')>{{ __('All statuses') }}</option>
                     </select>
                 </div>
-                <div class="col-md-6 col-lg-4">
-                    <label class="form-label">{{ __('Search organization') }}</label>
-                    <div class="input-group">
-                        <input type="search" name="q" class="form-control" value="{{ $search }}" placeholder="{{ __('Name…') }}">
-                        <button type="submit" class="btn btn-primary">{{ __('Apply') }}</button>
+
+                <div class="col-span-12 md:col-span-8 lg:col-span-4 flex gap-2">
+                    <div class="flex-1">
+                        <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider">{{ __('Search') }}</label>
+                        <input type="search" name="q" class="ti-form-input !py-2" value="{{ $search }}" placeholder="{{ __('Org name…') }}">
                     </div>
+                    <button type="submit" class="ti-btn ti-btn-primary-full !mb-0 self-end">{{ __('Search') }}</button>
                 </div>
-                @if ((string) $range === 'custom')
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">{{ __('Apply') }}</button>
-                    </div>
-                @endif
             </form>
-            <p class="small text-muted mb-0 mt-3">
-                {{ __('Filtered period: :from — :to', ['from' => $rangeStart->format('M j, Y'), 'to' => $rangeEnd->format('M j, Y')]) }}
-            </p>
-        </div>
-    </div>
-
-    <div class="row g-4 mb-2">
-        <div class="col-sm-6 col-xl-3">
-            <div class="card wp-crm-revenue-card wp-crm-revenue-card--total shadow h-100 border-0">
-                <div class="card-body p-4">
-                    <div class="small text-white text-white-50 text-uppercase fw-semibold mb-2">{{ __('Total revenue') }}</div>
-                    <h3 class="mb-0 text-white fw-bold">{{ $money($summary['total_revenue']) }}</h3>
-                    <small class="text-white-50">{{ __('In selected period') }}</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card wp-crm-revenue-card wp-crm-revenue-card--month shadow h-100 border-0">
-                <div class="card-body p-4">
-                    <div class="small text-white text-white-50 text-uppercase fw-semibold mb-2">{{ __('This month') }}</div>
-                    <h3 class="mb-0 text-white fw-bold">{{ $money($summary['this_month_revenue']) }}</h3>
-                    <small class="text-white-50">{{ __('Calendar month · status filter') }}</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card wp-crm-revenue-card wp-crm-revenue-card--last shadow h-100 border-0">
-                <div class="card-body p-4">
-                    <div class="small text-white text-white-50 text-uppercase fw-semibold mb-2">{{ __('Last month') }}</div>
-                    <h3 class="mb-0 text-white fw-bold">{{ $money($summary['last_month_revenue']) }}</h3>
-                    <small class="text-white-50">{{ __('Previous calendar month') }}</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="card wp-crm-revenue-card wp-crm-revenue-card--tx shadow h-100 border-0">
-                <div class="card-body p-4">
-                    <div class="small text-white text-white-50 text-uppercase fw-semibold mb-2">{{ __('Transactions') }}</div>
-                    <h3 class="mb-0 text-white fw-bold">{{ number_format($summary['transaction_count']) }}</h3>
-                    <small class="text-white-50">{{ __('In selected period') }}</small>
-                </div>
+            <div class="mt-3 flex items-center gap-2 text-textmuted text-[11px]">
+                <i class="ri-information-line text-[14px]"></i>
+                {{ __('Viewing: :from — :to', ['from' => $rangeStart->format('M j, Y'), 'to' => $rangeEnd->format('M j, Y')]) }}
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-xl-8">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-bottom">
-                    <h5 class="mb-0">{{ __('Revenue trend') }}</h5>
-                    <small class="text-body-secondary">{{ __('Calendar year :year (Jan–Dec), status filter applied', ['year' => $rangeEnd->year]) }}</small>
+    {{-- Stats Cards --}}
+    <div class="grid grid-cols-12 gap-x-6 mb-6">
+        <div class="col-span-12 md:col-span-6 xxl:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[12px] font-medium mb-1 tracking-tight">{{ __('TOTAL REVENUE') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-defaulttextcolor">{{ $money($summary['total_revenue']) }}</h4>
+                            <p class="text-textmuted text-[10px] mt-1 mb-0">{{ __('In selected period') }}</p>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-primary/10 text-primary rounded-md p-2 shadow-none">
+                            <i class="ri-money-dollar-circle-line text-lg"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body pt-2">
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-6 xxl:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[12px] font-medium mb-1 tracking-tight">{{ __('THIS MONTH') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-defaulttextcolor">{{ $money($summary['this_month_revenue']) }}</h4>
+                            <p class="text-textmuted text-[10px] mt-1 mb-0">{{ __('Calendar month revenue') }}</p>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-info/10 text-info rounded-md p-2 shadow-none">
+                            <i class="ri-calendar-event-line text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-6 xxl:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[12px] font-medium mb-1 tracking-tight">{{ __('LAST MONTH') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-defaulttextcolor">{{ $money($summary['last_month_revenue']) }}</h4>
+                            <p class="text-textmuted text-[10px] mt-1 mb-0">{{ __('Full calendar month') }}</p>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-warning/10 text-warning rounded-md p-2 shadow-none">
+                            <i class="ri-history-line text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-6 xxl:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-start">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[12px] font-medium mb-1 tracking-tight">{{ __('TRANSACTIONS') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-defaulttextcolor">{{ number_format($summary['transaction_count']) }}</h4>
+                            <p class="text-textmuted text-[10px] mt-1 mb-0">{{ __('Total payment count') }}</p>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-success/10 text-success rounded-md p-2 shadow-none">
+                            <i class="ri-bank-card-line text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Charts --}}
+    <div class="grid grid-cols-12 gap-x-6 mb-6">
+        <div class="col-span-12 xl:col-span-8">
+            <div class="box shadow-none border border-defaultborder/10 h-full">
+                <div class="box-header !border-b !border-defaultborder/10">
+                    <h4 class="box-title">{{ __('Revenue Trend') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">{{ __('Calendar year :year (Jan–Dec), status filter applied', ['year' => $rangeEnd->year]) }}</p>
+                </div>
+                <div class="box-body">
                     <div id="revenueYearChart"></div>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-header border-bottom">
-                    <h5 class="mb-0">{{ __('Revenue by plan') }}</h5>
-                    <small class="text-body-secondary">{{ __('Selected date range') }}</small>
+        <div class="col-span-12 xl:col-span-4">
+            <div class="box shadow-none border border-defaultborder/10 h-full">
+                <div class="box-header !border-b !border-defaultborder/10">
+                    <h4 class="box-title">{{ __('Revenue by Plan') }}</h4>
+                    <p class="text-textmuted text-xs mt-1">{{ __('Selected date range data') }}</p>
                 </div>
-                <div class="card-body pt-2 d-flex align-items-center justify-content-center">
+                <div class="box-body flex items-center justify-center">
                     @if (count($byPlan) > 0 && collect($chartPayload['planSeries'])->sum() > 0)
-                        <div id="revenuePlanChart" class="w-100"></div>
+                        <div id="revenuePlanChart" class="w-full"></div>
                     @else
-                        <p class="text-body-secondary small mb-0 text-center py-5">{{ __('No plan revenue in this range.') }}</p>
+                        <div class="text-center py-20">
+                            <div class="avatar avatar-xl bg-gray-50 text-textmuted rounded-full mb-3 mx-auto shadow-none border border-dashed border-gray-200">
+                                <i class="ri-pie-chart-2-line text-2xl"></i>
+                            </div>
+                            <p class="text-textmuted text-[12px]">{{ __('No plan revenue found.') }}</p>
+                        </div>
                     @endif
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header border-bottom">
-                    <h5 class="mb-0">{{ __('Period detail (by month)') }}</h5>
-                    <small class="text-body-secondary">{{ __('Within your selected filters') }}</small>
+    {{-- Breakdown & List --}}
+    <div class="grid grid-cols-12 gap-x-6">
+        <div class="col-span-12 xxl:col-span-12">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-header !border-b !border-defaultborder/10">
+                    <h4 class="box-title">{{ __('Detailed Breakdown') }}</h4>
                 </div>
-                <div class="card-body pt-2">
-                    @if (count($chartPayload['periodLabels']) > 0)
-                        <div id="revenuePeriodChart" style="max-width: 48rem;"></div>
-                    @else
-                        <p class="text-body-secondary small mb-0">{{ __('No monthly buckets for this range.') }}</p>
-                    @endif
+                <div class="box-body !p-0">
+                    <div class="grid grid-cols-12">
+                        <div class="col-span-12 lg:col-span-5 border-e border-defaultborder/10">
+                            <div class="box-header !border-b-0">
+                                <h6 class="font-bold text-sm">{{ __('Monthly Summary') }}</h6>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="ti-custom-table table-hover text-nowrap w-full">
+                                    <thead class="bg-gray-100/50 dark:bg-black/20">
+                                        <tr>
+                                            <th class="!py-3 !px-4">{{ __('Month') }}</th>
+                                            <th class="!py-3 !px-4 text-end">{{ __('Revenue') }}</th>
+                                            <th class="!py-3 !px-4 text-end">{{ __('Txs') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($breakdown as $row)
+                                            <tr class="border-b last:border-0 h-12">
+                                                <td class="font-medium !px-4">{{ $row['month'] }}</td>
+                                                <td class="text-end !px-4">{{ $money($row['revenue']) }}</td>
+                                                <td class="text-end !px-4 text-textmuted text-xs">{{ number_format($row['payments']) }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="3" class="text-center p-4 text-textmuted">{{ __('No data.') }}</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-span-12 lg:col-span-7">
+                            <div class="box-header !border-b-0 flex justify-between items-center">
+                                <h6 class="font-bold text-sm">{{ __('Recent Transactions') }}</h6>
+                                <p class="text-[10px] text-textmuted">{{ __('Last 20 records') }}</p>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="ti-custom-table table-hover text-nowrap w-full">
+                                    <thead class="bg-gray-100/50 dark:bg-black/20">
+                                        <tr>
+                                            <th class="!py-3 !px-4">{{ __('Organization') }}</th>
+                                            <th class="!py-3 !px-4 text-end">{{ __('Amount') }}</th>
+                                            <th class="!py-3 !px-4">{{ __('Status') }}</th>
+                                            <th class="!py-3 !px-4">{{ __('Date') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($payments as $p)
+                                            <tr class="border-b last:border-0 h-12">
+                                                <td class="!px-4">
+                                                    <div class="flex flex-col">
+                                                        <span class="font-bold text-xs">{{ $p->organization?->name ?? '—' }}</span>
+                                                        <span class="text-[10px] text-textmuted">{{ $p->plan?->name ?? '—' }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-end !px-4 font-bold">{{ $p->currency === 'INR' ? '₹' : $p->currency }}{{ number_format((float) $p->amount, 0) }}</td>
+                                                <td class="!px-4">
+                                                    @if ($p->status === \App\Models\Payment::STATUS_SUCCESS)
+                                                        <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Paid') }}</span>
+                                                    @elseif ($p->status === \App\Models\Payment::STATUS_FAILED)
+                                                        <span class="badge bg-danger/10 text-danger rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Fail') }}</span>
+                                                    @else
+                                                        <span class="badge bg-warning/10 text-warning rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Hold') }}</span>
+                                                    @endif
+                                                </td>
+                                                <td class="!px-4 text-textmuted text-[10px]">{{ $p->paid_at?->format('M j, Y') ?? '—' }}</td>
+                                            </tr>
+                                        @empty
+                                            <tr><td colspan="4" class="text-center p-4 text-textmuted">{{ __('No transactions found.') }}</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                            @if ($payments->hasPages())
+                                <div class="p-3 border-t border-defaultborder/10">
+                                    {{ $payments->links() }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-header border-bottom">
-            <h5 class="mb-0">{{ __('Monthly breakdown') }}</h5>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0 border-top">
-                <thead>
-                    <tr>
-                        <th>{{ __('Month') }}</th>
-                        <th class="text-end">{{ __('Total revenue') }}</th>
-                        <th class="text-end">{{ __('Payments') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($breakdown as $row)
-                        <tr>
-                            <td class="fw-medium">{{ $row['month'] }}</td>
-                            <td class="text-end">{{ $money($row['revenue']) }}</td>
-                            <td class="text-end">{{ number_format($row['payments']) }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="text-center text-body-secondary py-4">{{ __('No data.') }}</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="card shadow-sm">
-        <div class="card-header border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
-            <div>
-                <h5 class="mb-0">{{ __('Recent payments') }}</h5>
-                <small class="text-body-secondary">{{ __('Filtered list with pagination') }}</small>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover table-sm mb-0 border-top">
-                <thead>
-                    <tr>
-                        <th>{{ __('Organization') }}</th>
-                        <th>{{ __('Plan') }}</th>
-                        <th class="text-end">{{ __('Amount') }}</th>
-                        <th>{{ __('Payment date') }}</th>
-                        <th>{{ __('Status') }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($payments as $p)
-                        <tr>
-                            <td class="fw-medium">{{ $p->organization?->name ?? '—' }}</td>
-                            <td>{{ $p->plan?->name ?? '—' }}</td>
-                            <td class="text-end">{{ $p->currency === 'INR' ? '₹' : $p->currency }}{{ number_format((float) $p->amount, 0) }}</td>
-                            <td class="text-body-secondary small">{{ $p->paid_at?->format('M j, Y H:i') ?? '—' }}</td>
-                            <td>
-                                @if ($p->status === \App\Models\Payment::STATUS_SUCCESS)
-                                    <span class="badge rounded-pill bg-label-success">{{ __('Success') }}</span>
-                                @elseif ($p->status === \App\Models\Payment::STATUS_FAILED)
-                                    <span class="badge rounded-pill bg-label-danger">{{ __('Failed') }}</span>
-                                @else
-                                    <span class="badge rounded-pill bg-label-warning">{{ __('Pending') }}</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-body-secondary py-5">{{ __('No payments match your filters.') }}</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        @if ($payments->hasPages())
-            <div class="card-body border-top pt-3">
-                {{ $payments->links() }}
-            </div>
-        @endif
     </div>
 @endsection
+
+@push('vendor-js')
+    <script src="{{ asset('materio/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
+@endpush
+
+@push('page-js')
+    <script>
+        window.__WP_CRM_REVENUE_CHARTS = @json(array_merge($chartPayload, ['currencySymbol' => '₹']));
+    </script>
+    <script src="{{ asset('materio/assets/js/revenue-analytics.js') }}"></script>
+@endpush
 
 @push('vendor-js')
     <script src="{{ asset('materio/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>

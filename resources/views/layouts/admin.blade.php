@@ -1,3 +1,7 @@
+<?php
+// Grant permissions for Razorpay SDK features to avoid console violations and ensure fraud detection works
+header('Permissions-Policy: accelerometer=(self "https://api.razorpay.com"), gyroscope=(self "https://api.razorpay.com"), magnetometer=(self "https://api.razorpay.com"), payment=(self), usb=(self)');
+?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" data-nav-layout="vertical" class="light"
     data-header-styles="light" data-menu-styles="light">
@@ -20,7 +24,7 @@
     <!-- Legacy admin theme stylesheet required by dashboard UI -->
     <link rel="stylesheet" href="{{ asset('assets/app-C1ug_Vkx.css') }}">
 
-    @vite(['resources/css/app.css','resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @include('layouts.components.styles')
 
@@ -36,6 +40,7 @@
     $saasUser = auth()->user();
     $saasIsSuper = $saasUser && $saasUser->hasRole(\App\Support\Roles::SUPER_ADMIN);
     $saasIsOrg = $saasUser && $saasUser->hasRole(\App\Support\Roles::ORGANIZATION);
+    $saasIsApiClient = $saasUser && $saasUser->hasRole(\App\Support\Roles::API_CLIENT);
 @endphp
 
 <body

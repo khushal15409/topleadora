@@ -28,6 +28,8 @@ class Organization extends Model
         'is_trial',
         'mobile_number',
         'onboarding_completed',
+        'api_access_enabled',
+        'wallet_balance',
     ];
 
     protected function casts(): array
@@ -36,6 +38,7 @@ class Organization extends Model
             'trial_ends_at' => 'datetime',
             'is_trial' => 'boolean',
             'onboarding_completed' => 'boolean',
+            'wallet_balance' => 'float',
         ];
     }
 
@@ -70,7 +73,7 @@ class Organization extends Model
         $slug = $base;
         $i = 1;
         while (static::query()->where('slug', $slug)->exists()) {
-            $slug = $base.'-'.$i;
+            $slug = $base . '-' . $i;
             $i++;
         }
 
@@ -81,7 +84,7 @@ class Organization extends Model
     {
         return $this->mobile_number === null
             || $this->mobile_number === ''
-            || ! $this->onboarding_completed;
+            || !$this->onboarding_completed;
     }
 
     public function activeSubscription(): ?Subscription
@@ -113,12 +116,12 @@ class Organization extends Model
 
     public function trialExpiredWithoutPlan(): bool
     {
-        return ! $this->hasFullCrmAccess();
+        return !$this->hasFullCrmAccess();
     }
 
     public function hasFullCrmAccess(): bool
     {
-        if (! paymentEnabled()) {
+        if (!paymentEnabled()) {
             return true;
         }
 

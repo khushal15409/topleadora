@@ -48,7 +48,7 @@ class DashboardController extends Controller
             ->latest()
             ->limit(6)
             ->get()
-            ->map(fn (Contact $c) => [
+            ->map(fn(Contact $c) => [
                 'name' => $c->name,
                 'detail' => $c->email,
                 'meta' => $c->created_at?->diffForHumans() ?? '—',
@@ -133,7 +133,7 @@ class DashboardController extends Controller
                 'weeklyCategories' => $this->lastSevenDayLabels(),
                 'weeklySeriesName' => __('Messages'),
                 'lineTrend' => $lineTrend,
-                'columnBars' => array_map(fn (int $n) => min(100, $n * 10 + 15), $columnBars),
+                'columnBars' => array_map(fn(int $n) => min(100, $n * 10 + 15), $columnBars),
                 'weeklyCaption' => __('Inbound messages (7 days)'),
                 'lineCaption' => __('Inquiry momentum'),
                 'columnCaption' => __('New organizations (5 recent days)'),
@@ -141,6 +141,13 @@ class DashboardController extends Controller
             'subscriptionDashboard' => [
                 'counts' => $subCounts,
                 'expiringSoon' => $expiringSoonRows,
+            ],
+            'crmSummary' => [
+                'today_followups' => 0, // Super admin doesn't usually handle followups
+                'total_leads' => Lead::query()->count(),
+                'closed_deals' => Lead::query()->where('status', Lead::STATUS_CLOSED)->count(),
+                'total_broadcasts' => \App\Models\Broadcast::query()->count(),
+                'total_organizations' => $organizationsCount,
             ],
         ];
     }
@@ -164,7 +171,7 @@ class DashboardController extends Controller
             : ($org?->trialIsActive() ? __('Trial active') : __('Needs plan'));
 
         $trialHint = __('Upgrade to restore CRM');
-        if ($trialEnds !== null && $org?->trialIsActive() && ! $hasPlan) {
+        if ($trialEnds !== null && $org?->trialIsActive() && !$hasPlan) {
             $trialHint = __('Trial ends :when', ['when' => $trialEnds->diffForHumans()]);
         } elseif ($hasPlan) {
             $trialHint = __('Full CRM unlocked');
@@ -188,7 +195,7 @@ class DashboardController extends Controller
                 ->latest()
                 ->limit(6)
                 ->get()
-                ->map(fn (User $u) => [
+                ->map(fn(User $u) => [
                     'name' => $u->name,
                     'detail' => $u->email,
                     'meta' => $u->created_at?->diffForHumans() ?? '—',
@@ -200,11 +207,11 @@ class DashboardController extends Controller
 
         $crmSummary = null;
         if ($orgId) {
-            $base = fn (): Builder => Lead::query()
+            $base = fn(): Builder => Lead::query()
                 ->forOrganization((int) $orgId)
                 ->when(
-                    ! $user->canViewAllOrganizationLeads(),
-                    fn ($q) => $q->where('assigned_to', $user->id)
+                    !$user->canViewAllOrganizationLeads(),
+                    fn($q) => $q->where('assigned_to', $user->id)
                 );
             $crmSummary = [
                 'today_followups' => $base()
@@ -213,6 +220,7 @@ class DashboardController extends Controller
                     ->count(),
                 'total_leads' => $base()->count(),
                 'closed_deals' => $base()->where('status', Lead::STATUS_CLOSED)->count(),
+                'total_broadcasts' => $org?->broadcasts()->count() ?? 0,
             ];
         }
 
@@ -348,6 +356,6 @@ class DashboardController extends Controller
         }
         $max = max($slice) ?: 1;
 
-        return array_map(fn (int $n) => min(100, max(20, (int) round(($n / $max) * 75 + 20))), $slice);
+        return array_map(fn(int $n) => min(100, max(20, (int) round(($n / $max) * 75 + 20))), $slice);
     }
 }

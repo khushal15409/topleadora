@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Organizations')
+@section('title', __('Organizations'))
 
 @push('vendor-css')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/dataTables.bootstrap5.min.css" crossorigin="anonymous">
@@ -30,10 +30,12 @@
         </div>
 
         <div class="flex xl:my-auto right-content align-items-center">
-            <a href="{{ route('admin.organizations.create') }}" class="ti-btn ti-btn-primary font-medium">
-                <i class="ri-add-line me-1"></i>
-                {{ __('Add organization') }}
+            <a href="{{ route('admin.organizations.create') }}" class="ti-btn ti-btn-primary font-medium !mb-0 shadow-sm">
+                <i class="ri-add-line me-1"></i>{{ __('Add organization') }}
             </a>
+            <button type="button" class="ti-btn ti-btn-warning-full text-white ti-btn-icon ms-2 !mb-0" onclick="window.location.reload()" title="{{ __('Refresh') }}">
+                <i class="ri-refresh-line"></i>
+            </button>
         </div>
     </div>
     <!-- Page Header Close -->
@@ -42,7 +44,10 @@
         <div class="col-span-12">
             @if (session('success'))
                 <div class="bg-success/10 text-success border border-success/20 p-4 rounded-md mb-4 flex justify-between items-center" role="alert">
-                    {{ session('success') }}
+                    <div class="flex items-center">
+                        <i class="ri-checkbox-circle-line me-2 text-lg"></i>
+                        {{ session('success') }}
+                    </div>
                     <button type="button" class="text-success" data-bs-dismiss="alert" aria-label="Close">
                         <i class="ri-close-line"></i>
                     </button>
@@ -51,16 +56,19 @@
 
             @if ($errors->has('delete'))
                 <div class="bg-danger/10 text-danger border border-danger/20 p-4 rounded-md mb-4 flex justify-between items-center" role="alert">
-                    {{ $errors->first('delete') }}
+                    <div class="flex items-center">
+                        <i class="ri-error-warning-line me-2 text-lg"></i>
+                        {{ $errors->first('delete') }}
+                    </div>
                     <button type="button" class="text-danger" data-bs-dismiss="alert" aria-label="Close">
                         <i class="ri-close-line"></i>
                     </button>
                 </div>
             @endif
 
-            <div class="box">
-                <div class="box-header">
-                    <div class="flex justify-between items-center">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-header !border-b !border-defaultborder/10">
+                    <div class="flex flex-wrap justify-between items-center gap-2">
                         <div>
                             <h4 class="box-title font-semibold">{{ __('All Organizations') }}</h4>
                             <p class="text-textmuted text-xs mt-1">
@@ -71,15 +79,14 @@
                 </div>
                 <div class="box-body !p-0">
                     @if ($organizations->isEmpty())
-                        <div class="p-6 text-textmuted text-center">
-                            {{ __('No organizations yet.') }}
-                            <a href="{{ route('admin.organizations.create') }}" class="text-primary font-medium">{{ __('Create one') }}</a>
-                            {{ __('or register from the public site.') }}
+                        <div class="p-20 text-center">
+                            <p class="text-textmuted mb-2">{{ __('No organizations found.') }}</p>
+                            <a href="{{ route('admin.organizations.create') }}" class="text-primary font-bold decoration-2">{{ __('Create one') }}</a>
                         </div>
                     @else
                         <div class="table-responsive p-4">
                             <table id="dt-organizations" class="ti-custom-table table-hover text-nowrap w-full">
-                                <thead class="bg-gray-50 border-y dark:bg-black/10">
+                                <thead class="bg-gray-100/50 dark:bg-black/20 border-b border-defaultborder/10">
                                     <tr>
                                         <th scope="col" class="!py-3 !px-4">{{ __('Name') }}</th>
                                         <th scope="col" class="!py-3 !px-4">{{ __('Status') }}</th>
@@ -92,50 +99,52 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($organizations as $org)
-                                        <tr class="border-b last:border-0 hover:bg-gray-50/50 transition-colors h-14">
-                                            <td class="font-medium !px-4">
+                                        <tr class="border-b last:border-0 hover:bg-gray-50/20 transition-colors h-14">
+                                            <td class="!px-4">
                                                 <div class="flex items-center">
-                                                    <span class="avatar avatar-sm bg-primary/10 text-primary rounded-full me-3">
+                                                    <div class="ti-avatar ti-avatar-sm bg-primary/10 text-primary rounded-md me-3 font-bold">
                                                         {{ strtoupper(substr($org->name, 0, 1)) }}
-                                                    </span>
-                                                    {{ $org->name }}
+                                                    </div>
+                                                    <span class="font-bold text-sm text-defaulttextcolor">{{ $org->name }}</span>
                                                 </div>
                                             </td>
                                             <td class="!px-4">
                                                 @if ($org->status === \App\Models\Organization::STATUS_ACTIVE)
-                                                    <span class="badge bg-success/10 text-success rounded-full">{{ __('Active') }}</span>
+                                                    <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[10px] border border-success/20">{{ __('Active') }}</span>
                                                 @else
-                                                    <span class="badge bg-gray-100 text-gray-500 rounded-full">{{ __('Inactive') }}</span>
+                                                    <span class="badge bg-gray-100 text-gray-500 rounded-full px-2 py-1 text-[10px] border border-gray-200">{{ __('Inactive') }}</span>
                                                 @endif
                                             </td>
-                                            <td class="!px-4 text-sm">{{ $org->plan?->name ?? '—' }}</td>
-                                            <td class="!px-4 text-sm text-textmuted" data-order="{{ $org->trial_ends_at?->timestamp ?? 0 }}">
+                                            <td class="!px-4 text-sm font-medium">{{ $org->plan?->name ?? '—' }}</td>
+                                            <td class="!px-4 text-[12px] text-textmuted" data-order="{{ $org->trial_ends_at?->timestamp ?? 0 }}">
                                                 @if ($org->trial_ends_at)
-                                                    {{ $org->trial_ends_at->format('M j, Y') }}<br>
-                                                    <small>{{ $org->trial_ends_at->format('H:i') }}</small>
+                                                    <div class="flex flex-col">
+                                                        <span>{{ $org->trial_ends_at->format('M j, Y') }}</span>
+                                                        <span class="text-[10px]">{{ $org->trial_ends_at->format('H:i') }}</span>
+                                                    </div>
                                                 @else
-                                                    —
+                                                    <span class="text-textmuted/50">—</span>
                                                 @endif
                                             </td>
-                                            <td class="!px-4"><span class="font-semibold">{{ $org->users_count }}</span></td>
+                                            <td class="!px-4"><span class="ti-avatar ti-avatar-xs bg-light text-defaulttextcolor rounded-full text-[11px]">{{ $org->users_count }}</span></td>
                                             <td class="!px-4">
                                                 @if ($org->onboarding_completed)
-                                                    <span class="badge bg-info/10 text-info rounded-full">{{ __('Done') }}</span>
+                                                    <span class="badge bg-info/10 text-info rounded-full px-2 py-1 text-[10px] border border-info/20">{{ __('Done') }}</span>
                                                 @else
-                                                    <span class="badge bg-warning/10 text-warning rounded-full">{{ __('Pending') }}</span>
+                                                    <span class="badge bg-warning/10 text-warning rounded-full px-2 py-1 text-[10px] border border-warning/20">{{ __('Pending') }}</span>
                                                 @endif
                                             </td>
                                             <td class="text-end !px-4">
-                                                <div class="flex justify-end gap-2">
-                                                    <a href="{{ route('admin.organizations.edit', $org) }}" class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0 p-2" title="{{ __('Edit') }}">
-                                                        <i class="ri-pencil-line text-lg"></i>
+                                                <div class="flex justify-end gap-1">
+                                                    <a href="{{ route('admin.organizations.edit', $org) }}" class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0" title="{{ __('Edit') }}">
+                                                        <i class="ri-pencil-line"></i>
                                                     </a>
                                                     @if ($org->users_count === 0)
                                                         <form action="{{ route('admin.organizations.destroy', $org) }}" method="post" class="inline" onsubmit="return confirm('{{ __('Delete this organization?') }}');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0 p-2" title="{{ __('Delete') }}">
-                                                                <i class="ri-delete-bin-line text-lg"></i>
+                                                            <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0" title="{{ __('Delete') }}">
+                                                                <i class="ri-delete-bin-line"></i>
                                                             </button>
                                                         </form>
                                                     @endif
@@ -193,7 +202,7 @@
                     paginate: { next: 'Next', previous: 'Prev' },
                 },
                 dom:
-                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center'l><'flex items-center'f>>" +
+                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center text-xs'l><'flex items-center'f>>" +
                     "<'table-responsive'tr>" +
                     "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
             });

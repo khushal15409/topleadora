@@ -4,14 +4,14 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
-if (! function_exists('setting')) {
+if (!function_exists('setting')) {
     /**
      * Read a setting from DB (cached as a map).
      */
     function setting(string $key, mixed $default = null): mixed
     {
         // During early install / fresh test DBs, migrations may not have run yet.
-        if (! Schema::hasTable('settings')) {
+        if (!Schema::hasTable('settings')) {
             return $default;
         }
 
@@ -20,7 +20,7 @@ if (! function_exists('setting')) {
             // Use Eloquent so encrypted casts are properly decrypted.
             return Setting::query()
                 ->get(['key', 'value'])
-                ->mapWithKeys(fn (Setting $s) => [(string) $s->key => $s->value])
+                ->mapWithKeys(fn(Setting $s) => [(string) $s->key => $s->value])
                 ->all();
         });
 
@@ -28,7 +28,7 @@ if (! function_exists('setting')) {
     }
 }
 
-if (! function_exists('isPaymentEnabled')) {
+if (!function_exists('isPaymentEnabled')) {
     /**
      * Global monetization toggle.
      *
@@ -44,7 +44,7 @@ if (! function_exists('isPaymentEnabled')) {
     }
 }
 
-if (! function_exists('leadImageFallbackUrl')) {
+if (!function_exists('leadImageFallbackUrl')) {
     /**
      * Global fallback URL when hero / section images fail.
      */
@@ -54,7 +54,7 @@ if (! function_exists('leadImageFallbackUrl')) {
     }
 }
 
-if (! function_exists('leadLocalPlaceholderImageUrl')) {
+if (!function_exists('leadLocalPlaceholderImageUrl')) {
     /**
      * Local placeholder used as the final onerror target when remote images fail.
      */
@@ -64,7 +64,7 @@ if (! function_exists('leadLocalPlaceholderImageUrl')) {
     }
 }
 
-if (! function_exists('leadPublicImageUrl')) {
+if (!function_exists('leadPublicImageUrl')) {
     /**
      * Normalize image URLs for marketing pages (full URL, storage path, or relative asset).
      */
@@ -79,7 +79,7 @@ if (! function_exists('leadPublicImageUrl')) {
             return $u;
         }
         if (str_starts_with($u, '//')) {
-            return 'https:'.$u;
+            return 'https:' . $u;
         }
 
         $u = ltrim($u, '/');
@@ -91,39 +91,83 @@ if (! function_exists('leadPublicImageUrl')) {
     }
 }
 
-if (! function_exists('leadResponsiveSrcset')) {
+if (!function_exists('leadResponsiveSrcset')) {
     /**
      * Build a srcset for Unsplash URLs (width variants). Returns empty string if not Unsplash.
      */
     function leadResponsiveSrcset(?string $url): string
     {
-        if ($url === null || $url === '' || ! str_contains($url, 'images.unsplash.com')) {
+        if ($url === null || $url === '' || !str_contains($url, 'images.unsplash.com')) {
             return '';
         }
 
         $parsed = parse_url($url);
-        if (! is_array($parsed) || ! isset($parsed['host'], $parsed['path'])) {
+        if (!is_array($parsed) || !isset($parsed['host'], $parsed['path'])) {
             return '';
         }
 
         $scheme = $parsed['scheme'] ?? 'https';
-        $basePath = $scheme.'://'.$parsed['host'].$parsed['path'];
+        $basePath = $scheme . '://' . $parsed['host'] . $parsed['path'];
         $widths = [640, 960, 1280, 1920];
         $parts = [];
         foreach ($widths as $w) {
-            $parts[] = $basePath.'?auto=format&fit=crop&w='.$w.'&q=80 '.$w.'w';
+            $parts[] = $basePath . '?auto=format&fit=crop&w=' . $w . '&q=80 ' . $w . 'w';
         }
 
         return implode(', ', $parts);
     }
 }
 
-if (! function_exists('paymentEnabled')) {
+if (!function_exists('paymentEnabled')) {
     /**
      * Alias used across blades/controllers for billing toggle.
      */
     function paymentEnabled(): bool
     {
         return isPaymentEnabled();
+    }
+}
+
+if (!function_exists('isCrmPaymentEnabled')) {
+    /**
+     * Whether CRM subscription billing (plans, Razorpay checkout) is active.
+     * Reads the 'payment_enabled' global DB setting.
+     */
+    function isCrmPaymentEnabled(): bool
+    {
+        return isPaymentEnabled();
+    }
+}
+
+if (!function_exists('isApiPaymentEnabled')) {
+    /**
+     * Whether API wallet top-ups are permitted.
+     * Completely independent of the CRM payment_enabled toggle.
+     * Returns true as long as Razorpay keys exist in settings.
+     */
+    function isApiPaymentEnabled(): bool
+    {
+        return true;
+    }
+}
+
+if (!function_exists('isApiClient')) {
+    /**
+     * Check if the authenticated user is an API Client.
+     */
+    function isApiClient(): bool
+    {
+        return auth()->check() && auth()->user()->hasRole(\App\Support\Roles::API_CLIENT);
+    }
+}
+
+if (!function_exists('isSuperAdmin')) {
+    /**
+     * Check if the authenticated user is a Super Admin.
+     * Super Admins bypass all tenant-level restrictions.
+     */
+    function isSuperAdmin(): bool
+    {
+        return auth()->check() && auth()->user()->hasRole(\App\Support\Roles::SUPER_ADMIN);
     }
 }

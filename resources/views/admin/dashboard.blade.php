@@ -249,7 +249,7 @@
                                             </span>
                                         </div>
                                         <div class="flex-1">
-                                            <p class="text-2xl font-bold mb-0">{{ number_format($stats[0]['value'] ?? 1389) }}</p>
+                                            <p class="text-2xl font-bold mb-0">{{ number_format($crmSummary['total_broadcasts'] ?? 0) }}</p>
                                             <p class="mb-0 text-[11px] text-textmuted">{{ __('Campaigns sent') }}</p>
                                         </div>
                                     </div>
@@ -267,7 +267,11 @@
                         <div class="box-body !p-0">
                             <div class="flex items-start justify-between p-5 !pb-2">
                                 <div>
-                                    <h6 class="font-medium mb-2 text-[0.9rem] text-textmuted uppercase tracking-wider">{{ __('Total Businesses') }}</h6>
+                                    @if(auth()->user()->hasRole(\App\Support\Roles::SUPER_ADMIN))
+                                        <h6 class="font-medium mb-2 text-[0.9rem] text-textmuted uppercase tracking-wider">{{ __('Total Businesses') }}</h6>
+                                    @else
+                                        <h6 class="font-medium mb-2 text-[0.9rem] text-textmuted uppercase tracking-wider">{{ __('Team Overview') }}</h6>
+                                    @endif
                                     <div class="flex items-center text-nowrap">
                                         <div class="me-3">
                                             <span class="avatar !rounded-full bg-warning-gradient !text-white text-xl p-3 shadow-lg">
@@ -275,8 +279,13 @@
                                             </span>
                                         </div>
                                         <div class="flex-1">
-                                            <p class="text-2xl font-bold mb-0">{{ number_format($stats[1]['value'] ?? 2359) }}</p>
-                                            <p class="mb-0 text-[11px] text-textmuted">{{ __('Active workspaces') }}</p>
+                                            @if(auth()->user()->hasRole(\App\Support\Roles::SUPER_ADMIN))
+                                                <p class="text-2xl font-bold mb-0">{{ number_format($crmSummary['total_organizations'] ?? 0) }}</p>
+                                                <p class="mb-0 text-[11px] text-textmuted">{{ __('Active workspaces') }}</p>
+                                            @else
+                                                <p class="text-2xl font-bold mb-0">{{ $stats[1]['value'] ?? 1 }}</p>
+                                                <p class="mb-0 text-[11px] text-textmuted">{{ __('Team members') }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>

@@ -13,187 +13,231 @@
             return '—';
         }
         $sym = strtoupper($currency) === 'INR' ? '₹' : $currency.' ';
-
         return $sym.number_format($amount, 0);
     };
 
     $filterLinks = [
         'all' => __('All'),
-        'active' => __('Active plans'),
-        'expired' => __('Expired plans'),
-        'expiring' => __('Expiring in 7 days'),
+        'active' => __('Active'),
+        'expired' => __('Expired'),
+        'expiring' => __('Expiring ≤7d'),
         'trial' => __('Trial'),
     ];
 @endphp
 
 @section('content')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
-        <div>
-            <h4 class="mb-1">{{ __('Subscriptions') }}</h4>
-            <p class="mb-0 text-body-secondary">
-                {{ __('Track tenant billing periods, trials, and renewal risk from one place.') }}
-            </p>
+    <!-- Page Header -->
+    <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
+        <div class="my-auto">
+            <h5 class="page-title text-[1.3125rem] font-medium text-defaulttextcolor mb-0">{{ __('Subscriptions') }}</h5>
+            <nav>
+                <ol class="flex items-center whitespace-nowrap min-w-0">
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-primary hover:text-primary" href="javascript:void(0);">
+                            {{ __('Admin') }}
+                            <i class="ti ti-chevrons-right flex-shrink-0 mx-3 overflow-visible text-textmuted rtl:rotate-180"></i>
+                        </a>
+                    </li>
+                    <li class="text-[12px]">
+                        <a class="flex items-center text-textmuted" href="javascript:void(0);">
+                            {{ __('Subscriptions') }}
+                        </a>
+                    </li>
+                </ol>
+            </nav>
         </div>
-        <div class="d-flex flex-wrap gap-2">
-            <a
-                href="{{ route('admin.subscriptions.index', $filter === 'all' ? ['export' => 'csv'] : ['filter' => $filter, 'export' => 'csv']) }}"
-                class="btn btn-label-secondary"
-            >
-                <i class="icon-base ri ri-file-excel-2-line me-1"></i>{{ __('Export CSV') }}
+
+        <div class="flex xl:my-auto right-content align-items-center">
+            <a href="{{ route('admin.subscriptions.index', $filter === 'all' ? ['export' => 'csv'] : ['filter' => $filter, 'export' => 'csv']) }}" class="ti-btn ti-btn-light font-medium !mb-0 shadow-sm border border-defaultborder/10">
+                <i class="ri-file-excel-2-line me-1"></i>{{ __('Export CSV') }}
             </a>
+            <button type="button" class="ti-btn ti-btn-warning-full text-white ti-btn-icon ms-2 !mb-0" onclick="window.location.reload()" title="{{ __('Refresh') }}">
+                <i class="ri-refresh-line"></i>
+            </button>
         </div>
     </div>
+    <!-- Page Header Close -->
 
     @if (session('success'))
-        <div class="alert alert-success alert-dismissible mb-4" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="bg-success/10 text-success border border-success/20 p-4 rounded-md mb-4 flex justify-between items-center" role="alert">
+            <div class="flex items-center">
+                <i class="ri-checkbox-circle-line me-2 text-lg"></i>
+                {{ session('success') }}
+            </div>
+            <button type="button" class="text-success" data-bs-dismiss="alert" aria-label="Close">
+                <i class="ri-close-line"></i>
+            </button>
         </div>
     @endif
 
-    <div class="d-flex flex-wrap gap-2 mb-4">
-        @foreach ($filterLinks as $key => $label)
-            <a
-                href="{{ $key === 'all' ? route('admin.subscriptions.index') : route('admin.subscriptions.index', ['filter' => $key]) }}"
-                @class([
-                    'btn btn-sm',
-                    'btn-primary' => ($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === '')),
-                    'btn-label-secondary' => ! (($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === ''))),
-                ])
-            >{{ $label }}</a>
-        @endforeach
-    </div>
-
-    <div class="alert alert-info py-2 small mb-4" role="note">
-        <i class="icon-base ri ri-mail-send-line me-1"></i>
-        {{ __('Automated expiry reminders can be wired to mail / WhatsApp in a future release.') }}
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-body py-3">
-            <div class="row g-3 text-center text-md-start">
-                <div class="col-6 col-md-3">
-                    <div class="small text-muted text-uppercase">{{ __('Active') }}</div>
-                    <div class="h5 mb-0 text-success">{{ number_format($counts['active']) }}</div>
+    {{-- Stats Summary --}}
+    <div class="grid grid-cols-12 gap-x-6 mb-6">
+        <div class="col-span-12 md:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[11px] font-bold uppercase tracking-widest mb-1">{{ __('Active') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-success">{{ number_format($counts['active']) }}</h4>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-success/10 text-success rounded-md p-2">
+                            <i class="ri-checkbox-circle-line text-lg"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="small text-muted text-uppercase">{{ __('Expired') }}</div>
-                    <div class="h5 mb-0 text-danger">{{ number_format($counts['expired']) }}</div>
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[11px] font-bold uppercase tracking-widest mb-1">{{ __('Expired') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-danger">{{ number_format($counts['expired']) }}</h4>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-danger/10 text-danger rounded-md p-2">
+                            <i class="ri-close-circle-line text-lg"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="small text-muted text-uppercase">{{ __('Expiring ≤7d') }}</div>
-                    <div class="h5 mb-0 text-warning">{{ number_format($counts['expiring_7d']) }}</div>
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[11px] font-bold uppercase tracking-widest mb-1">{{ __('Expiring ≤7d') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-warning">{{ number_format($counts['expiring_7d']) }}</h4>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-warning/10 text-warning rounded-md p-2">
+                            <i class="ri-time-line text-lg"></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-6 col-md-3">
-                    <div class="small text-muted text-uppercase">{{ __('Trial') }}</div>
-                    <div class="h5 mb-0 text-info">{{ number_format($counts['trial']) }}</div>
+            </div>
+        </div>
+        <div class="col-span-12 md:col-span-3">
+            <div class="box shadow-none border border-defaultborder/10">
+                <div class="box-body !p-4">
+                    <div class="flex items-center">
+                        <div class="flex-1">
+                            <p class="text-textmuted text-[11px] font-bold uppercase tracking-widest mb-1">{{ __('Trial') }}</p>
+                            <h4 class="text-[1.25rem] font-bold mb-0 text-info">{{ number_format($counts['trial']) }}</h4>
+                        </div>
+                        <div class="ti-avatar ti-avatar-md bg-info/10 text-info rounded-md p-2">
+                            <i class="ri-user-star-line text-lg"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    @if ($rows->isEmpty())
-        <div class="card">
-            <div class="card-body text-body-secondary">
-                {{ __('No rows match this filter.') }}
-                <a href="{{ route('admin.subscriptions.index') }}">{{ __('Clear filters') }}</a>
+    <div class="box shadow-none border border-defaultborder/10">
+        <div class="box-header !border-b !border-defaultborder/10 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex flex-wrap gap-2">
+                @foreach ($filterLinks as $key => $label)
+                    <a href="{{ $key === 'all' ? route('admin.subscriptions.index') : route('admin.subscriptions.index', ['filter' => $key]) }}"
+                       @class([
+                           'ti-btn ti-btn-sm !font-medium !mb-0 transition-all',
+                           'ti-btn-primary-full' => ($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === '')),
+                           'ti-btn-light' => ! (($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === ''))),
+                       ])
+                    >{{ $label }}</a>
+                @endforeach
+            </div>
+            <div class="flex items-center gap-2 text-textmuted text-[11px]">
+                <i class="ri-information-line text-[14px]"></i>
+                {{ __('Refining visibility by plan status.') }}
             </div>
         </div>
-    @else
-        <div class="card">
-            <div class="card-datatable table-responsive">
-                <table id="dt-subscriptions" class="table table-hover table-sm border-top">
-                    <thead>
-                        <tr>
-                            <th>{{ __('Organization') }}</th>
-                            <th>{{ __('Plan') }}</th>
-                            <th>{{ __('Status') }}</th>
-                            <th>{{ __('Start') }}</th>
-                            <th>{{ __('End') }}</th>
-                            <th>{{ __('Days left') }}</th>
-                            <th>{{ __('Amount') }}</th>
-                            <th class="text-end">{{ __('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($rows as $row)
-                            @php
-                                /** @var array $row */
-                                $org = $row['organization'];
-                                $endTs = $row['end_date']?->timestamp ?? 0;
-                            @endphp
+        <div class="box-body !p-0">
+            @if ($rows->isEmpty())
+                <div class="p-20 text-center">
+                    <p class="text-textmuted mb-2">{{ __('No subscriptions found for this criteria.') }}</p>
+                    <a href="{{ route('admin.subscriptions.index') }}" class="text-primary font-bold decoration-2">{{ __('Clear filters') }}</a>
+                </div>
+            @else
+                <div class="table-responsive p-4">
+                    <table id="dt-subscriptions" class="ti-custom-table table-hover text-nowrap w-full">
+                        <thead class="bg-gray-100/50 dark:bg-black/20 border-b border-defaultborder/10">
                             <tr>
-                                <td class="fw-medium">{{ $row['organization_name'] }}</td>
-                                <td>{{ $row['plan_name'] }}</td>
-                                <td>
-                                    @if ($row['status_key'] === 'active')
-                                        <span class="badge rounded-pill bg-label-success">{{ $row['status_label'] }}</span>
-                                    @elseif ($row['status_key'] === 'trial')
-                                        <span class="badge rounded-pill bg-label-info">{{ $row['status_label'] }}</span>
-                                    @else
-                                        <span class="badge rounded-pill bg-label-danger">{{ $row['status_label'] }}</span>
-                                    @endif
-                                </td>
-                                <td data-order="{{ $row['start_date']?->timestamp ?? 0 }}">
-                                    <span class="text-body-secondary small">{{ $row['start_date']?->format('M j, Y') ?? '—' }}</span>
-                                </td>
-                                <td data-order="{{ $endTs }}">
-                                    <span class="text-body-secondary small">{{ $row['end_date']?->format('M j, Y') ?? '—' }}</span>
-                                </td>
-                                <td data-order="{{ $row['days_remaining'] ?? -9999 }}">
-                                    <span @class([
-                                        'fw-semibold',
-                                        'text-success' => $row['days_color'] === 'success',
-                                        'text-warning' => $row['days_color'] === 'warning',
-                                        'text-danger' => $row['days_color'] === 'danger',
-                                        'text-body-secondary' => $row['days_color'] === 'secondary',
-                                    ])>{{ $row['days_display'] }}</span>
-                                </td>
-                                <td>{{ $currencyFmt($row['amount'], $row['currency']) }}</td>
-                                <td class="text-end">
-                                    <div class="d-inline-flex flex-wrap justify-content-end gap-1">
-                                        <a
-                                            href="{{ route('admin.organizations.edit', $org) }}"
-                                            class="btn btn-sm btn-text-secondary"
-                                            title="{{ __('View organization') }}"
-                                        >
-                                            <i class="icon-base ri ri-building-line"></i>
-                                        </a>
-                                        <form
-                                            action="{{ route('admin.subscriptions.extend', $org) }}"
-                                            method="post"
-                                            class="d-inline"
-                                            onsubmit="return confirm(@json(__('Extend billing period by 30 days?')));"
-                                        >
-                                            @csrf
-                                            <input type="hidden" name="days" value="30">
-                                            <button type="submit" class="btn btn-sm btn-label-primary" title="{{ __('Extend plan') }}">
-                                                <i class="icon-base ri ri-calendar-check-line"></i>
-                                            </button>
-                                        </form>
-                                        <a
-                                            href="{{ route('admin.subscriptions.change-plan', $org) }}"
-                                            class="btn btn-sm btn-text-primary"
-                                            title="{{ __('Change plan') }}"
-                                        >
-                                            <i class="icon-base ri ri-swap-line"></i>
-                                        </a>
-                                    </div>
-                                </td>
+                                <th class="!py-3 !px-4">{{ __('Organization') }}</th>
+                                <th class="!py-3 !px-4">{{ __('Plan') }}</th>
+                                <th class="!py-3 !px-4">{{ __('Status') }}</th>
+                                <th class="!py-3 !px-4">{{ __('Start') }}</th>
+                                <th class="!py-3 !px-4">{{ __('Expiry') }}</th>
+                                <th class="!py-3 !px-4">{{ __('Time Left') }}</th>
+                                <th class="!py-3 !px-4 text-end">{{ __('Amount') }}</th>
+                                <th class="!py-3 !px-4 text-end">{{ __('Actions') }}</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach ($rows as $row)
+                                @php
+                                    $org = $row['organization'];
+                                @endphp
+                                <tr class="border-b last:border-0 hover:bg-gray-50/20 transition-colors h-14">
+                                    <td class="!px-4 font-bold text-sm text-defaulttextcolor">{{ $row['organization_name'] }}</td>
+                                    <td class="!px-4 text-sm">{{ $row['plan_name'] }}</td>
+                                    <td class="!px-4">
+                                        @if ($row['status_key'] === 'active')
+                                            <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[10px] border border-success/20">{{ $row['status_label'] }}</span>
+                                        @elseif ($row['status_key'] === 'trial')
+                                            <span class="badge bg-info/10 text-info rounded-full px-2 py-1 text-[10px] border border-info/20">{{ $row['status_label'] }}</span>
+                                        @else
+                                            <span class="badge bg-danger/10 text-danger rounded-full px-2 py-1 text-[10px] border border-danger/20">{{ $row['status_label'] }}</span>
+                                        @endif
+                                    </td>
+                                    <td class="!px-4 text-[12px] text-textmuted" data-order="{{ $row['start_date']?->timestamp ?? 0 }}">
+                                        {{ $row['start_date']?->format('M j, Y') ?? '—' }}
+                                    </td>
+                                    <td class="!px-4 text-[12px] text-textmuted" data-order="{{ $row['end_date']?->timestamp ?? 0 }}">
+                                        {{ $row['end_date']?->format('M j, Y') ?? '—' }}
+                                    </td>
+                                    <td class="!px-4" data-order="{{ $row['days_remaining'] ?? -9999 }}">
+                                        <span @class([
+                                            'font-bold text-xs',
+                                            'text-success' => $row['days_color'] === 'success',
+                                            'text-warning' => $row['days_color'] === 'warning',
+                                            'text-danger' => $row['days_color'] === 'danger',
+                                            'text-textmuted' => $row['days_color'] === 'secondary',
+                                        ])>{{ $row['days_display'] }}</span>
+                                    </td>
+                                    <td class="!px-4 text-end font-medium">{{ $currencyFmt($row['amount'], $row['currency']) }}</td>
+                                    <td class="text-end !px-4">
+                                        <div class="flex justify-end gap-1">
+                                            <a href="{{ route('admin.organizations.edit', $org) }}" class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0" title="{{ __('Organization') }}">
+                                                <i class="ri-building-line"></i>
+                                            </a>
+                                            <form action="{{ route('admin.subscriptions.extend', $org) }}" method="post" onsubmit="return confirm(@json(__('Extend billing period by 30 days?')));">
+                                                @csrf
+                                                <input type="hidden" name="days" value="30">
+                                                <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-primary !border-0" title="{{ __('Extend (+30d)') }}">
+                                                    <i class="ri-calendar-check-line"></i>
+                                                </button>
+                                            </form>
+                                            <a href="{{ route('admin.subscriptions.change-plan', $org) }}" class="ti-btn ti-btn-sm ti-btn-soft-info !border-0" title="{{ __('Change Plan') }}">
+                                                <i class="ri-swap-line"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
         </div>
-    @endif
+    </div>
 @endsection
 
 @push('vendor-js')
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js" crossorigin="anonymous"></script>
 @endpush
 
 @push('page-js')
@@ -221,7 +265,7 @@
                 language: {
                     search: '',
                     searchPlaceholder: 'Search…',
-                    lengthMenu: 'Show _MENU_ entries',
+                    lengthMenu: 'Show _MENU_',
                     info: 'Showing _START_ to _END_ of _TOTAL_',
                     infoEmpty: 'No subscriptions',
                     infoFiltered: '(filtered from _MAX_)',
@@ -229,10 +273,14 @@
                     paginate: { next: 'Next', previous: 'Prev' },
                 },
                 dom:
-                    "<'row align-items-center justify-content-between g-2 mb-3 px-3 pt-3'<'col-sm-12 col-md-6 d-flex align-items-center'l><'col-sm-12 col-md-6 d-flex justify-content-md-end'f>>" +
+                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center text-xs'l><'flex items-center'f>>" +
                     "<'table-responsive'tr>" +
-                    "<'row align-items-center justify-content-between g-2 px-3 pb-3'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 d-flex justify-content-md-end'p>>",
+                    "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
             });
+            
+            // Re-style for compatibility
+            jQuery('.dataTables_filter input').addClass('ti-form-input !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md');
+            jQuery('.dataTables_length select').addClass('ti-form-select !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md !w-20 mx-2');
         })();
     </script>
 @endpush

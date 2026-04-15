@@ -15,4 +15,9 @@ class PagesController extends Controller
     {
         return view('pages.pricing');
     }
+
+    public function otpApiService(): View
+    {
+        return view('pages.api-service');
+    }
 }

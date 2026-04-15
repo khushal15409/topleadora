@@ -14,10 +14,10 @@ class SubscriptionController extends Controller
 {
     public function pricing(Request $request): View
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
 
         $plans = Plan::query()
             ->where('is_active', true)
@@ -39,10 +39,10 @@ class SubscriptionController extends Controller
 
     public function organizationPlan(Request $request): View
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
 
         $user->loadMissing('organization.plan');
         $organization = $user->organization;
@@ -103,10 +103,10 @@ class SubscriptionController extends Controller
 
     public function checkout(Request $request, Plan $plan): View
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
         abort_unless($plan->is_active, 404);
 
         return view('admin.subscription.checkout', [
@@ -119,7 +119,7 @@ class SubscriptionController extends Controller
      */
     public function checkoutById(Request $request, string $plan): View
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $model = Plan::query()
             ->whereKey((int) $plan)
@@ -131,10 +131,10 @@ class SubscriptionController extends Controller
 
     public function activate(Request $request, Plan $plan): RedirectResponse
     {
-        abort_if(! paymentEnabled(), 404);
+        abort_if(!paymentEnabled(), 404);
 
         $user = $request->user();
-        abort_unless($user && $user->hasRole(Roles::ORGANIZATION), 403);
+        abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
         abort_unless($plan->is_active, 404);
 
         $user->loadMissing('organization');

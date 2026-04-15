@@ -58,6 +58,7 @@ Route::post('/webhooks/whatsapp', [WhatsAppWebhookController::class, 'receive'])
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/features', [PagesController::class, 'features'])->name('features');
 Route::get('/pricing', [PagesController::class, 'pricing'])->name('pricing');
+Route::get('/otp-whatsapp-api', [PagesController::class, 'otpApiService'])->name('otp-whatsapp-api');
 
 Route::get('/contact', [ContactFormController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactFormController::class, 'store'])
@@ -72,7 +73,7 @@ Route::post('/leads', [LeadCaptureController::class, 'store'])
     ->middleware('throttle:15,1')
     ->name('leads.capture.store');
 Route::get('/get-quote/{slug}', function (string $slug) {
-    return redirect()->to('/leads/'.$slug, 301);
+    return redirect()->to('/leads/' . $slug, 301);
 })->where('slug', '[a-z0-9-]+');
 Route::post('/get-quote', [LeadCaptureController::class, 'store'])
     ->middleware('throttle:15,1')
@@ -88,13 +89,13 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // GCC UI shell smoke test (same auth/roles as admin app); remove or restrict by env when rollout is complete.
-Route::middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
+Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZATION . '|' . Roles::ORG_ADMIN . '|' . Roles::SALES])
     ->get('/ui-test', function () {
         return view('gcc.ui-test');
     })
     ->name('ui.test');
 
-Route::middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
+Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZATION . '|' . Roles::API_CLIENT])
     ->prefix('dashboard')
     ->name('dashboard.')
     ->group(function () {
@@ -104,31 +105,54 @@ Route::middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
                     // Bare /dashboard had no route → 404. CRM entry plus safe redirect for bookmarks.
                     Route::get('/', function () {
                         $user = auth()->user();
-                        if ($user !== null && $user->hasRole(Roles::SUPER_ADMIN)) {
-                            return redirect()->route('admin.dashboard');
+                        if ($user !== null) {
+                            if ($user->hasRole(Roles::SUPER_ADMIN)) {
+                                return redirect()->route('admin.dashboard');
+                            }
+                            if ($user->hasRole(Roles::API_CLIENT)) {
+                                return redirect()->route('dashboard.api.overview');
+                            }
                         }
 
                         return redirect()->route('dashboard.leads.index');
                     })->name('home');
 
-                    Route::get('/leads', [DashboardLeadController::class, 'index'])->name('leads.index');
-                    Route::get('/leads/create', [DashboardLeadController::class, 'create'])->name('leads.create');
-                    Route::post('/leads', [DashboardLeadController::class, 'store'])->name('leads.store');
-                    Route::get('/leads/{lead}/summary', [DashboardLeadController::class, 'summary'])->name('leads.summary');
-                    Route::get('/leads/{lead}/edit', [DashboardLeadController::class, 'edit'])->name('leads.edit');
-                    Route::put('/leads/{lead}', [DashboardLeadController::class, 'update'])->name('leads.update');
-                    Route::post('/leads/{lead}/quick', [DashboardLeadController::class, 'quick'])->name('leads.quick');
+                    // CRM Modules (STRICT: NOT FOR API_CLIENT)
+                    Route::middleware(['not.api.client'])->group(function () {
+                        Route::get('/leads', [DashboardLeadController::class, 'index'])->name('leads.index');
+                        Route::get('/leads/create', [DashboardLeadController::class, 'create'])->name('leads.create');
+                        Route::post('/leads', [DashboardLeadController::class, 'store'])->name('leads.store');
+                        Route::get('/leads/{lead}/summary', [DashboardLeadController::class, 'summary'])->name('leads.summary');
+                        Route::get('/leads/{lead}/edit', [DashboardLeadController::class, 'edit'])->name('leads.edit');
+                        Route::put('/leads/{lead}', [DashboardLeadController::class, 'update'])->name('leads.update');
+                        Route::post('/leads/{lead}/quick', [DashboardLeadController::class, 'quick'])->name('leads.quick');
 
-                    Route::get('/pipeline', [DashboardPipelineController::class, 'index'])->name('pipeline.index');
-                    Route::patch('/leads/{lead}/stage', [DashboardPipelineController::class, 'updateStage'])->name('leads.update-stage');
+                        Route::get('/pipeline', [DashboardPipelineController::class, 'index'])->name('pipeline.index');
+                        Route::patch('/leads/{lead}/stage', [DashboardPipelineController::class, 'updateStage'])->name('leads.update-stage');
 
-                    Route::get('/followups', [DashboardFollowUpController::class, 'index'])->name('followups.index');
-                    Route::post('/followups/{lead}/complete', [DashboardFollowUpController::class, 'complete'])->name('followups.complete');
+                        Route::get('/followups', [DashboardFollowUpController::class, 'index'])->name('followups.index');
+                        Route::post('/followups/{lead}/complete', [DashboardFollowUpController::class, 'complete'])->name('followups.complete');
 
-                    Route::get('/broadcast', [DashboardBroadcastController::class, 'index'])->name('broadcast.index');
-                    Route::post('/broadcast', [DashboardBroadcastController::class, 'store'])->name('broadcast.store');
+                        Route::get('/broadcast', [DashboardBroadcastController::class, 'index'])->name('broadcast.index');
+                        Route::post('/broadcast', [DashboardBroadcastController::class, 'store'])->name('broadcast.store');
 
-                    Route::get('/reports', [DashboardReportsController::class, 'index'])->name('reports.index');
+                        Route::get('/reports', [DashboardReportsController::class, 'index'])->name('reports.index');
+                    });
+
+                    // API Service Routes (STRICT: API_CLIENT ONLY)
+                    Route::middleware(['api.client'])->prefix('api')->name('api.')->group(function () {
+                        Route::get('/overview', [\App\Http\Controllers\Dashboard\ApiDashboardController::class, 'index'])->name('overview');
+                        Route::get('/keys', [\App\Http\Controllers\Dashboard\ApiKeyController::class, 'index'])->name('keys.index');
+                        Route::post('/keys', [\App\Http\Controllers\Dashboard\ApiKeyController::class, 'store'])->name('keys.store');
+                        Route::delete('/keys/{token}', [\App\Http\Controllers\Dashboard\ApiKeyController::class, 'destroy'])->name('keys.destroy');
+                        Route::get('/logs', [\App\Http\Controllers\Dashboard\ApiUsageLogController::class, 'index'])->name('logs');
+                        Route::get('/wallet', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'index'])->name('wallet');
+                        Route::post('/wallet/create-order', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'createOrder'])->name('wallet.create-order');
+                        Route::post('/wallet/verify-payment', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'verifyPayment'])->name('wallet.verify-payment');
+                        Route::get('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'index'])->name('settings');
+                        Route::put('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'update'])->name('settings.update');
+                        Route::get('/docs', [\App\Http\Controllers\Dashboard\ApiDocsController::class, 'index'])->name('docs');
+                    });
                 });
             });
         });
@@ -138,10 +162,10 @@ Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::prefix('admin')
-    ->middleware(['auth', 'role:'.Roles::SUPER_ADMIN.'|'.Roles::ORGANIZATION])
+    ->middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZATION . '|' . Roles::ORG_ADMIN . '|' . Roles::SALES])
     ->name('admin.')
     ->group(function () {
-        Route::middleware(['role:'.Roles::SUPER_ADMIN])->group(function () {
+        Route::middleware(['role:' . Roles::SUPER_ADMIN])->group(function () {
             Route::resource('organizations', OrganizationController::class)->except(['show']);
 
             Route::get('users', [OrganizationUserController::class, 'index'])->name('users.index');
