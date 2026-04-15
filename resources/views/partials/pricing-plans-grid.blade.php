@@ -6,10 +6,15 @@
     $pricingContainerClass = $pricingContainerClass ?? 'container';
     $display = config('pricing_plans', []);
 
+    // Ensure $plans is a collection to avoid "Member function isEmpty() on array" error
+    if (!isset($plans) || is_array($plans)) {
+        $plans = collect($plans ?? []);
+    }
+
     $currencySymbol = static function (\App\Models\Plan $plan): string {
         return match (strtoupper((string) $plan->currency)) {
             'INR' => '₹',
-            default => $plan->currency.' ',
+            default => $plan->currency . ' ',
         };
     };
 
@@ -23,7 +28,7 @@
     };
 @endphp
 
-@if (! paymentEnabled())
+@if (!paymentEnabled())
     {{-- Free mode: hide pricing section completely. --}}
     @php return; @endphp
 @endif
@@ -49,7 +54,7 @@
                             $display[$plan->slug] ?? []
                         );
                         $badgeTitle = $meta['badge_title'] ?? $plan->name;
-                        $featured = ! empty($meta['featured']);
+                        $featured = !empty($meta['featured']);
                         $delay = 100 + ($loop->index * 80);
                     @endphp
                     <div class="col-lg-4" @if ($enableAos) data-aos="fade-up" data-aos-delay="{{ $delay }}" @endif>
@@ -87,15 +92,11 @@
                             </ul>
                             <div class="cta">
                                 @if ($ctaMode === 'admin')
-                                    <a
-                                        href="{{ route('admin.checkout', $plan->id) }}"
-                                        class="btn btn-choose btn-choose-paid w-100"
-                                    >Choose {{ $badgeTitle }}</a>
+                                    <a href="{{ route('admin.checkout', $plan->id) }}"
+                                        class="btn btn-choose btn-choose-paid w-100">Choose {{ $badgeTitle }}</a>
                                 @else
-                                    <a
-                                        href="{{ $landingCta(['plan' => $landingPlanQuery($plan)]) }}"
-                                        class="btn btn-choose btn-choose-paid w-100"
-                                    >Choose {{ $badgeTitle }}</a>
+                                    <a href="{{ $landingCta(['plan' => $landingPlanQuery($plan)]) }}"
+                                        class="btn btn-choose btn-choose-paid w-100">Choose {{ $badgeTitle }}</a>
                                 @endif
                             </div>
                         </article>

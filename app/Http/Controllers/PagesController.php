@@ -18,6 +18,14 @@ class PagesController extends Controller
 
     public function otpApiService(): View
     {
-        return view('pages.api-service');
+        $pricingPlans = \Illuminate\Support\Facades\Cache::remember('active_plans', 300, static function () {
+            return \App\Models\Plan::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get();
+        });
+
+        return view('pages.api-service', compact('pricingPlans'));
     }
 }
