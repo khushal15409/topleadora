@@ -1,6 +1,7 @@
 <?php
-// Grant permissions for Razorpay SDK features to avoid console violations and ensure fraud detection works
-header('Permissions-Policy: accelerometer=(self "https://api.razorpay.com"), gyroscope=(self "https://api.razorpay.com"), magnetometer=(self "https://api.razorpay.com"), payment=(self), usb=(self)');
+// Grant permissions for Razorpay SDK features to avoid console violations and ensure fraud detection (Sardine) works.
+// We use '*' here to ensure that regardless of frame nesting, the sensors are available to the SDK.
+header('Permissions-Policy: accelerometer=*, gyroscope=*, magnetometer=*, payment=(self), usb=(self)');
 ?>
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="ltr" data-nav-layout="vertical" class="light"

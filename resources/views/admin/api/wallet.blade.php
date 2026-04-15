@@ -140,12 +140,22 @@
                                 max="100000"
                                 step="1">
                         </div>
+                        <div class="p-3 mb-4 rounded-md bg-warning/10 border border-warning/20">
+                            <p class="text-warning-600 text-[11px] font-semibold mb-1 flex items-center gap-2">
+                                <i class="ri-error-warning-fill text-[14px]"></i>
+                                {{ __('Domestic Payments Only') }}
+                            </p>
+                            <p class="text-textmuted text-[10px] leading-relaxed mb-0">
+                                {{ __('⚠️ Only Indian debit/credit cards and UPI are supported. International cards will not work due to gateway restrictions.') }}
+                            </p>
+                        </div>
+
                         <div class="flex flex-col gap-1 mt-1">
                             <p class="text-textmuted text-[11px] mb-0">{{ __('Min: ₹100 — Max: ₹1,00,000') }}</p>
-                            <p class="text-danger/80 text-[10px] items-center gap-1 flex">
-                                <i class="ri-error-warning-line text-[12px]"></i>
-                                {{ __('Only Indian cards, UPI, and Netbanking are supported.') }}
-                            </p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="badge bg-success/10 text-success !text-[10px] py-1 px-2 border border-success/20 uppercase tracking-tighter">{{ __('Recommended') }}</span>
+                                <p class="text-textmuted text-[10px] mb-0">{{ __('Use UPI for fastest processing and 100% success rate.') }}</p>
+                            </div>
                         </div>
                     </div>
 
@@ -337,11 +347,18 @@
 
         const options = {
             "key": orderData.key,
-            "amount": orderData.amount, // Exactly as calculated/returned by Razorpay SDK server-side
+            "amount": orderData.amount, 
             "currency": orderData.currency || "INR",
             "name": orderData.name || "API Wallet",
             "description": orderData.description || "Wallet Credits Top-up",
             "order_id": orderData.order_id,
+            "config": {
+                "display": {
+                    "preferences": {
+                        "method": "upi"
+                    }
+                }
+            },
             "handler": async function (response) {
                 console.log('[Razorpay] Payment captured successfully. Verification started.');
                 await verifyPayment(response, amount);
@@ -369,26 +386,50 @@
 
         const rzp = new window.Razorpay(options);
         
-        rzp.on('payment.failed', function (response) {
+        rzp.on('payment.failed', async function (response) {
             console.error('[Razorpay] Payment Failed Error:', response.error);
             
-            let description = response.error.description || 'Reason unknown';
+            const error = response.error;
+            let description = error.description || 'Reason unknown';
             
-            // Check specifically for international card restriction
-            if (description.includes('International cards are not supported')) {
-                description = 'International cards are not supported. Please use an Indian Debit/Credit card, UPI, or Netbanking.';
-            }
+            // Log error to backend for admin diagnostics
+            await logPaymentError(error, orderData.order_id);
 
-            showAlert('error', 'Payment failed: ' + description);
-            
-            // Log the specific failure for admin tracking if needed
-            console.warn('[Razorpay] Error Code:', response.error.code);
-            console.warn('[Razorpay] Reason:', response.error.reason);
+            // Specific user guidance
+            if (description.includes('International cards are not supported')) {
+                alert("Use Indian cards or UPI. International cards are not supported.");
+            } else {
+                showAlert('error', 'Payment failed: ' + description);
+            }
 
             resetBtn();
         });
 
         rzp.open();
+    }
+
+    async function logPaymentError(error, orderId) {
+        try {
+            await fetch('{{ route('admin.wallet.log-error') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    payment_id: error.metadata?.payment_id || null,
+                    error_code: error.code,
+                    error_description: error.description,
+                    error_source: error.source,
+                    error_step: error.step,
+                    error_reason: error.reason,
+                    metadata: error.metadata || {}
+                })
+            });
+        } catch (e) {
+            console.error('[Diagnostic] Failed to log error to server', e);
+        }
     }
 
     async function verifyPayment(response, amount) {

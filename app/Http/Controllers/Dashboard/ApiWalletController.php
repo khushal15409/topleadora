@@ -176,4 +176,40 @@ class ApiWalletController extends Controller
             'new_balance' => number_format($organization->fresh()->wallet_balance, 2),
         ]);
     }
+
+    /**
+     * Log payment failure from frontend.
+     */
+    public function logError(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'order_id' => ['nullable', 'string'],
+            'payment_id' => ['nullable', 'string'],
+            'error_code' => ['nullable', 'string'],
+            'error_description' => ['nullable', 'string'],
+            'error_source' => ['nullable', 'string'],
+            'error_step' => ['nullable', 'string'],
+            'error_reason' => ['nullable', 'string'],
+            'metadata' => ['nullable', 'array'],
+        ]);
+
+        $user = $request->user();
+
+        \DB::table('payment_logs')->insert([
+            'user_id' => $user->id ?? null,
+            'organization_id' => $user->organization_id ?? null,
+            'order_id' => $data['order_id'] ?? null,
+            'payment_id' => $data['payment_id'] ?? null,
+            'error_code' => $data['error_code'] ?? null,
+            'error_description' => $data['error_description'] ?? null,
+            'error_source' => $data['error_source'] ?? null,
+            'error_step' => $data['error_step'] ?? null,
+            'error_reason' => $data['error_reason'] ?? null,
+            'metadata' => json_encode($data['metadata'] ?? []),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['ok' => true]);
+    }
 }

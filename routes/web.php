@@ -149,6 +149,7 @@ Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZAT
                         Route::get('/wallet', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'index'])->name('wallet');
                         Route::post('/wallet/create-order', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'createOrder'])->name('wallet.create-order');
                         Route::post('/wallet/verify-payment', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'verifyPayment'])->name('wallet.verify-payment');
+                        Route::post('/wallet/log-error', [\App\Http\Controllers\Dashboard\ApiWalletController::class, 'logError'])->name('wallet.log-error');
                         Route::get('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'index'])->name('settings');
                         Route::put('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'update'])->name('settings.update');
                         Route::get('/docs', [\App\Http\Controllers\Dashboard\ApiDocsController::class, 'index'])->name('docs');
