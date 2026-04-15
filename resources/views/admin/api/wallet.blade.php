@@ -393,6 +393,9 @@
         }
 
         console.log('[Razorpay] Final Options Payload:', options);
+        console.log('[Diagnostic] Key:', options.key);
+        console.log('[Diagnostic] Order ID:', options.order_id);
+        console.log('[Diagnostic] Amount (Paise):', options.amount);
 
         const rzp = new window.Razorpay(options);
         

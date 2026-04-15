@@ -81,17 +81,22 @@ class ApiWalletController extends Controller
             'status' => 'pending',
         ]);
 
+        $phone = preg_replace('/[^0-9]/', '', (string) ($user->phone ?? ''));
+        if (strlen($phone) > 10) {
+            $phone = substr($phone, -10);
+        }
+
         return response()->json([
             'key' => (string) $razorpay->key(),
             'order_id' => (string) $orderPayload['id'],
             'amount' => (int) $orderPayload['amount'], // paise returned from RZP
-            'currency' => 'INR', // Explicitly force INR to prevent international card errors
+            'currency' => 'INR',
             'name' => (string) config('app.name', 'WP-CRM'),
             'description' => 'Wallet top-up credits',
             'prefill' => [
                 'name' => (string) ($user->name ?? 'User'),
                 'email' => (string) ($user->email ?? ''),
-                'contact' => (string) ($user->phone ?? ''),
+                'contact' => $phone,
             ],
             'notes' => [
                 'organization_id' => (string) $organization->id,
