@@ -39,7 +39,7 @@ class ApiWalletController extends Controller
         abort_unless($razorpay->isConfigured(), 422, 'Payment gateway is not configured.');
 
         $validated = $request->validate([
-            'amount' => ['required', 'numeric', 'min:1', 'max:100000'],
+            'amount' => ['required', 'numeric', 'min:100', 'max:100000'],
         ]);
 
         $amount = (float) $validated['amount'];
@@ -85,9 +85,9 @@ class ApiWalletController extends Controller
             'key' => (string) $razorpay->key(),
             'order_id' => (string) $orderPayload['id'],
             'amount' => (int) $orderPayload['amount'], // paise returned from RZP
-            'currency' => (string) ($orderPayload['currency'] ?? 'INR'),
+            'currency' => 'INR', // Explicitly force INR to prevent international card errors
             'name' => (string) config('app.name', 'WP-CRM'),
-            'description' => (string) 'Wallet Top-Up',
+            'description' => 'Wallet top-up credits',
             'prefill' => [
                 'name' => (string) ($user->name ?? 'User'),
                 'email' => (string) ($user->email ?? ''),
@@ -96,6 +96,7 @@ class ApiWalletController extends Controller
             'notes' => [
                 'organization_id' => (string) $organization->id,
                 'user_id' => (string) $user->id,
+                'purpose' => 'recharge',
             ],
         ]);
     }

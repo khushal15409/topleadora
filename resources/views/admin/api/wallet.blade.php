@@ -349,9 +349,13 @@
             "key": orderData.key,
             "amount": orderData.amount, 
             "currency": orderData.currency || "INR",
-            "name": orderData.name || "API Wallet",
-            "description": orderData.description || "Wallet Credits Top-up",
+            "name": orderData.name,
+            "description": orderData.description,
             "order_id": orderData.order_id,
+            "retry": {
+                "enabled": true,
+                "max_count": 1
+            },
             "config": {
                 "display": {
                     "preferences": {
@@ -368,10 +372,7 @@
                 "email": orderData.prefill?.email || USER_EMAIL,
                 "contact": orderData.prefill?.contact || "",
             },
-            "notes": orderData.notes || {
-                "user_id": "{{ auth()->id() }}",
-                "org_id": "{{ $organization->id }}"
-            },
+            "notes": orderData.notes,
             "theme": {
                 "color": "#0162e8"
             },
@@ -383,6 +384,15 @@
                 }
             }
         };
+
+        if (!options.order_id) {
+            console.error('[Razorpay] Order ID is missing from response payload!');
+            showAlert('error', 'Critical Error: Payment order ID not generated correctly. Please try again.');
+            resetBtn();
+            return;
+        }
+
+        console.log('[Razorpay] Final Options Payload:', options);
 
         const rzp = new window.Razorpay(options);
         
