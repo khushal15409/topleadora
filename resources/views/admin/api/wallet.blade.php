@@ -140,7 +140,13 @@
                                 max="100000"
                                 step="1">
                         </div>
-                        <p class="text-textmuted text-[11px] mt-1">{{ __('Min: ₹100 — Max: ₹1,00,000') }}</p>
+                        <div class="flex flex-col gap-1 mt-1">
+                            <p class="text-textmuted text-[11px] mb-0">{{ __('Min: ₹100 — Max: ₹1,00,000') }}</p>
+                            <p class="text-danger/80 text-[10px] items-center gap-1 flex">
+                                <i class="ri-error-warning-line text-[12px]"></i>
+                                {{ __('Only Indian cards, UPI, and Netbanking are supported.') }}
+                            </p>
+                        </div>
                     </div>
 
                     <button type="button"
@@ -365,7 +371,20 @@
         
         rzp.on('payment.failed', function (response) {
             console.error('[Razorpay] Payment Failed Error:', response.error);
-            showAlert('error', 'Payment failed: ' + (response.error.description || 'Reason unknown'));
+            
+            let description = response.error.description || 'Reason unknown';
+            
+            // Check specifically for international card restriction
+            if (description.includes('International cards are not supported')) {
+                description = 'International cards are not supported. Please use an Indian Debit/Credit card, UPI, or Netbanking.';
+            }
+
+            showAlert('error', 'Payment failed: ' + description);
+            
+            // Log the specific failure for admin tracking if needed
+            console.warn('[Razorpay] Error Code:', response.error.code);
+            console.warn('[Razorpay] Reason:', response.error.reason);
+
             resetBtn();
         });
 
