@@ -82,19 +82,20 @@ class ApiWalletController extends Controller
         ]);
 
         return response()->json([
-            'key' => $razorpay->key(),
-            'order_id' => $orderPayload['id'],
-            'amount' => $orderPayload['amount'], // paise returned from RZP
-            'currency' => $orderPayload['currency'] ?? 'INR',
-            'name' => config('app.name', 'CRM'),
-            'description' => 'Wallet Top-Up',
+            'key' => (string) $razorpay->key(),
+            'order_id' => (string) $orderPayload['id'],
+            'amount' => (int) $orderPayload['amount'], // paise returned from RZP
+            'currency' => (string) ($orderPayload['currency'] ?? 'INR'),
+            'name' => (string) config('app.name', 'WP-CRM'),
+            'description' => (string) 'Wallet Top-Up',
             'prefill' => [
-                'name' => (string) ($user->name ?? ''),
+                'name' => (string) ($user->name ?? 'User'),
                 'email' => (string) ($user->email ?? ''),
                 'contact' => (string) ($user->phone ?? ''),
             ],
             'notes' => [
                 'organization_id' => (string) $organization->id,
+                'user_id' => (string) $user->id,
             ],
         ]);
     }
