@@ -410,7 +410,7 @@
 
     async function logPaymentError(error, orderId) {
         try {
-            await fetch('{{ route('admin.wallet.log-error') }}', {
+            await fetch('{{ route('dashboard.api.wallet.log-error') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
