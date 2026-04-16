@@ -2,8 +2,8 @@
 
 @section('body_class', 'inner-page')
 
-@section('meta_title', 'WhatsApp CRM Pricing India | WhatsAppLeadCRM')
-@section('meta_description', 'Simple pricing for WhatsApp CRM software India, API workflows, and lead management. Start free and upgrade as your team grows.')
+@section('meta_title', 'WhatsApp CRM Software India Pricing (Free Trial) | WhatsAppLeadCRM')
+@section('meta_description', 'Simple pricing for WhatsApp CRM software India: lead management, pipeline, follow-ups, and broadcast messaging. Start free and upgrade as your team grows.')
 @section('meta_keywords', 'WhatsApp CRM pricing, CRM India, lead management software, sales CRM pricing, real estate CRM')
 @section('canonical_url', route('pricing', absolute: true))
 
@@ -21,7 +21,7 @@
     <section class="section light-background pt-5 mt-5">
         <div class="container section-title text-center">
             <h1 class="mb-2">Pricing</h1>
-            <p class="mb-0">Start with a free trial and upgrade when you’re ready.</p>
+            <p class="mb-0">Start with a free trial and upgrade when you’re ready. Want full details? See <a href="{{ route('features') }}">WhatsApp CRM features</a> or learn more about <a href="{{ route('whatsapp-crm') }}">WhatsApp CRM software India</a>.</p>
         </div>
     </section>
 

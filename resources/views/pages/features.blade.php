@@ -2,8 +2,8 @@
 
 @section('body_class', 'inner-page')
 
-@section('meta_title', 'WhatsApp Lead Management System Features India')
-@section('meta_description', 'Explore WhatsApp lead management system features for India sales teams: CRM pipeline, follow-ups, and conversion tracking.')
+@section('meta_title', 'WhatsApp CRM Software India Features (Pipeline, Follow-ups) | WhatsAppLeadCRM')
+@section('meta_description', 'Explore WhatsApp CRM software India features: WhatsApp lead management system, pipeline (Kanban), follow-ups, and broadcast messaging. Built for Indian sales teams.')
 @section('meta_keywords', 'WhatsApp CRM features, lead management system, sales pipeline, follow ups, CRM for sales teams')
 @section('canonical_url', route('features', absolute: true))
 
@@ -11,7 +11,7 @@
     <section class="section light-background pt-5 mt-5">
         <div class="container section-title text-center">
             <h1 class="mb-2">WhatsApp Lead Management System Features for India</h1>
-            <p class="mb-0">Outcome-focused CRM features to capture enquiries, improve follow-up discipline, and increase conversions across real estate, insurance, and agencies.</p>
+            <p class="mb-0">Outcome-focused CRM features to capture enquiries, improve follow-up discipline, and increase conversions across real estate, insurance, and agencies. See how it works in <a href="{{ route('whatsapp-crm') }}">WhatsApp CRM software India</a>, or add messaging automation via <a href="{{ route('whatsapp-api') }}">WhatsApp API provider India</a>.</p>
         </div>
     </section>
 

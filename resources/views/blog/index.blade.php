@@ -25,13 +25,19 @@
                         <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{{ min($loop->index * 50, 200) }}">
                             <article class="blog-card h-100 d-flex flex-column">
                                 <a href="{{ route('blog.show', $post->slug) }}" class="blog-card-image ratio ratio-16x9">
-                                    @if ($post->image)
-                                        <img src="{{ asset($post->image) }}" alt="{{ $post->title }}" loading="lazy" width="640" height="360">
-                                    @else
-                                        <div class="blog-card-image-placeholder d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-journal-text fs-1 text-muted"></i>
-                                        </div>
-                                    @endif
+                                    @php
+                                        $blogFallback = asset('front/images/leads-placeholder.svg');
+                                        $blogImg = ! empty($post->image) ? asset($post->image) : $blogFallback;
+                                    @endphp
+                                    <img
+                                        src="{{ $blogImg }}"
+                                        alt="{{ $post->title }}"
+                                        loading="lazy"
+                                        width="640"
+                                        height="360"
+                                        style="width:100%;height:100%;object-fit:cover;"
+                                        onerror="this.onerror=null;this.src='{{ $blogFallback }}';"
+                                    >
                                 </a>
                                 <div class="blog-card-body d-flex flex-column flex-grow-1 p-3 p-lg-4">
                                     <h3 class="blog-card-title h5 mb-2">

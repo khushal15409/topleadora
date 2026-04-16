@@ -31,9 +31,9 @@
 <section class="leads-section leads-section--muted border-top border-bottom ls-animate">
     <div class="container">
         <div class="text-center mb-5">
-            <p class="leads-trust-stat fw-bold text-dark h5 mb-2">{{ __('Used by growing businesses across India') }}</p>
+            <p class="leads-trust-stat fw-bold text-dark h5 mb-2">{{ __('Trusted by growing businesses across India') }}</p>
             <div class="leads-stars fs-5 mb-1" aria-label="{{ __('5 out of 5 stars') }}" aria-hidden="true">★★★★★</div>
-            <p class="text-muted small mb-0">{{ __('Known for practical onboarding, clear lead context, and responsive support') }}</p>
+            <p class="text-muted small mb-0">{{ __('Known for clear guidance, transparent next steps, and responsive support') }}</p>
         </div>
         <div class="row g-4 align-items-start mb-5">
             <div class="col-md-5">

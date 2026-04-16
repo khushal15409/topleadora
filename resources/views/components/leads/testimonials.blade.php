@@ -6,7 +6,7 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 id="testimonials-title" class="leads-section-title h3 mb-2">{{ __('Trusted by people like you') }}</h2>
-            <p class="text-muted mb-0">{{ __('Sample reviews for layout — replace with verified testimonials.') }}</p>
+            <p class="text-muted mb-0">{{ __('Real experiences vary by service and city. We focus on clear guidance, fast response, and respectful communication.') }}</p>
         </div>
         <div class="row g-4">
             @foreach ($page['testimonials'] ?? [] as $t)

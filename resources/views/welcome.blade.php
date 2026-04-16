@@ -1,7 +1,7 @@
 @extends('layouts.landing')
 
-@section('meta_title', 'WhatsApp CRM, API & Lead Generation Platform in India')
-@section('meta_description', 'Manage WhatsApp leads, send bulk API messages, and scale lead generation services in India. Start free and book a product demo.')
+@section('meta_title', 'WhatsApp CRM Software India + WhatsApp API + Lead Generation | WhatsAppLeadCRM')
+@section('meta_description', 'One platform for WhatsApp CRM software India, WhatsApp API provider India (with SMS API India), and lead generation services India. Capture, follow up, and close faster. Start free.')
 @section('meta_keywords', 'whatsapp crm software india, whatsapp api provider india, sms api india, lead generation services india, whatsapp lead management system')
 
 @section('content')
@@ -18,6 +18,13 @@
                 border: none !important;
                 box-shadow: none !important;
                 background: transparent !important;
+            }
+
+            /* Hero text readability (no layout changes) */
+            .hero-section-unique .hero-description,
+            .hero-section-unique .hero-description * {
+                opacity: 1 !important;
+                color: inherit !important;
             }
 
             /* Hide floating title cards over image as requested */
@@ -46,8 +53,8 @@
                 <div class="col-lg-6 order-2 order-lg-1 hero-content-col" data-aos="fade-up" data-aos-duration="700"
                     data-aos-delay="100">
                     <div class="hero-content">
-                        <h1 class="hero-title">WhatsApp CRM Software India: Convert Enquiries into Customers</h1>
-                        <p class="hero-description">For real estate, insurance, agencies, and small business India teams: use our <a href="{{ route('whatsapp-crm') }}" class="text-white text-decoration-underline">WhatsApp lead management system</a>, <a href="{{ route('whatsapp-api') }}" class="text-white text-decoration-underline">bulk WhatsApp messaging API</a>, and <a href="{{ route('lead-generation') }}" class="text-white text-decoration-underline">lead generation services India</a> from one platform.</p>
+                        <h1 class="hero-title">WhatsApp CRM Software India to Capture Leads, Follow Up &amp; Close Faster</h1>
+                        <p class="hero-description">Built for India-first teams in real estate, insurance, agencies, and SMBs: use our <a href="{{ route('whatsapp-crm') }}" class="text-white text-decoration-underline">WhatsApp lead management system</a>, <a href="{{ route('whatsapp-api') }}" class="text-white text-decoration-underline">WhatsApp API provider India</a> (plus <strong>SMS API India</strong>), and <a href="{{ route('lead-generation') }}" class="text-white text-decoration-underline">lead generation services India</a> in one workflow.</p>
                         <div class="hero-actions">
                             <a href="{{ $landingCta() }}" class="btn-primary btn-hero-primary" onclick="trackGoogleConversion()">Start Free Trial (7
                                 Days)</a>
@@ -87,31 +94,31 @@
     <section id="social-proof" class="section light-background social-proof-section py-4">
         <div class="container">
             <div class="section-title text-center mb-4" data-aos="fade-up">
-                <h2 class="mb-0 social-proof-title">Used by Growing Businesses Across India</h2>
+                <h2 class="mb-0 social-proof-title">Trusted by Growing Businesses Across India</h2>
             </div>
             <div class="row g-4 justify-content-center text-center social-proof-stats">
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">Growing</div>
-                        <div class="social-stat-label">Adoption by sales teams in India</div>
+                        <div class="social-stat-value">India-first</div>
+                        <div class="social-stat-label">Built for WhatsApp-led sales workflows</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">Process-led</div>
-                        <div class="social-stat-label">Follow-up workflows with clear ownership</div>
+                        <div class="social-stat-value">Pipeline</div>
+                        <div class="social-stat-label">Clear stages + next follow-up reminders</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">24/7</div>
-                        <div class="social-stat-label">Support</div>
+                        <div class="social-stat-value">Support</div>
+                        <div class="social-stat-label">Onboarding help for teams across India</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
                     <div class="social-stat-item">
                         <div class="social-stat-value">Secure</div>
-                        <div class="social-stat-label">Encrypted data handling practices</div>
+                        <div class="social-stat-label">Privacy-first lead capture &amp; access controls</div>
                     </div>
                 </div>
             </div>
@@ -224,6 +231,45 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    {{-- SAFE ADDITION — WHO THIS IS FOR + INDUSTRIES (uses existing section + card styles) --}}
+    <section class="section">
+        <div class="container section-title" data-aos="fade-up">
+            <span class="description-title">Fit</span>
+            <h2>Who This Platform Is For</h2>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-box h-100">
+                        <h5 class="mb-2">Best for teams who</h5>
+                        <ul class="mb-0 ps-3">
+                            <li>Handle leads on WhatsApp and want a clear pipeline</li>
+                            <li>Need follow-up reminders and ownership per lead</li>
+                            <li>Want reporting without spreadsheets</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-box h-100">
+                        <h5 class="mb-2">Industries we serve</h5>
+                        <ul class="mb-0 ps-3">
+                            <li>Real estate &amp; property sales</li>
+                            <li>Insurance &amp; financial services</li>
+                            <li>Agencies &amp; small business India</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="feature-box h-100">
+                        <h5 class="mb-2">Choose your growth path</h5>
+                        <p class="mb-0">Start with <a href="{{ route('whatsapp-crm') }}">WhatsApp CRM software India</a>, add messaging automation via <a href="{{ route('whatsapp-api') }}">WhatsApp API</a>, or scale demand with <a href="{{ route('lead-generation') }}">lead generation services India</a>.</p>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center mt-4 mb-0">We also support teams in cities like Surat, Mumbai, Delhi, and across India.</p>
         </div>
     </section>
 
