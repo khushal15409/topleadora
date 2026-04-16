@@ -5,7 +5,7 @@
 @section('canonical_url', route('contact', absolute: true))
 
 @section('content')
-    <section class="contact section light-background py-5">
+    <section class="contact section light-background py-5 pt-5 mt-5">
         <div class="container section-title" data-aos="fade-up">
             <span class="description-title">{{ __('Contact') }}</span>
             <h1 class="mb-2">{{ __('Contact us — Get in Touch') }}</h1>

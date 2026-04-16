@@ -62,6 +62,9 @@ Route::get('/otp-whatsapp-api', [PagesController::class, 'otpApiService'])->name
 Route::get('/whatsapp-crm', [PagesController::class, 'whatsappCrm'])->name('whatsapp-crm');
 Route::get('/whatsapp-api', [PagesController::class, 'whatsappApi'])->name('whatsapp-api');
 Route::get('/lead-generation', [PagesController::class, 'leadGeneration'])->name('lead-generation');
+Route::view('/case-studies', 'pages.case-studies')->name('case-studies');
+Route::view('/agencies', 'pages.agencies')->name('agencies');
+Route::view('/small-business', 'pages.small-business')->name('small-business');
 
 Route::get('/contact', [ContactFormController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactFormController::class, 'store'])

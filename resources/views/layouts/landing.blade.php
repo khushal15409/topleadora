@@ -127,22 +127,50 @@
 
             <nav id="navmenu" class="navmenu navbar-saas-center d-none d-xl-block mx-auto" aria-label="Primary">
                 <ul>
-                    <li>
-                        <a href="{{ $hash('hero') }}" class="{{ request()->is('/') ? 'active' : '' }}">Home</a>
+                    <li class="dropdown">
+                        <a href="#">
+                            <span>{{ __('Products') }}</span>
+                            <i class="bi bi-chevron-down toggle-dropdown"></i>
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('whatsapp-crm') }}" class="{{ request()->routeIs('whatsapp-crm') ? 'active' : '' }}">{{ __('WhatsApp CRM') }}</a></li>
+                            <li><a href="{{ route('whatsapp-api') }}" class="{{ request()->routeIs('whatsapp-api') ? 'active' : '' }}">{{ __('WhatsApp API') }}</a></li>
+                            <li><a href="{{ route('lead-generation') }}" class="{{ request()->routeIs('lead-generation') ? 'active' : '' }}">{{ __('Lead Generation') }}</a></li>
+                        </ul>
                     </li>
-                    <li><a href="{{ $hash('features') }}">Features</a></li>
-                    <li><a href="{{ route('otp-whatsapp-api') }}"
-                            class="{{ request()->routeIs('otp-whatsapp-api') ? 'active' : '' }}">API Service</a></li>
+
+                    <li class="dropdown">
+                        <a href="#">
+                            <span>{{ __('Solutions') }}</span>
+                            <i class="bi bi-chevron-down toggle-dropdown"></i>
+                        </a>
+                        <ul>
+                            <li><a href="{{ url('/leads/real-estate') }}">{{ __('Real Estate') }}</a></li>
+                            <li><a href="{{ url('/leads/insurance') }}">{{ __('Insurance') }}</a></li>
+                            <li><a href="{{ url('/agencies') }}">{{ __('Agencies') }}</a></li>
+                            <li><a href="{{ url('/small-business') }}">{{ __('Small Business') }}</a></li>
+                        </ul>
+                    </li>
+
                     @if ($paymentEnabled)
-                        <li><a href="{{ $hash('pricing') }}">Pricing</a></li>
+                        <li><a href="{{ $hash('pricing') }}">{{ __('Pricing') }}</a></li>
+                    @else
+                        <li><a href="{{ route('pricing') }}" class="{{ request()->routeIs('pricing') ? 'active' : '' }}">{{ __('Pricing') }}</a></li>
                     @endif
-                    <li>
-                        <a href="{{ route('blog.index') }}"
-                            class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">Blog</a>
+
+                    <li class="dropdown">
+                        <a href="#">
+                            <span>{{ __('Resources') }}</span>
+                            <i class="bi bi-chevron-down toggle-dropdown"></i>
+                        </a>
+                        <ul>
+                            <li><a href="{{ route('blog.index') }}" class="{{ request()->routeIs('blog.*') ? 'active' : '' }}">{{ __('Blog') }}</a></li>
+                            <li><a href="{{ url('/case-studies') }}">{{ __('Case Studies') }}</a></li>
+                        </ul>
                     </li>
+
                     <li>
-                        <a href="{{ route('contact') }}"
-                            class="{{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">{{ __('Contact') }}</a>
                     </li>
                 </ul>
             </nav>
@@ -154,8 +182,8 @@
                         class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="navbar-saas-login d-none d-sm-inline-flex">Login</a>
-                    <a href="{{ $getStartedHref }}" class="btn-navbar-cta d-none d-sm-inline-flex">Get Started</a>
-                    <a href="{{ $getStartedHref }}" class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Get Started</a>
+                    <a href="{{ $getStartedHref }}" class="btn-navbar-cta d-none d-sm-inline-flex">Start Free Trial</a>
+                    <a href="{{ $getStartedHref }}" class="btn-navbar-cta btn-navbar-cta-compact d-sm-none">Start Free Trial</a>
                 @endauth
                 <button class="btn btn-saas-menu d-xl-none" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#saasNavOffcanvas" aria-controls="saasNavOffcanvas" aria-label="Open menu">
@@ -173,13 +201,36 @@
         </div>
         <div class="offcanvas-body d-flex flex-column">
             <nav class="nav flex-column gap-1 saas-offcanvas-nav" aria-label="Mobile">
-                <a class="nav-link saas-offcanvas-link" href="{{ $hash('hero') }}">Home</a>
-                <a class="nav-link saas-offcanvas-link" href="{{ $hash('features') }}">Features</a>
-                @if ($paymentEnabled)
-                    <a class="nav-link saas-offcanvas-link" href="{{ $hash('pricing') }}">Pricing</a>
-                @endif
-                <a class="nav-link saas-offcanvas-link" href="{{ route('blog.index') }}">Blog</a>
-                <a class="nav-link saas-offcanvas-link" href="{{ route('contact') }}">Contact</a>
+                <a class="nav-link saas-offcanvas-link" data-bs-toggle="collapse" href="#mobileProducts" role="button" aria-expanded="false" aria-controls="mobileProducts">
+                    {{ __('Products') }}
+                </a>
+                <div class="collapse" id="mobileProducts">
+                    <a class="nav-link saas-offcanvas-link" href="{{ route('whatsapp-crm') }}">{{ __('WhatsApp CRM') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ route('whatsapp-api') }}">{{ __('WhatsApp API') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ route('lead-generation') }}">{{ __('Lead Generation') }}</a>
+                </div>
+
+                <a class="nav-link saas-offcanvas-link" data-bs-toggle="collapse" href="#mobileSolutions" role="button" aria-expanded="false" aria-controls="mobileSolutions">
+                    {{ __('Solutions') }}
+                </a>
+                <div class="collapse" id="mobileSolutions">
+                    <a class="nav-link saas-offcanvas-link" href="{{ url('/leads/real-estate') }}">{{ __('Real Estate') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ url('/leads/insurance') }}">{{ __('Insurance') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ url('/agencies') }}">{{ __('Agencies') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ url('/small-business') }}">{{ __('Small Business') }}</a>
+                </div>
+
+                <a class="nav-link saas-offcanvas-link" href="{{ $paymentEnabled ? $hash('pricing') : route('pricing') }}">{{ __('Pricing') }}</a>
+
+                <a class="nav-link saas-offcanvas-link" data-bs-toggle="collapse" href="#mobileResources" role="button" aria-expanded="false" aria-controls="mobileResources">
+                    {{ __('Resources') }}
+                </a>
+                <div class="collapse" id="mobileResources">
+                    <a class="nav-link saas-offcanvas-link" href="{{ route('blog.index') }}">{{ __('Blog') }}</a>
+                    <a class="nav-link saas-offcanvas-link" href="{{ url('/case-studies') }}">{{ __('Case Studies') }}</a>
+                </div>
+
+                <a class="nav-link saas-offcanvas-link" href="{{ route('contact') }}">{{ __('Contact') }}</a>
             </nav>
             <div class="mt-auto pt-4 d-flex flex-column gap-2">
                 @auth
@@ -187,7 +238,7 @@
                         class="btn btn-navbar-cta w-100 justify-content-center">Dashboard</a>
                 @else
                     <a href="{{ route('login') }}" class="btn btn-outline-secondary rounded-pill">Login</a>
-                    <a href="{{ $getStartedHref }}" class="btn btn-navbar-cta w-100 justify-content-center">Get Started</a>
+                    <a href="{{ $getStartedHref }}" class="btn btn-navbar-cta w-100 justify-content-center">Start Free Trial</a>
                 @endauth
             </div>
         </div>
