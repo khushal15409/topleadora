@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Payment;
 use App\Models\Plan;
 use App\Support\Roles;
 use Illuminate\Http\RedirectResponse;
@@ -57,6 +58,12 @@ class SubscriptionController extends Controller
             ->get();
 
         $activeSub = $organization->activeSubscription();
+        $recentPayments = Payment::query()
+            ->with('plan:id,name,currency')
+            ->where('organization_id', $organization->id)
+            ->orderByDesc('id')
+            ->limit(15)
+            ->get();
         $trialOn = $organization->trialIsActive();
 
         if ($activeSub !== null) {
@@ -92,6 +99,7 @@ class SubscriptionController extends Controller
             'organization' => $organization,
             'plans' => $plans,
             'activeSubscription' => $activeSub,
+            'recentPayments' => $recentPayments,
             'uiStatus' => $uiStatus,
             'trialDaysLeft' => $trialDaysLeft,
             'currentPlanModel' => $currentPlanModel,

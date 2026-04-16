@@ -275,6 +275,7 @@
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="{{ url('/') }}">Home</a></li>
+                        <li><a href="{{ route('about') }}">About</a></li>
                         <li><a href="{{ url('/') }}#social-proof">Social proof</a></li>
                         <li><a href="{{ url('/') }}#features">Features</a></li>
                         @if ($paymentEnabled)
@@ -294,6 +295,14 @@
                             <li><a href="{{ route('login') }}">Login</a></li>
                             <li><a href="{{ route('register') }}">Get started</a></li>
                         @endauth
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-6 footer-links">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="{{ route('privacy-policy') }}">Privacy policy</a></li>
+                        <li><a href="{{ route('terms') }}">Terms</a></li>
+                        <li><a href="{{ route('refund-policy') }}">Refund policy</a></li>
                     </ul>
                 </div>
                 <div id="footer-contact" class="col-lg-3 col-md-12 footer-contact text-center text-md-start">

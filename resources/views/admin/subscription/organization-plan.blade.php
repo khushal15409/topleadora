@@ -155,6 +155,80 @@
     <h5 class="mb-3" id="available-plans">{{ __('Available plans') }}</h5>
     <p class="text-body-secondary small mb-4">{{ __('Starter, Pro, and Business tiers — pick the capacity that matches your team.') }}</p>
 
+    {{-- Payment history --}}
+    <div class="card shadow-sm mb-4 border-0">
+        <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                <div>
+                    <h5 class="mb-1">{{ __('Payment history') }}</h5>
+                    <p class="mb-0 text-body-secondary small">{{ __('Latest subscription payments and verification results.') }}</p>
+                </div>
+                <a href="{{ route('admin.revenue.index', ['payment_status' => 'all']) }}" class="btn btn-label-secondary btn-sm">
+                    <i class="icon-base ri ri-external-link-line me-1"></i>{{ __('View in revenue analytics') }}
+                </a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Date') }}</th>
+                            <th>{{ __('Plan') }}</th>
+                            <th>{{ __('Amount') }}</th>
+                            <th>{{ __('Status') }}</th>
+                            <th>{{ __('Details') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse (($recentPayments ?? collect()) as $p)
+                            @php
+                                $status = (string) ($p->status ?? '');
+                                $isFailed = $status === \App\Models\Payment::STATUS_FAILED;
+                                $isSuccess = $status === \App\Models\Payment::STATUS_SUCCESS;
+                            @endphp
+                            <tr>
+                                <td class="text-nowrap">
+                                    {{ optional($p->paid_at ?? $p->created_at)->format('M j, Y') }}
+                                </td>
+                                <td class="text-nowrap">
+                                    {{ $p->plan?->name ?? '—' }}
+                                </td>
+                                <td class="text-nowrap">
+                                    {{ strtoupper((string) ($p->currency ?? 'INR')) }}
+                                    {{ number_format((float) $p->amount, 2) }}
+                                </td>
+                                <td class="text-nowrap">
+                                    @if ($isSuccess)
+                                        <span class="badge bg-label-success">{{ __('Success') }}</span>
+                                    @elseif ($isFailed)
+                                        <span class="badge bg-label-danger">{{ __('Failed') }}</span>
+                                    @else
+                                        <span class="badge bg-label-warning">{{ __('Pending') }}</span>
+                                    @endif
+                                </td>
+                                <td class="small text-body-secondary" style="max-width: 420px;">
+                                    @if ($isFailed && filled($p->failure_reason))
+                                        <span class="text-danger fw-semibold">{{ __('Reason:') }}</span>
+                                        {{ $p->failure_reason }}
+                                    @elseif ($isFailed)
+                                        <span class="text-danger">{{ __('Payment failed (reason not provided by gateway).') }}</span>
+                                    @else
+                                        <span class="text-body-secondary">{{ __('—') }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-body-secondary py-4">
+                                    {{ __('No payments yet.') }}
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <div class="row g-4">
         @foreach ($plans as $plan)
             @php

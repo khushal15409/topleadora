@@ -61,7 +61,12 @@
 
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 pt-3 small">
             <span>© {{ $year }} {{ $app }}. {{ __('All rights reserved.') }}</span>
-            <a href="#lead-form" class="btn btn-sm btn-outline-light border-opacity-25">{{ __('Get free leads') }}</a>
+            <div class="d-flex flex-wrap align-items-center gap-3 justify-content-center">
+                <a href="{{ route('privacy-policy') }}" class="link-light text-decoration-none">{{ __('Privacy') }}</a>
+                <a href="{{ route('terms') }}" class="link-light text-decoration-none">{{ __('Terms') }}</a>
+                <a href="{{ route('refund-policy') }}" class="link-light text-decoration-none">{{ __('Refunds') }}</a>
+                <a href="#lead-form" class="btn btn-sm btn-outline-light border-opacity-25">{{ __('Get free leads') }}</a>
+            </div>
         </div>
     </div>
 </footer>

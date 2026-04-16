@@ -190,8 +190,13 @@
             <h2 class="mb-3">{{ __('Start Free Trial') }}</h2>
             <p class="opacity-75 mb-4">{{ __('See how your team can move from chats to a measurable pipeline in a week.') }}</p>
             <div class="d-flex flex-wrap gap-2 justify-content-center">
-                <a href="{{ route('register') }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">{{ __('Start Free Trial') }}</a>
+                @auth
+                    <a href="{{ route('admin.dashboard') }}" class="btn btn-cta btn-lg px-5">{{ __('Go to Dashboard') }}</a>
+                @else
+                    <a href="{{ route('register') }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">{{ __('Start Free Trial') }}</a>
+                @endauth
                 <a href="{{ route('pricing') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('View pricing') }}</a>
+                <a href="{{ route('blog.index') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Read WhatsApp CRM guides') }}</a>
             </div>
         </div>
     </section>

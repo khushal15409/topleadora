@@ -153,6 +153,28 @@
   z-index: 2;
 }
 
+.hero-section-unique .hero-description,
+.hero-section-unique .hero-description * {
+  opacity: 1 !important;
+  color: inherit !important;
+}
+
+.hero-image {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block;
+  margin: 0 auto;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.hero-image-wrapper .floating-elements {
+  display: none !important;
+}
+
 .hero-visual-frame {
   position: relative;
   padding: clamp(0.75rem, 2vw, 1.5rem);

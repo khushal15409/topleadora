@@ -148,8 +148,11 @@ Notes: Wants options near metro, ready to visit this weekend
     <section class="call-to-action section dark-background">
         <div class="container text-center">
             <h2 class="mb-3">Need ready leads delivered on WhatsApp?</h2>
-            <p class="opacity-75 mb-4">Need to manage and convert those leads? Pair this with <a href="{{ route('whatsapp-crm') }}" class="text-white text-decoration-underline">WhatsApp CRM software India</a> and message automation from a <a href="{{ route('whatsapp-api') }}" class="text-white text-decoration-underline">WhatsApp API provider India</a>.</p>
-            <a href="{{ route('contact') }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">Get Leads on WhatsApp</a>
+            <p class="opacity-75 mb-4">Want to manage and convert those leads? Pair this with <a href="{{ route('whatsapp-crm') }}" class="text-white text-decoration-underline">WhatsApp CRM software India</a> for follow-ups and pipeline tracking.</p>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                <a href="{{ route('contact') }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">Get Leads on WhatsApp</a>
+                <a href="{{ route('whatsapp-crm') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('See WhatsApp CRM') }}</a>
+            </div>
         </div>
     </section>
 @endsection

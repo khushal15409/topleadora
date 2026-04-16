@@ -15,6 +15,7 @@ use App\Support\MarketingLandingDefaults;
 use App\Support\ProgrammaticLeadResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +24,7 @@ use Throwable;
 
 class LeadCaptureController extends Controller
 {
-    public function show(string $slug): View|RedirectResponse
+    public function show(string $slug): View|RedirectResponse|Response
     {
         $legacyUsaRedirect = $this->redirectIfLegacyUsaLandingSlug($slug);
         if ($legacyUsaRedirect !== null) {
@@ -169,7 +170,11 @@ class LeadCaptureController extends Controller
             ]);
         }
 
-        abort(404);
+        return response()->view('leads.not-available', [
+            'slug' => $slug,
+            'metaTitle' => 'Service not available yet',
+            'metaDescription' => 'This service category is not available yet. Explore other services or contact us and we will help you find the right option.',
+        ], 404);
     }
 
     /**

@@ -11,8 +11,17 @@
     @if (! paymentEnabled())
         <section class="section light-background pt-5 mt-5">
             <div class="container section-title text-center">
-                <h1 class="mb-2">Free access enabled</h1>
-                <p class="mb-0">Payments are currently disabled by the admin. All CRM features are unlocked.</p>
+                <h1 class="mb-2">Pricing is currently unavailable</h1>
+                <p class="mb-0">Payments are currently disabled by the admin. You can still start using the platform.</p>
+                <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+                    @auth
+                        <a href="{{ route('admin.dashboard') }}" class="btn btn-primary rounded-pill px-4">Go to Dashboard</a>
+                    @else
+                        <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4">Start Free Trial</a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-primary rounded-pill px-4">Login</a>
+                    @endauth
+                    <a href="{{ route('whatsapp-crm') }}" class="btn btn-label-secondary rounded-pill px-4">Explore WhatsApp CRM</a>
+                </div>
             </div>
         </section>
         @php return; @endphp

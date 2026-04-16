@@ -5,35 +5,6 @@
 @section('meta_keywords', 'whatsapp crm software india, whatsapp api provider india, sms api india, lead generation services india, whatsapp lead management system')
 
 @section('content')
-    @push('styles')
-        <style>
-            /* Make hero image larger and clean */
-            .hero-image {
-                width: 100% !important;
-                max-width: 100% !important;
-                height: auto !important;
-                object-fit: contain !important;
-                display: block;
-                margin: 0 auto;
-                border: none !important;
-                box-shadow: none !important;
-                background: transparent !important;
-            }
-
-            /* Hero text readability (no layout changes) */
-            .hero-section-unique .hero-description,
-            .hero-section-unique .hero-description * {
-                opacity: 1 !important;
-                color: inherit !important;
-            }
-
-            /* Hide floating title cards over image as requested */
-            .hero-image-wrapper .floating-elements {
-                display: none !important;
-            }
-        </style>
-    @endpush
-
     @php
         $landingCta = static function (array $query = []): string {
             if (auth()->check()) {

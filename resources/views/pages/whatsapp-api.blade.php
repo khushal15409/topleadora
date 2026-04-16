@@ -49,11 +49,40 @@
         </div>
     </section>
 
+    {{-- HOW TO GET STARTED (Developer journey) --}}
+    <section class="section">
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('How to get started') }}</h2>
+            <p class="mb-0">{{ __('A clear path from signup to your first successful API call.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row g-4">
+                <div class="col-md-3"><div class="feature-box h-100"><h5>1. Sign up &amp; login</h5><p class="mb-0">{{ __('Create an account and open your dashboard.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>2. Generate API key</h5><p class="mb-0">{{ __('Create a key in Dashboard → API Keys.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>3. Send a test request</h5><p class="mb-0">{{ __('Use the docs page to test payloads and learn responses.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>4. Monitor logs</h5><p class="mb-0">{{ __('Check usage logs to debug and track delivery.') }}</p></div></div>
+            </div>
+            <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+                @auth
+                    <a href="{{ route('dashboard.api.keys.index') }}" class="btn btn-cta btn-lg px-5">{{ __('Generate API key') }}</a>
+                    <a href="{{ route('dashboard.api.docs') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Open API docs') }}</a>
+                    <a href="{{ route('dashboard.api.logs') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('View logs') }}</a>
+                @else
+                    <a href="{{ route('register', ['service' => 'api']) }}" class="btn btn-cta btn-lg px-5">{{ __('Get API Access') }}</a>
+                    <a href="{{ route('login') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Login') }}</a>
+                @endauth
+            </div>
+            <p class="small text-muted mt-3 mb-0 text-center">
+                {{ __('Note: requests require an API key from your dashboard.') }}
+            </p>
+        </div>
+    </section>
+
     {{-- CORE FEATURES (OTP in seconds + code example) --}}
     <section class="section light-background">
         <div class="container section-title text-center" data-aos="fade-up">
             <h2>{{ __('Send OTP in seconds') }}</h2>
-            <p class="mb-0">{{ __('A simple request payload your backend can call. (Keyword: otp api india)') }}</p>
+            <p class="mb-0">{{ __('A simple request payload your backend can call for OTP verification flows in India.') }}</p>
         </div>
         <div class="container" data-aos="fade-up" data-aos-delay="80">
             <div class="row gy-4 align-items-center mb-3">
@@ -76,7 +105,7 @@
             </div>
             <div class="code-block-wrapper bg-dark p-4 p-md-5 rounded-4 shadow-lg position-relative" style="background-color: #0f172a !important; border: 1px solid rgba(255,255,255,0.1);">
                 <pre class="text-info m-0" style="font-family: 'Fira Code', 'Courier New', monospace; font-size: 1rem; line-height: 1.6; overflow:auto;">
-POST /send-otp
+POST /api/send-otp
 {
   "mobile": "9876543210",
   "message": "Your OTP is 1234"
@@ -97,6 +126,9 @@ POST /send-otp
                     </div>
                 </div>
             </div>
+            <p class="small text-muted mt-3 mb-0 text-center">
+                {{ __('Authentication: requires an API key (generate it in your dashboard).') }}
+            </p>
         </div>
     </section>
 
@@ -161,7 +193,16 @@ POST /send-otp
         <div class="container text-center">
             <h2 class="mb-3">Launch your WhatsApp + SMS messaging stack in days</h2>
             <p class="opacity-75 mb-4">{{ __('Get API access and start with OTP, then expand to alerts and bulk workflows as you grow.') }}</p>
-            <a href="{{ route('register', ['service' => 'api']) }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">Get API Access</a>
+            <div class="d-flex flex-wrap gap-2 justify-content-center">
+                @auth
+                    <a href="{{ route('dashboard.api.overview') }}" class="btn btn-cta btn-lg px-5">{{ __('Use API') }}</a>
+                    <a href="{{ route('dashboard.api.docs') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Open API docs') }}</a>
+                @else
+                    <a href="{{ route('register', ['service' => 'api']) }}" class="btn btn-cta btn-lg px-5" data-track-event="hero_cta_click">Get API Access</a>
+                    <a href="{{ route('login') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Login') }}</a>
+                @endauth
+                <a href="{{ route('blog.index') }}" class="btn btn-label-secondary btn-lg px-5">{{ __('Read API guides') }}</a>
+            </div>
         </div>
     </section>
 @endsection
