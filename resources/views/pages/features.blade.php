@@ -2,16 +2,16 @@
 
 @section('body_class', 'inner-page')
 
-@section('meta_title', 'WhatsApp CRM Features | Lead Management System')
-@section('meta_description', 'Explore WhatsApp CRM features for lead capture, pipeline management, and follow-ups. Built for sales teams and real estate agents in India.')
+@section('meta_title', 'WhatsApp Lead Management System Features India')
+@section('meta_description', 'Explore WhatsApp lead management system features for India sales teams: CRM pipeline, follow-ups, and conversion tracking.')
 @section('meta_keywords', 'WhatsApp CRM features, lead management system, sales pipeline, follow ups, CRM for sales teams')
 @section('canonical_url', route('features', absolute: true))
 
 @section('content')
     <section class="section light-background pt-5 mt-5">
         <div class="container section-title text-center">
-            <h1 class="mb-2">WhatsApp CRM Features</h1>
-            <p class="mb-0">A simple lead management system to capture leads, move deals in a pipeline, and automate follow-ups.</p>
+            <h1 class="mb-2">WhatsApp Lead Management System Features for India</h1>
+            <p class="mb-0">Outcome-focused CRM features to capture enquiries, improve follow-up discipline, and increase conversions across real estate, insurance, and agencies.</p>
         </div>
     </section>
 

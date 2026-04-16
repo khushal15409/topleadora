@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     @php
-        $defaultTitle = 'Best WhatsApp CRM Software in India | Lead Management System';
-        $defaultDescription = 'Manage leads from WhatsApp, track sales pipelines, and automate follow-ups with the best CRM software in India. Start your free trial today.';
-        $defaultKeywords = 'WhatsApp CRM, Lead Management Software, CRM India, Sales CRM, Real Estate CRM';
+        $defaultTitle = 'WhatsApp CRM, API & Lead Generation India';
+        $defaultDescription = 'WhatsApp CRM software India, API messaging, and lead generation services India for real estate, insurance, and agencies.';
+        $defaultKeywords = 'whatsapp crm software india, whatsapp api provider india, sms api india, lead generation services india';
         $pageTitle = trim($__env->yieldContent('meta_title')) ?: $defaultTitle;
         $pageDescription = trim($__env->yieldContent('meta_description')) ?: $defaultDescription;
         $pageKeywords = trim($__env->yieldContent('meta_keywords')) ?: $defaultKeywords;

@@ -6,7 +6,7 @@
 <section class="leads-section leads-section--muted leads-faq ls-animate" aria-labelledby="faq-title">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 id="faq-title" class="leads-section-title h3 mb-2">{{ __('Frequently asked questions') }}</h2>
+            <h2 id="faq-title" class="leads-section-title h3 mb-2">{{ __('Lead generation FAQ for India') }}</h2>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-9">

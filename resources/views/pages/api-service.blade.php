@@ -1,8 +1,8 @@
 @extends('layouts.landing')
 
-@section('meta_title', 'OTP & WhatsApp API Service | Fast & Secure Delivery')
-@section('meta_description', 'Integrate our powerful OTP and WhatsApp API into your business. High delivery rates, instant connectivity, and easy developers integration.')
-@section('meta_keywords', 'WhatsApp API, OTP Service, SMS API, Business Notifications, Developer API')
+@section('meta_title', 'WhatsApp API Provider India & SMS API Service')
+@section('meta_description', 'Integrate WhatsApp API provider India and SMS API India for OTP, alerts, and bulk messaging with reliable delivery.')
+@section('meta_keywords', 'whatsapp api provider india, sms api india, bulk whatsapp messaging api, otp api india')
 
 @section('content')
     @php
@@ -23,8 +23,8 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 order-2 order-lg-1 hero-content-col" data-aos="fade-up" data-aos-duration="700">
                     <div class="hero-content">
-                        <h1 class="hero-title">Enterprise-Grade OTP & WhatsApp API for Seamless Communication</h1>
-                        <p class="hero-description">Send OTPs, notifications, and WhatsApp messages instantly with our powerful and scalable API built for modern businesses.</p>
+                        <h1 class="hero-title">WhatsApp API Provider India for OTP, Alerts, and Bulk Messaging</h1>
+                        <p class="hero-description">Use developer-ready APIs to send OTPs, transactional alerts, and campaign messages with delivery logs and automation workflows for India businesses.</p>
                         <div class="hero-actions">
                             <a href="{{ $landingCta(['service' => 'api']) }}" class="btn-primary btn-hero-primary">Get API Access</a>
                             <a href="#api-preview" class="btn-secondary btn-hero-secondary ms-3">View Documentation</a>

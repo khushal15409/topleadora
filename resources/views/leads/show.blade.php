@@ -80,8 +80,8 @@
     <x-leads.hero :page="$page" :slug="$slug">
         <div id="lead-form" class="leads-card leads-card--form leads-form-sticky">
             <div class="p-4">
-                <h2 class="h5 fw-bold text-dark mb-1">{{ __('Get your free consultation') }}</h2>
-                <p class="small text-muted mb-3">{{ __('Applications are open for India — we’ll route your request to the right team. Takes under a minute; no spam.') }}</p>
+                <h2 class="h5 fw-bold text-dark mb-1">{{ __('Get verified leads support in India') }}</h2>
+                <p class="small text-muted mb-3">{{ __('Share your details to access city-focused lead generation services India. Takes under a minute.') }}</p>
                 <div id="lead-capture-success" class="alert alert-success d-none py-3 border-0" role="status">
                     {{ __('Thank you! We have received your details. Our team will contact you shortly.') }}
                 </div>
@@ -115,7 +115,7 @@
                                 @if ($b->published_at)
                                     <time class="small text-muted d-block mt-1" datetime="{{ $b->published_at->toIso8601String() }}">{{ $b->published_at->format('M j, Y') }}</time>
                                 @endif
-                                <span class="small text-primary mt-2 d-inline-block">{{ __('Read on blog') }} →</span>
+                                <span class="small text-primary mt-2 d-inline-block">{{ __('Read growth guide') }} →</span>
                             </a>
                         </li>
                     @endforeach
@@ -133,7 +133,7 @@
     @if (! empty($relatedLandingCards))
         <section class="leads-section ls-animate" aria-labelledby="leads-internal-title">
             <div class="container">
-                <h2 id="leads-internal-title" class="h3 leads-section-title mb-4">{{ __('Related services in India') }}</h2>
+                <h2 id="leads-internal-title" class="h3 leads-section-title mb-4">{{ __('Related lead generation services in India') }}</h2>
                 <ul class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 list-unstyled mb-0">
                     @foreach ($relatedLandingCards as $card)
                         <li class="col">

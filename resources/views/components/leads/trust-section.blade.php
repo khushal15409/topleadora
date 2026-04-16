@@ -12,17 +12,17 @@
             [
                 'name' => __('Priya S.'),
                 'role' => __('Business owner'),
-                'text' => __('Clear process and quick callbacks. I compared three loan options without feeling pushed into one lender.'),
+                'text' => __('We use this for real estate leads in Pune. Team callbacks became more consistent because lead details arrive in a structured format.'),
             ],
             [
                 'name' => __('Rahul M.'),
                 'role' => __('IT consultant'),
-                'text' => __('The form took under a minute. Someone reached out the same day with documents I actually needed — no guesswork.'),
+                'text' => __('As an insurance advisor, I get cleaner enquiry context and can prioritize serious prospects faster.'),
             ],
             [
                 'name' => __('Neha K.'),
                 'role' => __('Freelancer'),
-                'text' => __('Professional and transparent. They matched me to products that fit my profile instead of generic offers.'),
+                'text' => __('Our agency uses these lead workflows for India campaigns. Reporting is clearer and follow-up handoff is easier.'),
             ],
         ];
     }
@@ -31,9 +31,9 @@
 <section class="leads-section leads-section--muted border-top border-bottom ls-animate">
     <div class="container">
         <div class="text-center mb-5">
-            <p class="leads-trust-stat fw-bold text-dark h5 mb-2">{{ __('Trusted by 10,000+ users') }}</p>
+            <p class="leads-trust-stat fw-bold text-dark h5 mb-2">{{ __('Used by growing businesses across India') }}</p>
             <div class="leads-stars fs-5 mb-1" aria-label="{{ __('5 out of 5 stars') }}" aria-hidden="true">★★★★★</div>
-            <p class="text-muted small mb-0">{{ __('Rated excellent for speed, clarity, and support') }}</p>
+            <p class="text-muted small mb-0">{{ __('Known for practical onboarding, clear lead context, and responsive support') }}</p>
         </div>
         <div class="row g-4 align-items-start mb-5">
             <div class="col-md-5">

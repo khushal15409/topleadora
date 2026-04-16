@@ -116,17 +116,18 @@ class ProgrammaticLeadResolver
             'city' => $cityLabel,
         ]);
 
-        $base['meta_title'] = Str::limit(trim(strip_tags($rawTitle)), 72);
+        $base['meta_title'] = Str::limit(trim(strip_tags($service->name.' Leads in '.$cityLabel.' | India')), 60);
         $base['meta_description'] = SeoMeta::formatDescription($rawDesc);
-        $base['meta_keywords'] = Str::limit($service->name.', '.$cityLabel.', India', 512);
+        $base['meta_keywords'] = Str::limit(strtolower($service->name).', '.$cityLabel.', buy leads in india, lead generation services india', 512);
         $base['robots_meta'] = 'index,follow';
 
-        $base['hero_headline'] = __('Apply for :service in :city', [
+        $base['hero_headline'] = __('Get Verified :service Leads in :city', [
             'service' => $service->name,
             'city' => $cityLabel,
         ]);
-        $base['hero_subheadline'] = __('One short form — quick callback. Licensed partners may assist you in :city as applicable.', [
+        $base['hero_subheadline'] = __('Need :service demand in :city? Submit one short form to get qualified lead support for India-focused campaigns and fast follow-up workflows.', [
             'city' => $cityLabel,
+            'service' => strtolower($service->name),
         ]);
         $base['hero_cta'] = (string) config('programmatic_seo.hero_cta', __('Apply now in 2 minutes'));
 
@@ -163,16 +164,16 @@ class ProgrammaticLeadResolver
     {
         return [
             [
-                'q' => __('Who processes my :service request in :city?', ['service' => $service->name, 'city' => $cityLabel]),
-                'a' => __('We collect your details on this secure page and route them to licensed partners or internal teams who can assist :city applicants, subject to eligibility.', ['city' => $cityLabel]),
+                'q' => __('Are these :service leads location-specific for :city?', ['service' => strtolower($service->name), 'city' => $cityLabel]),
+                'a' => __('Yes. This page targets :city demand so your team receives India-ready enquiries with city context for faster qualification.', ['city' => $cityLabel]),
             ],
             [
-                'q' => __('Is the form free?', []),
-                'a' => __('Yes — submitting this form is free. Any product or fee is always disclosed by the partner you choose.', []),
+                'q' => __('What details are included in each lead?', []),
+                'a' => __('Typical details include name, mobile number, service interest, and city-level intent context shared through a secure workflow.', []),
             ],
             [
-                'q' => __('How fast will I get a callback?', []),
-                'a' => __('During business hours we aim to respond quickly — often within minutes. Off-hours requests are queued for the next working window.', []),
+                'q' => __('How quickly should we contact new leads?', []),
+                'a' => __('Best results usually come when teams call within 10-30 minutes during business hours and run at least 2-3 structured follow-ups.', []),
             ],
         ];
     }
@@ -180,12 +181,12 @@ class ProgrammaticLeadResolver
     private static function uniqueSeoBodyHtml(Service $service, string $cityLabel): string
     {
         return '<section class="programmatic-seo-body">'
-            .'<h2>'.e(__('Why apply for :service in :city?', ['service' => $service->name, 'city' => $cityLabel])).'</h2>'
-            .'<p>'.e(__('If you are based in :city and exploring :service options, this page is tailored for your location with India-focused guidance and a secure intake form.', ['city' => $cityLabel, 'service' => $service->name])).'</p>'
-            .'<h2>'.e(__('What happens after you submit?', [])).'</h2>'
-            .'<p>'.e(__('Your information is used only to assess fit and connect you with the right team. We do not sell phone numbers; messaging is transactional.', [])).'</p>'
-            .'<h2>'.e(__('Transparency', [])).'</h2>'
-            .'<p>'.e(__('Final approval timelines, rates, and documents depend on the partner product. We help you start the conversation without obligation.', [])).'</p>'
+            .'<h2>'.e(__('Who this is for in :city', ['city' => $cityLabel])).'</h2>'
+            .'<p>'.e(__('Best for real estate teams, insurance advisors, agencies, and local businesses that can contact new enquiries quickly and maintain a follow-up process.', [])).'</p>'
+            .'<h2>'.e(__('How lead generation works', [])).'</h2>'
+            .'<p>'.e(__('Step 1: City and service demand is captured through targeted pages. Step 2: Enquiries are validated and routed. Step 3: Your team follows up on WhatsApp or calls.', [])).'</p>'
+            .'<h2>'.e(__('What you get in each lead', [])).'</h2>'
+            .'<p>'.e(__('You receive practical details such as name, number, city intent, and service requirement context to support faster qualification.', [])).'</p>'
             .'</section>';
     }
 }

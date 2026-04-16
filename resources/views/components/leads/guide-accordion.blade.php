@@ -9,30 +9,30 @@
     $items = [
         [
             'icon' => 'bi-person-check',
-            'title' => __('Eligibility criteria'),
+            'title' => __('Who this is for'),
             'body' => __(
-                'Most applications need stable income proof, valid ID, and age within partner limits. Requirements vary by product — we only ask for what your selected service typically needs next.'
+                'Best for teams in India that can respond quickly to inbound leads and run a repeatable qualification process for real estate, insurance, agencies, or local services.'
             ),
         ],
         [
             'icon' => 'bi-folder2-open',
-            'title' => __('Required documents'),
+            'title' => __('What details you get in each lead'),
             'body' => __(
-                'Keep digital copies of ID, address proof, income statements, and bank references ready. Uploads may be requested after your first call so partners can move faster.'
+                'Each lead usually includes name, mobile number, service interest, city context, and optional notes submitted by the enquiry.'
             ),
         ],
         [
             'icon' => 'bi-exclamation-triangle',
-            'title' => __('Common mistakes to avoid'),
+            'title' => __('How leads are generated'),
             'body' => __(
-                'Incomplete contact details, mismatch between name on ID and application, and old income proofs are the top delay reasons. Double-check phone and email before you submit.'
+                'Leads are generated through service + city landing pages, validated form submissions, and routing rules designed for faster first contact by your sales team.'
             ),
         ],
         [
             'icon' => 'bi-lightning-charge',
-            'title' => __('Tips to get approved faster'),
+            'title' => __('Performance benchmarks'),
             'body' => __(
-                'Apply with accurate numbers, respond quickly to verification calls, and avoid simultaneous duplicate applications across many lenders — it can impact scoring.'
+                'Most teams see better outcomes when first contact happens within 10-30 minutes and at least two follow-up attempts are completed on day one.'
             ),
         ],
     ];
@@ -52,7 +52,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-10 col-xl-9">
                 <h2 id="{{ $accordionId }}-title" class="leads-section-title h3 mb-4 text-center">
-                    {{ __('In-depth guide: What you should know before you apply') }}
+                    {{ __('Lead quality guide for India campaigns') }}
                 </h2>
                 <div class="accordion leads-guide-accordion" id="{{ $accordionId }}">
                     @foreach ($items as $i => $item)

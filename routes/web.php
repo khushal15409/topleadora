@@ -59,6 +59,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/features', [PagesController::class, 'features'])->name('features');
 Route::get('/pricing', [PagesController::class, 'pricing'])->name('pricing');
 Route::get('/otp-whatsapp-api', [PagesController::class, 'otpApiService'])->name('otp-whatsapp-api');
+Route::get('/whatsapp-crm', [PagesController::class, 'whatsappCrm'])->name('whatsapp-crm');
+Route::get('/whatsapp-api', [PagesController::class, 'whatsappApi'])->name('whatsapp-api');
+Route::get('/lead-generation', [PagesController::class, 'leadGeneration'])->name('lead-generation');
 
 Route::get('/contact', [ContactFormController::class, 'show'])->name('contact');
 Route::post('/contact', [ContactFormController::class, 'store'])

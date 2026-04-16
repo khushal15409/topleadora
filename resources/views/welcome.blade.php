@@ -1,8 +1,8 @@
 @extends('layouts.landing')
 
-@section('meta_title', 'Best WhatsApp CRM Software in India | Lead Management System')
-@section('meta_description', 'Manage leads from WhatsApp, track sales pipelines, and automate follow-ups with the best CRM software in India. Start your free trial today.')
-@section('meta_keywords', 'WhatsApp CRM, Lead Management Software, CRM India, Sales CRM, Real Estate CRM')
+@section('meta_title', 'WhatsApp CRM, API & Lead Generation Platform in India')
+@section('meta_description', 'Manage WhatsApp leads, send bulk API messages, and scale lead generation services in India. Start free and book a product demo.')
+@section('meta_keywords', 'whatsapp crm software india, whatsapp api provider india, sms api india, lead generation services india, whatsapp lead management system')
 
 @section('content')
     @push('styles')
@@ -46,9 +46,8 @@
                 <div class="col-lg-6 order-2 order-lg-1 hero-content-col" data-aos="fade-up" data-aos-duration="700"
                     data-aos-delay="100">
                     <div class="hero-content">
-                        <h1 class="hero-title">WhatsApp CRM to Capture, Manage &amp; Close More Leads Faster</h1>
-                        <p class="hero-description">Manage leads from WhatsApp, Instagram, Facebook &amp; website in one
-                            powerful CRM. Never miss a follow-up and close more deals faster.</p>
+                        <h1 class="hero-title">WhatsApp CRM Software India: Convert Enquiries into Customers</h1>
+                        <p class="hero-description">For real estate, insurance, agencies, and small business India teams: use our <a href="{{ route('whatsapp-crm') }}" class="text-white text-decoration-underline">WhatsApp lead management system</a>, <a href="{{ route('whatsapp-api') }}" class="text-white text-decoration-underline">bulk WhatsApp messaging API</a>, and <a href="{{ route('lead-generation') }}" class="text-white text-decoration-underline">lead generation services India</a> from one platform.</p>
                         <div class="hero-actions">
                             <a href="{{ $landingCta() }}" class="btn-primary btn-hero-primary" onclick="trackGoogleConversion()">Start Free Trial (7
                                 Days)</a>
@@ -61,7 +60,7 @@
                         <div class="hero-visual-frame">
                             <div class="hero-image-wrapper hero-dashboard-float">
                                 <img src="{{ asset('front/images/landify/sections-images/hero.png') }}"
-                                    class="img-fluid hero-image" alt="WP-CRM dashboard preview" loading="eager">
+                                    class="img-fluid hero-image" alt="WhatsApp CRM software India dashboard with lead pipeline" loading="eager">
                                 <div class="floating-elements">
                                     <div class="floating-card card-1 hero-float-card">
                                         <i class="bi bi-lightbulb"></i>
@@ -88,19 +87,19 @@
     <section id="social-proof" class="section light-background social-proof-section py-4">
         <div class="container">
             <div class="section-title text-center mb-4" data-aos="fade-up">
-                <h2 class="mb-0 social-proof-title">Trusted by Growing Sales Teams &amp; Agencies</h2>
+                <h2 class="mb-0 social-proof-title">Used by Growing Businesses Across India</h2>
             </div>
             <div class="row g-4 justify-content-center text-center social-proof-stats">
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">1000+</div>
-                        <div class="social-stat-label">Leads Managed Daily</div>
+                        <div class="social-stat-value">Growing</div>
+                        <div class="social-stat-label">Adoption by sales teams in India</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="100">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">98%</div>
-                        <div class="social-stat-label">Customer Satisfaction</div>
+                        <div class="social-stat-value">Process-led</div>
+                        <div class="social-stat-label">Follow-up workflows with clear ownership</div>
                     </div>
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="200">
@@ -111,10 +110,39 @@
                 </div>
                 <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="300">
                     <div class="social-stat-item">
-                        <div class="social-stat-value">100%</div>
-                        <div class="social-stat-label">Secure Platform</div>
+                        <div class="social-stat-value">Secure</div>
+                        <div class="social-stat-label">Encrypted data handling practices</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="who-for" class="section">
+        <div class="container section-title" data-aos="fade-up">
+            <span class="description-title">Who this is for</span>
+            <h2>Built for Indian teams that need faster lead conversion</h2>
+        </div>
+        <div class="container">
+            <ul class="row g-3 list-unstyled mb-0">
+                <li class="col-md-6 col-lg-3"><div class="feature-box h-100"><h5>Real Estate</h5><p class="mb-0">Track site-visit, callback, and booking conversations in one CRM.</p></div></li>
+                <li class="col-md-6 col-lg-3"><div class="feature-box h-100"><h5>Insurance Teams</h5><p class="mb-0">Manage policy leads, renewals, and follow-up reminders at scale.</p></div></li>
+                <li class="col-md-6 col-lg-3"><div class="feature-box h-100"><h5>Agencies</h5><p class="mb-0">Capture client enquiries and automate qualification workflows.</p></div></li>
+                <li class="col-md-6 col-lg-3"><div class="feature-box h-100"><h5>Small Business India</h5><p class="mb-0">Unify WhatsApp, social, and website leads without complex setup.</p></div></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="product-clarity" class="section light-background">
+        <div class="container section-title" data-aos="fade-up">
+            <span class="description-title">Product clarity</span>
+            <h2>Choose the right service for your growth stage</h2>
+        </div>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4"><div class="feature-box h-100"><h5><a href="{{ route('whatsapp-crm') }}">WhatsApp CRM</a></h5><p class="mb-0">For sales teams that need a <strong>WhatsApp lead management system</strong> to track pipeline and close deals faster.</p></div></div>
+                <div class="col-md-4"><div class="feature-box h-100"><h5><a href="{{ route('whatsapp-api') }}">WhatsApp &amp; SMS API</a></h5><p class="mb-0">For developers and automation teams looking for a reliable <strong>WhatsApp API provider India</strong> + <strong>SMS API India</strong>.</p></div></div>
+                <div class="col-md-4"><div class="feature-box h-100"><h5><a href="{{ route('lead-generation') }}">Lead Generation</a></h5><p class="mb-0">For businesses that want to <strong>buy leads in India</strong> and improve speed-to-contact with qualified enquiries.</p></div></div>
             </div>
         </div>
     </section>
@@ -239,7 +267,7 @@
     <section id="features" class="section light-background features-cards-section">
         <div class="container section-title" data-aos="fade-up">
             <span class="description-title">Features</span>
-            <h2>Everything You Need to Close More Deals</h2>
+            <h2>WhatsApp Lead Management Features That Drive Revenue</h2>
         </div>
         <div class="container">
             <div class="row gy-4 mb-5">
@@ -344,7 +372,7 @@
                             <div class="col-lg-7">
                                 <div class="visual-content">
                                     <div class="main-image">
-                                        <img src="{{ asset('front/images/landify/features/features-4.png') }}" alt="Leads"
+                                        <img src="{{ asset('front/images/landify/features/features-4.png') }}" alt="WhatsApp lead management system view"
                                             class="img-fluid" loading="lazy">
                                         <div class="floating-card">
                                             <i class="bi bi-graph-up-arrow"></i>
@@ -384,7 +412,7 @@
                                 <div class="visual-content">
                                     <div class="main-image">
                                         <img src="{{ asset('front/images/landify/features/features-2.webp') }}"
-                                            alt="Pipeline" class="img-fluid" loading="lazy">
+                                            alt="Sales pipeline for WhatsApp CRM software India" class="img-fluid" loading="lazy">
                                         <div class="floating-card">
                                             <i class="bi bi-kanban"></i>
                                             <div class="card-content">
@@ -423,7 +451,7 @@
                                 <div class="visual-content">
                                     <div class="main-image">
                                         <img src="{{ asset('front/images/landify/features/features-6.webp') }}"
-                                            alt="Broadcasts" class="img-fluid" loading="lazy">
+                                            alt="Bulk WhatsApp messaging API campaign screen" class="img-fluid" loading="lazy">
                                         <div class="floating-card">
                                             <i class="bi bi-broadcast"></i>
                                             <div class="card-content">
@@ -493,9 +521,9 @@
             <div class="row gy-5 align-items-center">
                 <div class="col-lg-6" data-aos="fade-up">
                     <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm preview-zoom-wrap">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="WP-CRM product demo"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen loading="lazy"></iframe>
+                        <img src="{{ asset('front/images/landify/sections-images/hero.png') }}"
+                            class="img-fluid object-fit-cover" alt="WhatsApp CRM, API, and lead generation platform preview"
+                            loading="lazy">
                     </div>
                 </div>
                 <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
@@ -633,8 +661,7 @@
                             <div class="testimonial-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i></div>
-                            <p class="testimonial-text">“We stopped losing enquiries in WhatsApp. Pipeline view alone paid
-                                for the tool in the first month.”</p>
+                            <p class="testimonial-text">“Our Mumbai real estate team now tracks every WhatsApp enquiry in one place. Follow-up discipline improved and missed leads dropped.”</p>
                             <div class="testimonial-author">
                                 <strong>Priya N.</strong>
                                 <span>Agency Owner, Mumbai</span>
@@ -646,8 +673,7 @@
                             <div class="testimonial-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i></div>
-                            <p class="testimonial-text">“Follow-up reminders are a game changer. Our response time dropped
-                                from hours to minutes.”</p>
+                            <p class="testimonial-text">“We use this as our WhatsApp lead management system for insurance. Reminders and owner assignment reduced response delay significantly.”</p>
                             <div class="testimonial-author">
                                 <strong>Rahul V.</strong>
                                 <span>Sales Lead, Bengaluru</span>
@@ -659,8 +685,7 @@
                             <div class="testimonial-stars"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
                                     class="bi bi-star-fill"></i></div>
-                            <p class="testimonial-text">“Finally one place for Instagram DMs and WhatsApp leads. Onboarding
-                                was surprisingly easy.”</p>
+                            <p class="testimonial-text">“As an agency, we needed CRM plus campaigns. The team now manages inbound leads and outbound broadcasts without tool switching.”</p>
                             <div class="testimonial-author">
                                 <strong>Anita S.</strong>
                                 <span>Real Estate Consultant</span>

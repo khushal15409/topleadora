@@ -2,8 +2,8 @@
 
 @section('body_class', 'inner-page')
 
-@section('meta_title', 'Pricing | Best WhatsApp CRM Software in India')
-@section('meta_description', 'Simple pricing for WhatsApp CRM, lead management, pipeline, follow-ups and broadcasts. Start your free trial today.')
+@section('meta_title', 'WhatsApp CRM Pricing India | WhatsAppLeadCRM')
+@section('meta_description', 'Simple pricing for WhatsApp CRM software India, API workflows, and lead management. Start free and upgrade as your team grows.')
 @section('meta_keywords', 'WhatsApp CRM pricing, CRM India, lead management software, sales CRM pricing, real estate CRM')
 @section('canonical_url', route('pricing', absolute: true))
 
