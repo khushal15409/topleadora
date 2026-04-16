@@ -115,7 +115,10 @@
     @php
         $hash = static fn(string $id) => request()->is('/') ? '#' . $id : url('/#' . $id);
         $getStartedHref = auth()->check() ? route('admin.dashboard') : route('register');
-        $paymentEnabled = paymentEnabled();
+        // Header "Pricing" menu should default to HIDE if setting is missing.
+        // Admin toggle: settings.payment_enabled (DB).
+        $paymentEnabled = (string) setting('payment_enabled', '0');
+        $paymentEnabled = ($paymentEnabled === '1' || $paymentEnabled === 1 || $paymentEnabled === true);
     @endphp
 
     <header id="header" class="header header-saas navbar-saas d-flex align-items-center fixed-top">
@@ -154,8 +157,6 @@
 
                     @if ($paymentEnabled)
                         <li><a href="{{ $hash('pricing') }}">{{ __('Pricing') }}</a></li>
-                    @else
-                        <li><a href="{{ route('pricing') }}" class="{{ request()->routeIs('pricing') ? 'active' : '' }}">{{ __('Pricing') }}</a></li>
                     @endif
 
                     <li class="dropdown">
@@ -220,7 +221,9 @@
                     <a class="nav-link saas-offcanvas-link" href="{{ url('/small-business') }}">{{ __('Small Business') }}</a>
                 </div>
 
-                <a class="nav-link saas-offcanvas-link" href="{{ $paymentEnabled ? $hash('pricing') : route('pricing') }}">{{ __('Pricing') }}</a>
+                @if ($paymentEnabled)
+                    <a class="nav-link saas-offcanvas-link" href="{{ $hash('pricing') }}">{{ __('Pricing') }}</a>
+                @endif
 
                 <a class="nav-link saas-offcanvas-link" data-bs-toggle="collapse" href="#mobileResources" role="button" aria-expanded="false" aria-controls="mobileResources">
                     {{ __('Resources') }}
