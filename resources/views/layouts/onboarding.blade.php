@@ -38,6 +38,7 @@
     <script src="{{ asset('materio/assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('materio/assets/vendor/js/bootstrap.js') }}"></script>
     <script src="{{ asset('materio/assets/vendor/libs/node-waves/node-waves.js') }}"></script>
+    @include('layouts.partials.toaster')
     @stack('page-js')
 </body>
 </html>

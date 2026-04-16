@@ -339,6 +339,8 @@
         });
     </script>
 
+    @include('layouts.partials.toaster')
+
     @stack('scripts')
 
     @if (session()->pull('track_google_conversion'))

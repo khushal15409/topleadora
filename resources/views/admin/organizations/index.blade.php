@@ -140,7 +140,7 @@
                                                         <i class="ri-pencil-line"></i>
                                                     </a>
                                                     @if ($org->users_count === 0)
-                                                        <form action="{{ route('admin.organizations.destroy', $org) }}" method="post" class="inline" onsubmit="return confirm('{{ __('Delete this organization?') }}');">
+                                                        <form action="{{ route('admin.organizations.destroy', $org) }}" method="post" class="inline" data-confirm="{{ __('Delete this organization?') }}">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0" title="{{ __('Delete') }}">

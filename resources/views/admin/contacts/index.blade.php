@@ -133,7 +133,7 @@
                                                                         @endif
                                                                         <form action="{{ route('admin.contacts.destroy', $c) }}" method="post"
                                                                             class="inline"
-                                                                            onsubmit="return confirm('{{ __('Delete message permanently?') }}');">
+                                                                            data-confirm="{{ __('Delete message permanently?') }}">
                                                                             @csrf
                                                                             @method('DELETE')
                                                                             <button type="submit"

@@ -276,6 +276,9 @@
                                                         <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Paid') }}</span>
                                                     @elseif ($p->status === \App\Models\Payment::STATUS_FAILED)
                                                         <span class="badge bg-danger/10 text-danger rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Fail') }}</span>
+                                                        @if (! empty($p->failure_reason))
+                                                            <div class="text-[10px] text-textmuted mt-1" title="{{ $p->failure_reason }}">{{ \Illuminate\Support\Str::limit($p->failure_reason, 80) }}</div>
+                                                        @endif
                                                     @else
                                                         <span class="badge bg-warning/10 text-warning rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Hold') }}</span>
                                                     @endif

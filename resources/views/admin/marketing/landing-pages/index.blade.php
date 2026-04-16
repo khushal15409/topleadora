@@ -82,7 +82,7 @@
                                                 <a href="{{ route('admin.marketing.landing-pages.edit', $p) }}" class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0 p-2" title="{{ __('Edit') }}">
                                                     <i class="ri-pencil-line text-lg"></i>
                                                 </a>
-                                                <form action="{{ route('admin.marketing.landing-pages.destroy', $p) }}" method="post" class="inline" onsubmit="return confirm('{{ __('Delete?') }}');">
+                                                <form action="{{ route('admin.marketing.landing-pages.destroy', $p) }}" method="post" class="inline" data-confirm="{{ __('Delete?') }}">
                                                     @csrf @method('DELETE')
                                                     <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-danger !border-0 p-2" title="{{ __('Delete') }}">
                                                         <i class="ri-delete-bin-line text-lg"></i>

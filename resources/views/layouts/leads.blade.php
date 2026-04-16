@@ -68,25 +68,15 @@
   <div id="leads-toast-host" class="leads-toast-host position-fixed top-0 start-50 translate-middle-x w-100 px-2"
     style="max-width: 480px;" aria-live="polite" aria-atomic="true"></div>
   <script>
+    // Backwards-compatible alias used by some leads components.
+    // Centralized toaster is injected below via layouts.partials.toaster.
     window.leadsShowToast = function (message, type) {
+      if (!message) return;
       type = type || 'success';
-      var host = document.getElementById('leads-toast-host');
-      if (!host || !message) return;
-      var el = document.createElement('div');
-      el.className = 'leads-toast leads-toast--' + (type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'success');
-      el.setAttribute('role', 'status');
-      el.textContent = message;
-      host.appendChild(el);
-      requestAnimationFrame(function () {
-        el.classList.add('is-visible');
-      });
-      var ms = type === 'error' ? 5200 : 4200;
-      setTimeout(function () {
-        el.classList.remove('is-visible');
-        setTimeout(function () {
-          el.remove();
-        }, 240);
-      }, ms);
+      if (window.toaster && typeof window.toaster[type] === 'function') {
+        window.toaster[type](message);
+        return;
+      }
     };
   </script>
 
@@ -129,6 +119,8 @@
   </script>
 
   @stack('scripts')
+
+  @include('layouts.partials.toaster')
 
   @if (session()->pull('track_google_conversion'))
     <script>

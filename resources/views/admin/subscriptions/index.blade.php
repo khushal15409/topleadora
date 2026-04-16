@@ -211,7 +211,7 @@
                                             <a href="{{ route('admin.organizations.edit', $org) }}" class="ti-btn ti-btn-sm ti-btn-soft-secondary !border-0" title="{{ __('Organization') }}">
                                                 <i class="ri-building-line"></i>
                                             </a>
-                                            <form action="{{ route('admin.subscriptions.extend', $org) }}" method="post" onsubmit="return confirm(@json(__('Extend billing period by 30 days?')));">
+                                            <form action="{{ route('admin.subscriptions.extend', $org) }}" method="post" data-confirm="{{ __('Extend billing period by 30 days?') }}">
                                                 @csrf
                                                 <input type="hidden" name="days" value="30">
                                                 <button type="submit" class="ti-btn ti-btn-sm ti-btn-soft-primary !border-0" title="{{ __('Extend (+30d)') }}">

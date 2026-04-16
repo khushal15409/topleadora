@@ -26,6 +26,7 @@ class Payment extends Model
         'razorpay_signature',
         'meta',
         'status',
+        'failure_reason',
         'paid_at',
     ];
 

@@ -105,7 +105,7 @@
                                                     <i class="ri-pencil-line"></i>
                                                 </button>
                                                 <form method="post" action="{{ route('admin.roles.destroy', $role) }}"
-                                                    class="inline" onsubmit="return confirm('{{ __('Delete this role?') }}');">
+                                                    class="inline" data-confirm="{{ __('Delete this role?') }}">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"

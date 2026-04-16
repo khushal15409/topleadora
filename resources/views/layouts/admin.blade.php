@@ -116,6 +116,8 @@ header('Permissions-Policy: accelerometer=*, gyroscope=*, magnetometer=*, paymen
 
     <script type="module" src="{{ asset('assets/custom-switcher-MctniY9g.js') }}"></script>
 
+    @include('layouts.partials.toaster')
+
     @stack('vendor-js')
     @stack('page-js')
     @stack('scripts')

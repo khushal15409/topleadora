@@ -54,6 +54,7 @@
             });
         });
     </script>
+    @include('layouts.partials.toaster')
     @stack('scripts')
 </body>
 

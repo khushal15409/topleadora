@@ -79,6 +79,8 @@
     <script src="{{ asset('materio/assets/vendor/js/menu.js') }}"></script>
     <script src="{{ asset('materio/assets/js/main.js') }}"></script>
 
+    @include('layouts.partials.toaster')
+
     @stack('vendor-js')
     @stack('page-js')
 

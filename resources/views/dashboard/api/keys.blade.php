@@ -40,7 +40,7 @@
                                         <td>{{ $token->created_at->format('d M Y') }}</td>
                                         <td class="text-end">
                                             <form action="{{ route('dashboard.api.keys.destroy', $token->id) }}" method="POST"
-                                                onsubmit="return confirm('Revoke this key? It will stop working immediately.');">
+                                                data-confirm="{{ __('Revoke this key? It will stop working immediately.') }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-danger ti-btn-sm">

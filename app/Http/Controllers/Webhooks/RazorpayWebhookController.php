@@ -54,9 +54,11 @@ class RazorpayWebhookController extends Controller
 
         if ($type === 'payment.failed') {
             if ($payment->status !== Payment::STATUS_SUCCESS) {
+                $reason = (string) ($paymentEntity['error_description'] ?? $paymentEntity['error_reason'] ?? 'Payment failed');
                 $payment->forceFill([
                     'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $payment->razorpay_payment_id,
                     'status' => Payment::STATUS_FAILED,
+                    'failure_reason' => $reason !== '' ? mb_substr($reason, 0, 500) : 'Payment failed',
                     'meta' => array_merge((array) ($payment->meta ?? []), [
                         'webhook' => [
                             'event' => $type,
@@ -99,6 +101,7 @@ class RazorpayWebhookController extends Controller
                         $p->forceFill([
                             'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $p->razorpay_payment_id,
                             'status' => Payment::STATUS_FAILED,
+                            'failure_reason' => 'Webhook validation failed (amount/currency/status mismatch)',
                             'meta' => array_merge((array) ($p->meta ?? []), [
                                 'webhook' => [
                                     'event' => $type,
@@ -114,6 +117,7 @@ class RazorpayWebhookController extends Controller
                     $p->forceFill([
                         'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $p->razorpay_payment_id,
                         'status' => Payment::STATUS_SUCCESS,
+                        'failure_reason' => null,
                         'paid_at' => $p->paid_at ?? now(),
                         'meta' => array_merge((array) ($p->meta ?? []), [
                             'webhook' => [

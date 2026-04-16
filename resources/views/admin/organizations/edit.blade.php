@@ -34,7 +34,7 @@
             </a>
             @if ($organization->users_count === 0)
                 <form action="{{ route('admin.organizations.destroy', $organization) }}" method="post" class="inline"
-                    onsubmit="return confirm('{{ __('Delete this organization? Users must be detached first.') }}');">
+                    data-confirm="{{ __('Delete this organization? Users must be detached first.') }}">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="ti-btn ti-btn-danger font-medium">

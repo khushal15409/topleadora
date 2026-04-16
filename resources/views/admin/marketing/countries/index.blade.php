@@ -44,7 +44,7 @@
                         <td>@if ($c->is_active)<span class="badge bg-label-success">{{ __('Yes') }}</span>@else<span class="badge bg-label-secondary">{{ __('No') }}</span>@endif</td>
                         <td class="text-end">
                             <a href="{{ route('admin.marketing.countries.edit', $c) }}" class="btn btn-sm btn-label-primary">{{ __('Edit') }}</a>
-                            <form action="{{ route('admin.marketing.countries.destroy', $c) }}" method="post" class="d-inline" onsubmit="return confirm('{{ __('Delete?') }}');">
+                            <form action="{{ route('admin.marketing.countries.destroy', $c) }}" method="post" class="d-inline" data-confirm="{{ __('Delete?') }}">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="btn btn-sm btn-label-danger">{{ __('Delete') }}</button>
                             </form>

@@ -135,6 +135,7 @@ class RazorpayPaymentController extends Controller
                         'razorpay_payment_id' => $data['razorpay_payment_id'],
                         'razorpay_signature' => $data['razorpay_signature'],
                         'status' => Payment::STATUS_FAILED,
+                        'failure_reason' => 'Signature verification failed',
                     ])->save();
 
                     return ['ok' => false, 'status' => 422, 'message' => 'Signature verification failed.'];
@@ -155,6 +156,7 @@ class RazorpayPaymentController extends Controller
                         'razorpay_payment_id' => $data['razorpay_payment_id'],
                         'razorpay_signature' => $data['razorpay_signature'],
                         'status' => Payment::STATUS_FAILED,
+                        'failure_reason' => 'Gateway validation failed (amount/currency/status mismatch)',
                         'meta' => array_merge((array) ($payment->meta ?? []), [
                             'order' => $razorpay->orderMeta($order),
                             'payment' => $pay,
@@ -169,6 +171,7 @@ class RazorpayPaymentController extends Controller
                     'razorpay_payment_id' => $data['razorpay_payment_id'],
                     'razorpay_signature' => $data['razorpay_signature'],
                     'status' => Payment::STATUS_SUCCESS,
+                    'failure_reason' => null,
                     'paid_at' => now(),
                     'meta' => array_merge((array) ($payment->meta ?? []), [
                         'order' => $razorpay->orderMeta($order),

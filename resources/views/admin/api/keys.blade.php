@@ -135,7 +135,7 @@
                                         </td>
                                         <td class="!px-4 text-textmuted text-[12px]">{{ $token->created_at->format('M d, Y') }}</td>
                                         <td class="text-end !px-4">
-                                            <form action="{{ route('dashboard.api.keys.destroy', $token->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to revoke this key? Any application using this key will immediately lose access. This cannot be undone.');">
+                                            <form action="{{ route('dashboard.api.keys.destroy', $token->id) }}" method="POST" class="inline" data-confirm="{{ __('Revoke this key? Any application using this key will immediately lose access. This cannot be undone.') }}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="ti-btn ti-btn-danger-full !py-1 !px-2 !text-[11px]" title="Revoke Key">
