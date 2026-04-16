@@ -10,6 +10,7 @@ use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class GatewayController extends Controller
 {
@@ -52,24 +53,50 @@ class GatewayController extends Controller
         }
 
         $organization = $user->organization;
-
-        // Check api access restriction
-        if (!$organization->api_access_enabled) {
-            return response()->json([
-                'error' => 'API Access is disabled for this organization.'
-            ], 403);
+        if (!$organization) {
+            return response()->json(['error' => 'No organization found.'], 403);
         }
 
         $cost = $type === 'otp' ? self::OTP_COST : self::WA_COST;
+        $reservationRef = (string) Str::uuid();
 
-        // Ensure wallet balance
-        if ($organization->wallet_balance < $cost) {
-            return response()->json([
-                'error' => 'Insufficient wallet balance.'
-            ], 402); // 402 Payment Required
+        // Reserve funds BEFORE calling external services to avoid negative balances under concurrency.
+        try {
+            $reserved = DB::transaction(function () use ($organization, $cost, $type, $validated, $reservationRef) {
+                $org = $organization->newQuery()->whereKey($organization->id)->lockForUpdate()->first();
+                if (!$org) {
+                    return ['ok' => false, 'status' => 403, 'message' => 'No organization found.'];
+                }
+                if (!$org->api_access_enabled) {
+                    return ['ok' => false, 'status' => 403, 'message' => 'API Access is disabled for this organization.'];
+                }
+                if ((float) $org->wallet_balance < (float) $cost) {
+                    return ['ok' => false, 'status' => 402, 'message' => 'Insufficient wallet balance.'];
+                }
+
+                $org->decrement('wallet_balance', $cost);
+
+                WalletTransaction::create([
+                    'organization_id' => $org->id,
+                    'amount' => $cost,
+                    'type' => 'debit',
+                    'source' => 'api_usage',
+                    'reference_id' => $reservationRef,
+                    'description' => strtoupper($type) . ' usage (reserved) for ' . $validated['phone'],
+                    'status' => 'pending',
+                ]);
+
+                return ['ok' => true];
+            }, 3);
+
+            if (($reserved['ok'] ?? false) !== true) {
+                return response()->json(['error' => (string) ($reserved['message'] ?? 'Unable to reserve balance.')], (int) ($reserved['status'] ?? 402));
+            }
+        } catch (\Throwable $e) {
+            return response()->json(['error' => 'Unable to reserve wallet balance. Please retry.'], 500);
         }
 
-        // Process request
+        // Process request (external call happens after balance is safely reserved).
         try {
             $serviceResponse = $type === 'otp'
                 ? $this->otpService->send($validated['phone'], $validated['message'])
@@ -77,20 +104,36 @@ class GatewayController extends Controller
 
             $status = $serviceResponse['success'] ? 'success' : 'failed';
 
-            DB::transaction(function () use ($user, $organization, $type, $validated, $cost, $status, $serviceResponse) {
-                // Deduct Balance
-                if ($status === 'success') {
-                    $organization->decrement('wallet_balance', $cost);
+            DB::transaction(function () use ($user, $organization, $type, $validated, $cost, $status, $serviceResponse, $reservationRef) {
+                /** @var WalletTransaction|null $trx */
+                $trx = WalletTransaction::query()
+                    ->where('organization_id', $organization->id)
+                    ->where('reference_id', $reservationRef)
+                    ->where('type', 'debit')
+                    ->lockForUpdate()
+                    ->first();
 
-                    WalletTransaction::create([
-                        'organization_id' => $organization->id,
-                        'amount' => $cost,
-                        'type' => 'debit',
-                        'description' => strtoupper($type) . ' usage deduction for ' . $validated['phone']
-                    ]);
+                if ($trx) {
+                    if ($status === 'success') {
+                        $trx->update([
+                            'status' => 'success',
+                            'description' => strtoupper($type) . ' usage deduction for ' . $validated['phone'],
+                        ]);
+                    } else {
+                        // Refund reservation on failure.
+                        $organization->increment('wallet_balance', $cost);
+                        $trx->update([
+                            'status' => 'failed',
+                            'description' => strtoupper($type) . ' failed — reservation refunded for ' . $validated['phone'],
+                        ]);
+                    }
+                } else {
+                    // Safety fallback: if reservation row is missing, do not attempt another deduction.
+                    if ($status !== 'success') {
+                        $organization->increment('wallet_balance', $cost);
+                    }
                 }
 
-                // Log Usage
                 ApiUsageLog::create([
                     'user_id' => $user->id,
                     'organization_id' => $organization->id,
@@ -100,7 +143,7 @@ class GatewayController extends Controller
                     'status' => $status,
                     'response' => json_encode($serviceResponse['response'] ?? []),
                 ]);
-            });
+            }, 3);
 
             return response()->json([
                 'success' => $serviceResponse['success'],
@@ -109,6 +152,38 @@ class GatewayController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            // If the external call threw, refund the reservation.
+            try {
+                DB::transaction(function () use ($organization, $cost, $type, $validated, $reservationRef, $e) {
+                    $trx = WalletTransaction::query()
+                        ->where('organization_id', $organization->id)
+                        ->where('reference_id', $reservationRef)
+                        ->where('type', 'debit')
+                        ->where('status', 'pending')
+                        ->lockForUpdate()
+                        ->first();
+                    if ($trx) {
+                        $organization->increment('wallet_balance', $cost);
+                        $trx->update([
+                            'status' => 'failed',
+                            'description' => strtoupper($type) . ' error — reservation refunded for ' . ($validated['phone'] ?? ''),
+                        ]);
+                    }
+
+                    ApiUsageLog::create([
+                        'user_id' => $request->user()?->id,
+                        'organization_id' => $organization->id,
+                        'type' => $type,
+                        'phone' => (string) ($validated['phone'] ?? ''),
+                        'message' => (string) ($validated['message'] ?? ''),
+                        'status' => 'failed',
+                        'response' => json_encode(['exception' => $e->getMessage()]),
+                    ]);
+                }, 3);
+            } catch (\Throwable) {
+                // swallow
+            }
+
             return response()->json([
                 'error' => 'An error occurred while processing the request.',
                 'details' => $e->getMessage(),

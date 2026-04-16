@@ -284,6 +284,24 @@
     const USER_NAME      = {!! json_encode(auth()->user()->name) !!};
     const USER_EMAIL     = {!! json_encode(auth()->user()->email) !!};
 
+    function mapRazorpayError(error) {
+        const desc = (error && (error.description || error.reason || error.message)) ? String(error.description || error.reason || error.message) : '';
+        const code = error && error.code ? String(error.code) : '';
+        const lower = desc.toLowerCase();
+
+        if (lower.includes('international cards are not supported')) {
+            return 'International cards are not supported. Please use UPI, Net Banking, or an Indian debit/credit card.';
+        }
+        if (lower.includes('payment cancelled') || code === 'PAYMENT_CANCELLED') {
+            return 'Payment was cancelled. You can try again when you’re ready.';
+        }
+        if (lower.includes('insufficient') && lower.includes('fund')) {
+            return 'Payment failed due to insufficient funds. Please try a different payment method.';
+        }
+
+        return desc ? ('Payment failed. ' + desc) : 'Payment failed. Please try again or use a different payment method.';
+    }
+
     // Quick-amount buttons
     document.querySelectorAll('.quick-amount-btn').forEach(btn => {
         btn.addEventListener('click', function () {
@@ -403,17 +421,12 @@
             console.error('[Razorpay] Payment Failed Error:', response.error);
             
             const error = response.error;
-            let description = error.description || 'Reason unknown';
+            const message = mapRazorpayError(error);
             
             // Log error to backend for admin diagnostics
             await logPaymentError(error, orderData.order_id);
 
-            // Specific user guidance
-            if (description.includes('International cards are not supported')) {
-                alert("Use Indian cards or UPI. International cards are not supported.");
-            } else {
-                showAlert('error', 'Payment failed: ' + description);
-            }
+            showAlert('error', message);
 
             resetBtn();
         });

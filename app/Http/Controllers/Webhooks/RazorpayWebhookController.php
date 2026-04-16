@@ -9,6 +9,7 @@ use App\Models\Plan;
 use App\Services\RazorpayService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class RazorpayWebhookController extends Controller
 {
@@ -56,6 +57,12 @@ class RazorpayWebhookController extends Controller
                 $payment->forceFill([
                     'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $payment->razorpay_payment_id,
                     'status' => Payment::STATUS_FAILED,
+                    'meta' => array_merge((array) ($payment->meta ?? []), [
+                        'webhook' => [
+                            'event' => $type,
+                            'payment' => $paymentEntity,
+                        ],
+                    ]),
                 ])->save();
             }
 
@@ -63,20 +70,70 @@ class RazorpayWebhookController extends Controller
         }
 
         if ($type === 'payment.captured') {
-            if ($payment->status !== Payment::STATUS_SUCCESS) {
-                $payment->forceFill([
-                    'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $payment->razorpay_payment_id,
-                    'status' => Payment::STATUS_SUCCESS,
-                    'paid_at' => $payment->paid_at ?? now(),
-                ])->save();
-            }
+            try {
+                DB::transaction(function () use ($payment, $paymentId, $paymentEntity, $razorpay, $orderId, $type) {
+                    /** @var Payment $p */
+                    $p = Payment::query()->whereKey($payment->id)->lockForUpdate()->firstOrFail();
 
-            if ($payment->subscription_id === null) {
-                $plan = Plan::query()->whereKey($payment->plan_id)->first();
-                $org = Organization::query()->whereKey($payment->organization_id)->first();
-                if ($plan && $plan->is_active && $org) {
-                    $org->activateSubscriptionFromPayment($plan, $payment);
-                }
+                    if ($p->status === Payment::STATUS_SUCCESS) {
+                        return;
+                    }
+
+                    // Validate amount/currency from webhook vs expected payment row.
+                    $expectedPaise = (int) round(((float) $p->amount) * 100);
+                    $rzpAmount = (int) ($paymentEntity['amount'] ?? 0);
+                    $rzpCurrency = (string) ($paymentEntity['currency'] ?? 'INR');
+                    $rzpStatus = (string) ($paymentEntity['status'] ?? '');
+
+                    // Extra validation: fetch order if possible (best-effort).
+                    $order = [];
+                    try {
+                        $order = $razorpay->fetchOrder($orderId);
+                    } catch (\Throwable) {
+                        $order = [];
+                    }
+                    $orderAmount = (int) ($order['amount'] ?? $rzpAmount);
+                    $orderCurrency = (string) ($order['currency'] ?? $rzpCurrency);
+
+                    if ($rzpStatus !== 'captured' || $rzpAmount !== $expectedPaise || $orderAmount !== $expectedPaise || strtoupper($rzpCurrency) !== strtoupper((string) $p->currency) || strtoupper($orderCurrency) !== strtoupper((string) $p->currency)) {
+                        $p->forceFill([
+                            'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $p->razorpay_payment_id,
+                            'status' => Payment::STATUS_FAILED,
+                            'meta' => array_merge((array) ($p->meta ?? []), [
+                                'webhook' => [
+                                    'event' => $type,
+                                    'payment' => $paymentEntity,
+                                    'order' => $razorpay->orderMeta($order),
+                                ],
+                            ]),
+                        ])->save();
+
+                        return;
+                    }
+
+                    $p->forceFill([
+                        'razorpay_payment_id' => $paymentId !== '' ? $paymentId : $p->razorpay_payment_id,
+                        'status' => Payment::STATUS_SUCCESS,
+                        'paid_at' => $p->paid_at ?? now(),
+                        'meta' => array_merge((array) ($p->meta ?? []), [
+                            'webhook' => [
+                                'event' => $type,
+                                'payment' => $paymentEntity,
+                                'order' => $razorpay->orderMeta($order),
+                            ],
+                        ]),
+                    ])->save();
+
+                    if ($p->subscription_id === null) {
+                        $plan = Plan::query()->whereKey($p->plan_id)->first();
+                        $org = Organization::query()->whereKey($p->organization_id)->first();
+                        if ($plan && $plan->is_active && $org) {
+                            $org->activateSubscriptionFromPayment($plan, $p);
+                        }
+                    }
+                }, 3);
+            } catch (\Throwable) {
+                // Webhook should be idempotent; return OK to avoid repeated gateway retries storming logs.
             }
 
             return response('OK', 200);

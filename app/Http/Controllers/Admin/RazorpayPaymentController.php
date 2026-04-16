@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class RazorpayPaymentController extends Controller
 {
@@ -105,61 +106,111 @@ class RazorpayPaymentController extends Controller
         $organization = $user->organization;
         abort_if($organization === null, 403);
 
-        /** @var Payment|null $payment */
-        $payment = Payment::query()
-            ->where('gateway', 'razorpay')
-            ->where('razorpay_order_id', $data['razorpay_order_id'])
-            ->first();
+        $result = null;
+        try {
+            $result = DB::transaction(function () use ($data, $organization, $user, $razorpay) {
+                /** @var Payment|null $payment */
+                $payment = Payment::query()
+                    ->where('gateway', 'razorpay')
+                    ->where('razorpay_order_id', $data['razorpay_order_id'])
+                    ->lockForUpdate()
+                    ->first();
 
-        if ($payment === null || (int) $payment->organization_id !== (int) $organization->id) {
-            abort(404);
+                if ($payment === null || (int) $payment->organization_id !== (int) $organization->id) {
+                    return ['ok' => false, 'status' => 404, 'message' => 'Payment not found.'];
+                }
+
+                if ($payment->status === Payment::STATUS_SUCCESS) {
+                    return ['ok' => true, 'already' => true, 'payment' => $payment];
+                }
+
+                $isValid = $razorpay->verifyPaymentSignature([
+                    'razorpay_order_id' => $data['razorpay_order_id'],
+                    'razorpay_payment_id' => $data['razorpay_payment_id'],
+                    'razorpay_signature' => $data['razorpay_signature'],
+                ]);
+
+                if (!$isValid) {
+                    $payment->forceFill([
+                        'razorpay_payment_id' => $data['razorpay_payment_id'],
+                        'razorpay_signature' => $data['razorpay_signature'],
+                        'status' => Payment::STATUS_FAILED,
+                    ])->save();
+
+                    return ['ok' => false, 'status' => 422, 'message' => 'Signature verification failed.'];
+                }
+
+                // Gateway-side validation: ensure order & payment match expected amount/currency and are captured.
+                $order = $razorpay->fetchOrder($data['razorpay_order_id']);
+                $rzpAmount = (int) ($order['amount'] ?? 0); // paise
+                $rzpCurrency = (string) ($order['currency'] ?? 'INR');
+                $expectedPaise = (int) round(((float) $payment->amount) * 100);
+
+                $pay = $razorpay->fetchPayment($data['razorpay_payment_id']);
+                $payStatus = (string) ($pay['status'] ?? '');
+                $payOrderId = (string) ($pay['order_id'] ?? '');
+
+                if ($payOrderId !== $data['razorpay_order_id'] || $payStatus !== 'captured' || $rzpAmount !== $expectedPaise || strtoupper($rzpCurrency) !== strtoupper((string) $payment->currency)) {
+                    $payment->forceFill([
+                        'razorpay_payment_id' => $data['razorpay_payment_id'],
+                        'razorpay_signature' => $data['razorpay_signature'],
+                        'status' => Payment::STATUS_FAILED,
+                        'meta' => array_merge((array) ($payment->meta ?? []), [
+                            'order' => $razorpay->orderMeta($order),
+                            'payment' => $pay,
+                        ]),
+                    ])->save();
+
+                    return ['ok' => false, 'status' => 422, 'message' => 'Payment validation failed.'];
+                }
+
+                $payment->forceFill([
+                    'user_id' => $user->id,
+                    'razorpay_payment_id' => $data['razorpay_payment_id'],
+                    'razorpay_signature' => $data['razorpay_signature'],
+                    'status' => Payment::STATUS_SUCCESS,
+                    'paid_at' => now(),
+                    'meta' => array_merge((array) ($payment->meta ?? []), [
+                        'order' => $razorpay->orderMeta($order),
+                        'payment' => $pay,
+                    ]),
+                ])->save();
+
+                $plan = Plan::query()->whereKey($payment->plan_id)->first();
+                if ($plan === null || !$plan->is_active) {
+                    return ['ok' => false, 'status' => 404, 'message' => 'Plan not found.'];
+                }
+
+                if ($payment->subscription_id === null) {
+                    $organization->activateSubscriptionFromPayment($plan, $payment);
+                }
+
+                return ['ok' => true, 'payment' => $payment];
+            }, 3);
+        } catch (\Throwable $e) {
+            report($e);
+            $result = ['ok' => false, 'status' => 500, 'message' => 'Verification failed. Please try again.'];
         }
 
-        if ($payment->status === Payment::STATUS_SUCCESS) {
+        if (($result['ok'] ?? false) !== true) {
+            $status = (int) ($result['status'] ?? 422);
+            $message = (string) ($result['message'] ?? 'Verification failed.');
+
+            $planId = null;
+            if (isset($result['payment']) && $result['payment'] instanceof Payment) {
+                $planId = $result['payment']->plan_id;
+            } else {
+                $planId = Payment::query()
+                    ->where('gateway', 'razorpay')
+                    ->where('razorpay_order_id', $data['razorpay_order_id'])
+                    ->value('plan_id');
+            }
+
             return $request->expectsJson()
-                ? response()->json(['ok' => true])
-                : redirect()->route('admin.dashboard')->with('success', __('Payment already verified.'));
-        }
-
-        $isValid = $razorpay->verifyPaymentSignature([
-            'razorpay_order_id' => $data['razorpay_order_id'],
-            'razorpay_payment_id' => $data['razorpay_payment_id'],
-            'razorpay_signature' => $data['razorpay_signature'],
-        ]);
-
-        if (!$isValid) {
-            $payment->forceFill([
-                'razorpay_payment_id' => $data['razorpay_payment_id'],
-                'razorpay_signature' => $data['razorpay_signature'],
-                'status' => Payment::STATUS_FAILED,
-            ])->save();
-
-            return $request->expectsJson()
-                ? response()->json(['message' => 'Signature verification failed.'], 422)
-                : redirect()->route('admin.subscription.checkout', $payment->plan_id)->with('error', __('Payment verification failed. Please try again.'));
-        }
-
-        // Prevent duplicate payment IDs.
-        $dupe = Payment::query()
-            ->where('gateway', 'razorpay')
-            ->where('razorpay_payment_id', $data['razorpay_payment_id'])
-            ->whereKeyNot($payment->id)
-            ->exists();
-        abort_if($dupe, 409);
-
-        $payment->forceFill([
-            'user_id' => $user->id,
-            'razorpay_payment_id' => $data['razorpay_payment_id'],
-            'razorpay_signature' => $data['razorpay_signature'],
-            'status' => Payment::STATUS_SUCCESS,
-            'paid_at' => now(),
-        ])->save();
-
-        $plan = Plan::query()->whereKey($payment->plan_id)->first();
-        abort_if($plan === null || !$plan->is_active, 404);
-
-        if ($payment->subscription_id === null) {
-            $organization->activateSubscriptionFromPayment($plan, $payment);
+                ? response()->json(['message' => $message], $status)
+                : ($planId
+                    ? redirect()->route('admin.subscription.checkout', $planId)->with('error', __($message))
+                    : redirect()->route('admin.subscription.pricing')->with('error', __($message)));
         }
 
         if ($request->expectsJson()) {

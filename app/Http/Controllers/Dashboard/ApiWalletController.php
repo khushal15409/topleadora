@@ -76,9 +76,12 @@ class ApiWalletController extends Controller
             'amount' => $amount,
             'type' => 'credit',
             'source' => 'recharge',
+            // Keep legacy reference_id for display, but store structured Razorpay IDs separately.
             'reference_id' => $orderPayload['id'] ?? null,
+            'razorpay_order_id' => $orderPayload['id'] ?? null,
             'description' => 'Wallet top-up (pending)',
             'status' => 'pending',
+            'meta' => $razorpay->orderMeta($orderPayload),
         ]);
 
         $phone = preg_replace('/[^0-9]/', '', (string) ($user->phone ?? ''));
@@ -124,55 +127,94 @@ class ApiWalletController extends Controller
         $organization = $user->organization;
         abort_if($organization === null, 403);
 
-        // Find the pending transaction for this order
-        $transaction = WalletTransaction::where('organization_id', $organization->id)
-            ->where('reference_id', $data['razorpay_order_id'])
-            ->where('status', 'pending')
-            ->lockForUpdate()
+        // Idempotency: if we already processed this Razorpay payment id for this org, return success.
+        $already = WalletTransaction::query()
+            ->where('organization_id', $organization->id)
+            ->where('razorpay_payment_id', $data['razorpay_payment_id'])
+            ->where('status', 'success')
             ->first();
-
-        if ($transaction === null) {
-            return response()->json(['message' => 'Transaction not found or already processed.'], 404);
-        }
-
-        // Prevent replay attacks: verify signature server-side
-        $isValid = $razorpay->verifyPaymentSignature([
-            'razorpay_order_id' => $data['razorpay_order_id'],
-            'razorpay_payment_id' => $data['razorpay_payment_id'],
-            'razorpay_signature' => $data['razorpay_signature'],
-        ]);
-
-        if (!$isValid) {
-            $transaction->update([
-                'status' => 'failed',
-                'description' => 'Wallet top-up — signature mismatch',
+        if ($already !== null) {
+            return response()->json([
+                'ok' => true,
+                'message' => 'Wallet already credited.',
+                'new_balance' => number_format($organization->fresh()->wallet_balance, 2),
             ]);
-
-            Log::warning('[WalletTopUp] Signature mismatch for org=' . $organization->id . ' order=' . $data['razorpay_order_id']);
-
-            return response()->json(['message' => 'Payment signature verification failed. Contact support.'], 422);
-        }
-
-        // Prevent duplicate payment_id processing
-        $dupe = WalletTransaction::where('reference_id', $data['razorpay_payment_id'])->exists();
-        if ($dupe) {
-            return response()->json(['message' => 'This payment has already been processed.'], 409);
         }
 
         try {
-            DB::transaction(function () use ($organization, $transaction, $data) {
-                // Update transaction to success and store the actual payment_id
+            $result = DB::transaction(function () use ($organization, $data, $razorpay) {
+                /** @var WalletTransaction|null $transaction */
+                $transaction = WalletTransaction::query()
+                    ->where('organization_id', $organization->id)
+                    ->where(function ($q) use ($data) {
+                        $q->where('razorpay_order_id', $data['razorpay_order_id'])
+                          ->orWhere('reference_id', $data['razorpay_order_id']); // legacy rows
+                    })
+                    ->where('status', 'pending')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($transaction === null) {
+                    return ['ok' => false, 'status' => 404, 'message' => 'Transaction not found or already processed.'];
+                }
+
+                // Prevent replay attacks: verify signature server-side.
+                $isValid = $razorpay->verifyPaymentSignature([
+                    'razorpay_order_id' => $data['razorpay_order_id'],
+                    'razorpay_payment_id' => $data['razorpay_payment_id'],
+                    'razorpay_signature' => $data['razorpay_signature'],
+                ]);
+                if (!$isValid) {
+                    $transaction->update([
+                        'status' => 'failed',
+                        'description' => 'Wallet top-up — signature mismatch',
+                        'razorpay_payment_id' => $data['razorpay_payment_id'],
+                        'razorpay_signature' => $data['razorpay_signature'],
+                    ]);
+
+                    return ['ok' => false, 'status' => 422, 'message' => 'Payment signature verification failed.'];
+                }
+
+                // Gateway-side verification: ensure payment is captured and amount matches the pending transaction.
+                $payment = $razorpay->fetchPayment($data['razorpay_payment_id']);
+                $orderId = (string) ($payment['order_id'] ?? '');
+                $status = (string) ($payment['status'] ?? '');
+                $currency = (string) ($payment['currency'] ?? 'INR');
+                $amountPaid = (int) ($payment['amount'] ?? 0); // paise
+                $expected = (int) round(((float) $transaction->amount) * 100);
+
+                if ($orderId !== $data['razorpay_order_id'] || $status !== 'captured' || strtoupper($currency) !== 'INR' || $amountPaid !== $expected) {
+                    $transaction->update([
+                        'status' => 'failed',
+                        'description' => 'Wallet top-up — gateway validation failed',
+                        'razorpay_order_id' => $data['razorpay_order_id'],
+                        'razorpay_payment_id' => $data['razorpay_payment_id'],
+                        'razorpay_signature' => $data['razorpay_signature'],
+                        'meta' => $payment,
+                    ]);
+
+                    return ['ok' => false, 'status' => 422, 'message' => 'Payment validation failed. If money was deducted, contact support.'];
+                }
+
                 $transaction->update([
                     'status' => 'success',
-                    'reference_id' => $data['razorpay_payment_id'], // overwrite order_id with payment_id
                     'description' => 'Wallet top-up via Razorpay',
+                    'razorpay_order_id' => $data['razorpay_order_id'],
+                    'razorpay_payment_id' => $data['razorpay_payment_id'],
+                    'razorpay_signature' => $data['razorpay_signature'],
+                    'meta' => $payment,
                 ]);
 
-                // Credit the wallet
-                $organization->increment('wallet_balance', $transaction->amount);
-            });
+                $organization->increment('wallet_balance', (float) $transaction->amount);
+
+                return ['ok' => true];
+            }, 3);
+
+            if (($result['ok'] ?? false) !== true) {
+                return response()->json(['message' => (string) ($result['message'] ?? 'Payment verification failed.')], (int) ($result['status'] ?? 422));
+            }
         } catch (\Throwable $e) {
-            Log::error('[WalletTopUp] DB credit failed: ' . $e->getMessage());
+            Log::error('[WalletTopUp] Verify/Credit failed: ' . $e->getMessage());
             return response()->json(['message' => 'Payment captured but wallet update failed. Contact support immediately.'], 500);
         }
 

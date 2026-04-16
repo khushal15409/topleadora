@@ -13,6 +13,10 @@ class WalletTransaction extends Model
         'type',
         'source',
         'reference_id',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature',
+        'meta',
         'description',
         'status',
     ];
@@ -21,6 +25,7 @@ class WalletTransaction extends Model
     {
         return [
             'amount' => 'float',
+            'meta' => 'array',
         ];
     }
 

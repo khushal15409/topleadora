@@ -36,6 +36,32 @@ class RazorpayService
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public function fetchOrder(string $orderId): array
+    {
+        $order = $this->api()->order->fetch($orderId);
+
+        /** @var array<string, mixed> $payload */
+        $payload = $order->toArray();
+
+        return $payload;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function fetchPayment(string $paymentId): array
+    {
+        $payment = $this->api()->payment->fetch($paymentId);
+
+        /** @var array<string, mixed> $payload */
+        $payload = $payment->toArray();
+
+        return $payload;
+    }
+
+    /**
      * @param  array<string, mixed>  $notes
      * @return array<string, mixed>
      */

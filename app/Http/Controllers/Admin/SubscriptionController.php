@@ -137,6 +137,12 @@ class SubscriptionController extends Controller
         abort_unless($user && ($user->hasRole(Roles::ORGANIZATION) || isSuperAdmin()), 403);
         abort_unless($plan->is_active, 404);
 
+        // Safety: "Demo activate" must never be usable in production for normal org users.
+        $razorpayConfigured = (string) setting('razorpay_key', '') !== '' && (string) setting('razorpay_secret', '') !== '';
+        if ($razorpayConfigured || app()->environment('production')) {
+            abort_unless(isSuperAdmin(), 403);
+        }
+
         $user->loadMissing('organization');
         $organization = $user->organization;
         abort_if($organization === null, 403);

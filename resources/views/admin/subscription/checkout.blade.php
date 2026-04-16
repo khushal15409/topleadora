@@ -47,12 +47,14 @@
                         <p class="text-body-secondary small">
                             Razorpay is not configured yet. You can still use the demo flow to activate subscription for testing.
                         </p>
-                        <form method="post" action="{{ route('admin.subscription.activate', $plan) }}" class="mt-4">
-                            @csrf
-                            <button type="submit" class="btn btn-label-primary w-100">
-                                Demo activate
-                            </button>
-                        </form>
+                        @if (! app()->environment('production') || isSuperAdmin())
+                            <form method="post" action="{{ route('admin.subscription.activate', $plan) }}" class="mt-4">
+                                @csrf
+                                <button type="submit" class="btn btn-label-primary w-100">
+                                    Demo activate
+                                </button>
+                            </form>
+                        @endif
                     @endif
                 </div>
             </div>
@@ -72,6 +74,24 @@
                 const btn = document.getElementById('pay-now-btn');
                 const statusEl = document.getElementById('pay-status');
                 if (!btn) return;
+
+                const mapRazorpayError = (err) => {
+                    const description = (err && (err.description || err.reason || err.message)) ? String(err.description || err.reason || err.message) : '';
+                    const code = err && err.code ? String(err.code) : '';
+                    const lower = description.toLowerCase();
+
+                    if (lower.includes('international cards are not supported')) {
+                        return 'International cards are not supported. Please use UPI, Net Banking, or an Indian debit/credit card.';
+                    }
+                    if (lower.includes('payment cancelled') || code === 'PAYMENT_CANCELLED') {
+                        return 'Payment was cancelled. You can try again when you’re ready.';
+                    }
+                    if (lower.includes('insufficient') && lower.includes('fund')) {
+                        return 'Payment failed due to insufficient funds. Please try a different payment method.';
+                    }
+
+                    return description ? ('Payment failed. ' + description) : 'Payment failed. Please try again or use a different payment method.';
+                };
 
                 const setStatus = (text, type) => {
                     if (!statusEl) return;
@@ -134,12 +154,18 @@
 
                                 setStatus('Payment successful. Activating...', 'success');
                                 window.location.href = '{{ route('admin.dashboard') }}';
+                            },
+                            modal: {
+                                ondismiss: function () {
+                                    setStatus('Payment was cancelled. You can try again.', 'error');
+                                    btn.removeAttribute('disabled');
+                                }
                             }
                         };
 
                         const rzp = new Razorpay(options);
                         rzp.on('payment.failed', function (resp) {
-                            setStatus(resp?.error?.description || 'Payment failed', 'error');
+                            setStatus(mapRazorpayError(resp?.error), 'error');
                             btn.removeAttribute('disabled');
                         });
                         rzp.open();
