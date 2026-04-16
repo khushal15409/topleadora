@@ -245,14 +245,15 @@
                         <p class="mb-0">📧 <a href="mailto:{{ config('branding.support_email') }}"
                                 class="link-light">{{ config('branding.support_email') }}</a></p>
                     @else
-                        <p class="mb-0 small text-white-50">Configure public support email via <code>SUPPORT_EMAIL</code> in
-                            <code>.env</code>.</p>
+                        <p class="mb-0 small text-white-50">
+                            <a class="link-light" href="{{ route('contact') }}">{{ __('Use our contact form') }}</a>
+                        </p>
                     @endif
                 </div>
             </div>
         </div>
         <div class="container copyright text-center mt-4">
-            <p>© <span>Copyright</span> <span>All Rights Reserved</span></p>
+            <p>© <span>{{ now()->year }} {{ config('app.name', 'WP-CRM') }}</span> <span>{{ __('All rights reserved') }}</span></p>
         </div>
     </footer>
 

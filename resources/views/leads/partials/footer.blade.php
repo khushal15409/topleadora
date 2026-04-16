@@ -1,6 +1,8 @@
 @php
     $app = config('app.name', 'App');
     $year = now()->year;
+    $supportEmail = (string) (config('branding.support_email') ?? '');
+    $supportEmail = trim($supportEmail);
 @endphp
 
 <footer class="leads-footer mt-auto">
@@ -34,13 +36,13 @@
             </div>
             <div class="col-lg-4" id="leads-footer-contact">
                 <div class="footer-heading">{{ __('Contact') }}</div>
-                <p class="small mb-2">{{ __('Email') }}: <a href="mailto:support@example.com">support@example.com</a></p>
+                @if ($supportEmail !== '')
+                    <p class="small mb-2">{{ __('Email') }}: <a href="mailto:{{ e($supportEmail) }}">{{ $supportEmail }}</a></p>
+                @else
+                    <p class="small mb-2">{{ __('Email') }}: <a href="{{ route('contact') }}">{{ __('Use our contact form') }}</a></p>
+                @endif
                 <p class="small mb-3">{{ __('Hours') }}: {{ __('Mon–Sat, 9am–7pm IST') }}</p>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-sm btn-outline-light border-opacity-25 rounded-circle" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-light border-opacity-25 rounded-circle" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-light border-opacity-25 rounded-circle" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
-                </div>
+                {{-- Social links intentionally hidden until real URLs exist (avoid "#" placeholders). --}}
             </div>
         </div>
 

@@ -178,15 +178,48 @@
                                 <h2 id="blog-leads-title" class="h5 fw-bold mb-3">{{ __('Apply online in India') }}</h2>
                                 <p class="small text-muted mb-3">{{ __('Fast, secure lead forms — choose a service to get started.') }}</p>
                                 <ul class="list-unstyled row row-cols-1 row-cols-md-2 g-3 mb-0">
-                                    @foreach ($marketingLandings as $lp)
-                                        @continue($lp->service === null)
-                                        <li class="col">
-                                            <a href="{{ route('leads.landing', $lp->slug) }}" class="d-block h-100 p-3 rounded-3 border bg-white text-decoration-none shadow-sm">
-                                                <span class="fw-semibold text-body d-block">{{ $lp->service->name }}</span>
-                                                <span class="small text-muted d-block mt-1">{{ __('Get free consultation') }} →</span>
-                                            </a>
-                                        </li>
-                                    @endforeach
+                                    @php
+                                        // De-duplicate by service so "Loan" doesn't repeat across cities/pages.
+                                        $uniqueMarketingLandings = $marketingLandings
+                                            ->filter(fn ($lp) => $lp->service !== null)
+                                            ->unique(fn ($lp) => (int) ($lp->service->id ?? 0))
+                                            ->values()
+                                            ->take(8);
+
+                                        // If the API/data only contains 1–2 services (e.g., only Loan),
+                                        // show a diverse fallback mix so the section looks complete.
+                                        $needsFallbackMix = $uniqueMarketingLandings->count() < 3;
+                                        $fallbackOffers = [
+                                            ['label' => 'Loan', 'slug' => 'loan'],
+                                            ['label' => 'Insurance', 'slug' => 'insurance'],
+                                            ['label' => 'Real Estate', 'slug' => 'real-estate'],
+                                            ['label' => 'Education', 'slug' => 'education'],
+                                            ['label' => 'Solar', 'slug' => 'solar'],
+                                            ['label' => 'Business', 'slug' => 'business'],
+                                            ['label' => 'Legal', 'slug' => 'legal'],
+                                            ['label' => 'Auto', 'slug' => 'auto'],
+                                        ];
+                                    @endphp
+
+                                    @if (! $needsFallbackMix)
+                                        @foreach ($uniqueMarketingLandings as $lp)
+                                            <li class="col">
+                                                <a href="{{ route('leads.landing', $lp->slug) }}" class="d-block h-100 p-3 rounded-3 border bg-white text-decoration-none shadow-sm">
+                                                    <span class="fw-semibold text-body d-block">{{ $lp->service->name }}</span>
+                                                    <span class="small text-muted d-block mt-1">{{ __('Get free consultation') }} →</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        @foreach (array_slice($fallbackOffers, 0, 8) as $item)
+                                            <li class="col">
+                                                <a href="{{ url('/leads/' . $item['slug']) }}" class="d-block h-100 p-3 rounded-3 border bg-white text-decoration-none shadow-sm">
+                                                    <span class="fw-semibold text-body d-block">{{ $item['label'] }}</span>
+                                                    <span class="small text-muted d-block mt-1">{{ __('Get free consultation') }} →</span>
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </section>
                         @endif

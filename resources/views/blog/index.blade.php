@@ -88,15 +88,42 @@
                     <h2 id="blog-index-leads-title" class="h5 fw-bold text-center mb-3">{{ __('Popular offer pages') }}</h2>
                     <p class="small text-muted text-center mb-4">{{ __('Explore India lead pages by service — same CRM also powers your inbound.') }}</p>
                     <ul class="list-unstyled row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 justify-content-center mb-0">
-                        @foreach ($marketingLandings as $lp)
-                            @continue($lp->service === null)
+                        @php
+                            // Deduplicate by service (avoid showing "Loan" multiple times).
+                            $uniqueMarketingLandings = $marketingLandings
+                                ->filter(fn ($lp) => $lp->service !== null)
+                                ->unique(fn ($lp) => (int) ($lp->service->id ?? 0))
+                                ->values()
+                                ->take(8);
+                        @endphp
+
+                        @forelse ($uniqueMarketingLandings as $lp)
                             <li class="col">
                                 <a href="{{ route('leads.landing', $lp->slug) }}" class="d-block h-100 p-3 rounded-3 border bg-white text-decoration-none shadow-sm text-center">
                                     <span class="fw-semibold text-body d-block">{{ $lp->service->name }}</span>
                                     <span class="small text-primary d-block mt-2">{{ __('Apply now') }} →</span>
                                 </a>
                             </li>
-                        @endforeach
+                        @empty
+                            @php
+                                $fallbackOffers = [
+                                    ['label' => 'Loan', 'slug' => 'loan'],
+                                    ['label' => 'Insurance', 'slug' => 'insurance'],
+                                    ['label' => 'Real Estate', 'slug' => 'real-estate'],
+                                    ['label' => 'Education', 'slug' => 'education'],
+                                    ['label' => 'Solar', 'slug' => 'solar'],
+                                    ['label' => 'Business', 'slug' => 'business'],
+                                ];
+                            @endphp
+                            @foreach ($fallbackOffers as $item)
+                                <li class="col">
+                                    <a href="{{ url('/leads/' . $item['slug']) }}" class="d-block h-100 p-3 rounded-3 border bg-white text-decoration-none shadow-sm text-center">
+                                        <span class="fw-semibold text-body d-block">{{ $item['label'] }}</span>
+                                        <span class="small text-primary d-block mt-2">{{ __('Apply now') }} →</span>
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endforelse
                     </ul>
                 </section>
             @endif

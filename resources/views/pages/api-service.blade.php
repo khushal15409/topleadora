@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="mock-body p-3">
                                     <div class="whatsapp-msg-bubble bg-success text-white p-2 px-3 rounded-3 mb-3 d-inline-block shadow-sm" style="max-width: 85%; font-size: 0.9rem;">
-                                        Your OTP for login is <strong>6429</strong>. Valid for 5 minutes.
+                                        Example OTP for login: <strong>123456</strong>. Valid for 5 minutes.
                                     </div>
                                     <div class="api-json-block bg-dark text-info p-3 rounded-3 mt-4" style="font-family: 'Courier New', Courier, monospace; font-size: 0.85rem;">
                                         <div class="text-white-50">// POST /api/send-otp</div>
@@ -71,22 +71,22 @@
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="0">
                     <div class="landing-feature-card">
                         <div class="landing-feature-card-icon"><i class="bi bi-shield-lock"></i></div>
-                        <h5>High Security & Encryption</h5>
-                        <p>Enterprise-level encryption for every message and OTP to ensure complete data privacy.</p>
+                        <h5>Security & Privacy</h5>
+                        <p>Designed to protect customer data with secure flows, access controls, and audit-friendly logs.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="80">
                     <div class="landing-feature-card">
                         <div class="landing-feature-card-icon"><i class="bi bi-lightning"></i></div>
-                        <h5>Instant Delivery (<5 sec)</h5>
-                        <p>Our low-latency infrastructure ensures your OTPs land in seconds, reducing drop-offs.</p>
+                        <h5>Fast delivery</h5>
+                        <p>Optimized for quick delivery so OTPs and alerts reach users when it matters.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="160">
                     <div class="landing-feature-card">
                         <div class="landing-feature-card-icon"><i class="bi bi-globe"></i></div>
-                        <h5>Global Reach</h5>
-                        <p>Deliver WhatsApp messages and OTPs to customers worldwide across 190+ countries.</p>
+                        <h5>Scales with you</h5>
+                        <p>Send OTPs, alerts, and campaign messages at the volume your team needs—without changing tools.</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="240">
