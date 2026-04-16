@@ -6,45 +6,143 @@
 @section('canonical_url', route('lead-generation', absolute: true))
 
 @section('content')
+    {{-- INTRO (Educational) --}}
     <section class="section light-background pt-5 mt-5">
-        <div class="container section-title text-center">
-            <h1 class="mb-2">Lead Generation Services India for High-Intent Enquiries</h1>
-            <p class="mb-0">Need to <strong>buy leads in India</strong>? Get structured real estate leads (city-based), insurance enquiries, and agency demand delivered to your team on WhatsApp — and manage follow-ups in <a href="{{ route('whatsapp-crm') }}">WhatsApp CRM software India</a>.</p>
+        <div class="container section-title text-center" data-aos="fade-up">
+            <span class="description-title">{{ __('Solutions') }}</span>
+            <h1 class="mb-2">How we generate leads for you</h1>
+            <p class="mb-0">
+                Our <strong>lead generation services india</strong> are built around one goal: deliver structured, usable enquiries to your WhatsApp with clear context—so your team can follow up fast and track outcomes in <a href="{{ route('whatsapp-crm') }}">WhatsApp CRM software India</a>.
+                If you want to <strong>buy leads india</strong> without spam, structure + intent are the difference.
+            </p>
         </div>
     </section>
 
+    {{-- STEP-BY-STEP SYSTEM --}}
     <section class="section">
-        <div class="container section-title text-center"><h2>Industry-Specific Lead Generation Across India</h2></div>
-        <div class="container"><div class="row g-4">
-            <div class="col-md-4"><div class="feature-box h-100"><h5>Real Estate Leads (City-based)</h5><p>Buyer and investor enquiries segmented by city and budget intent — ideal for follow-up teams.</p></div></div>
-            <div class="col-md-4"><div class="feature-box h-100"><h5>Insurance Enquiries</h5><p>Health, motor, and life policy enquiries with callback details and clear intent signals.</p></div></div>
-            <div class="col-md-4"><div class="feature-box h-100"><h5>Agency Demand</h5><p>Service leads aligned to package interest so your team can qualify fast and close quicker.</p></div></div>
-        </div></div>
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Step-by-step system') }}</h2>
+            <p class="mb-0">{{ __('A simple pipeline from landing page to WhatsApp delivery.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row g-4">
+                <div class="col-md-3"><div class="feature-box h-100"><h5>Step 1: Create landing page</h5><p class="mb-0">{{ __('We publish a niche + city page designed to capture intent with structured fields.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>Step 2: Run ads</h5><p class="mb-0">{{ __('Traffic is driven from search/social campaigns aligned to your service.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>Step 3: Capture leads</h5><p class="mb-0">{{ __('Forms collect name, city, need, and basic intent so teams can qualify faster.') }}</p></div></div>
+                <div class="col-md-3"><div class="feature-box h-100"><h5>Step 4: Send to WhatsApp</h5><p class="mb-0">{{ __('Leads are delivered to your WhatsApp for quick action—then tracked in CRM.') }}</p></div></div>
+            </div>
+        </div>
     </section>
 
+    {{-- CORE FEATURES (with explanation) + Visual (Lead form UI) --}}
     <section class="section light-background">
-        <div class="container"><div class="row g-4">
-            <div class="col-md-6"><div class="landing-feature-card h-100"><h5>Who this is for</h5><p>Teams with a follow-up process, dedicated sales reps, and clear service-market fit.</p></div></div>
-            <div class="col-md-6"><div class="landing-feature-card h-100"><h5>Who this is not for</h5><p>Businesses expecting instant sales without call handling, qualification, or sales accountability.</p></div></div>
-        </div></div>
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Core features (what you get)') }}</h2>
+            <p class="mb-0">{{ __('Structure and delivery are the product—not vanity metrics.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row gy-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-12"><div class="landing-feature-card h-100"><h5>{{ __('Structured lead capture') }}</h5><p class="mb-0">{{ __('Consistent fields (city/need/budget/timeframe) so reps can qualify quickly.') }}</p></div></div>
+                        <div class="col-12"><div class="landing-feature-card h-100"><h5>{{ __('Deduplication') }}</h5><p class="mb-0">{{ __('Rules to reduce repeated entries and wasted follow-up time.') }}</p></div></div>
+                        <div class="col-12"><div class="landing-feature-card h-100"><h5>{{ __('WhatsApp delivery') }}</h5><p class="mb-0">{{ __('Leads are shared to WhatsApp so teams can respond immediately.') }}</p></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm preview-zoom-wrap">
+                        <img
+                            src="{{ asset('front/images/landify/sections-images/registration.png') }}"
+                            class="img-fluid object-fit-cover"
+                            alt="Lead form UI preview"
+                            loading="lazy"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
+    {{-- VISUAL (Landing preview) --}}
+    <section class="section light-background">
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Visual: landing page preview') }}</h2>
+            <p class="mb-0">{{ __('This is where intent is captured and structured before it reaches your sales team.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm preview-zoom-wrap">
+                <img
+                    src="{{ asset('front/images/landify/about/about-8.webp') }}"
+                    class="img-fluid object-fit-cover"
+                    alt="Landing page preview for lead generation in India"
+                    loading="lazy"
+                >
+            </div>
+        </div>
+    </section>
+
+    {{-- EXAMPLE (Sample lead data) --}}
     <section class="section">
-        <div class="container section-title text-center"><h2>How it works</h2></div>
-        <div class="container"><div class="row g-4">
-            <div class="col-md-4"><div class="feature-box h-100"><h5>1. Choose niche + city</h5><p>Select your target audience and city focus (e.g., Mumbai, Delhi, Surat) based on your capacity.</p></div></div>
-            <div class="col-md-4"><div class="feature-box h-100"><h5>2. Capture intent with forms</h5><p>Landing pages capture enquiry details with qualification prompts and cleaner lead data.</p></div></div>
-            <div class="col-md-4"><div class="feature-box h-100"><h5>3. Leads delivered to WhatsApp</h5><p>Receive structured lead details quickly for immediate follow-up — then track outcomes in CRM.</p></div></div>
-        </div></div>
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Example: what a lead looks like') }}</h2>
+            <p class="mb-0">{{ __('A simple, structured lead record your team can act on immediately.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="code-block-wrapper bg-dark p-4 p-md-5 rounded-4 shadow-lg position-relative" style="background-color: #0f172a !important; border: 1px solid rgba(255,255,255,0.1);">
+                <pre class="text-info m-0" style="font-family: 'Fira Code', 'Courier New', monospace; font-size: 1rem; line-height: 1.6; overflow:auto;">
+Name: Rahul
+City: Ahmedabad
+Interest: 2BHK
+Budget: ₹40L–₹55L
+Preferred time: Evening
+Notes: Wants options near metro, ready to visit this weekend
+                </pre>
+            </div>
+        </div>
     </section>
 
+    {{-- USE CASES (Industries) + Visual (WhatsApp receive screen) --}}
     <section class="section light-background">
-        <div class="container section-title text-center"><h2>Lead Quality Standards</h2></div>
-        <div class="container"><div class="row g-4">
-            <div class="col-md-4"><div class="social-stat-item"><div class="social-stat-value">Structured</div><div class="social-stat-label">Consistent fields for faster qualification</div></div></div>
-            <div class="col-md-4"><div class="social-stat-item"><div class="social-stat-value">Faster</div><div class="social-stat-label">Delivery timelines aligned to campaign setup</div></div></div>
-            <div class="col-md-4"><div class="social-stat-item"><div class="social-stat-value">Actionable</div><div class="social-stat-label">Best-practice follow-up guidance for teams</div></div></div>
-        </div></div>
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Use cases') }}</h2>
+            <p class="mb-0">{{ __('Common categories teams run in India: real estate, insurance, and loans.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row gy-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="row g-4">
+                        <div class="col-md-12"><div class="feature-box h-100"><h5>{{ __('Real estate leads') }}</h5><p class="mb-0">{{ __('City + budget context so teams can prioritize quickly.') }}</p></div></div>
+                        <div class="col-md-12"><div class="feature-box h-100"><h5>{{ __('Insurance enquiries') }}</h5><p class="mb-0">{{ __('Health/motor/life enquiries with callback-ready details.') }}</p></div></div>
+                        <div class="col-md-12"><div class="feature-box h-100"><h5>{{ __('Loan enquiries') }}</h5><p class="mb-0">{{ __('Intent prompts and basic qualification so teams can act confidently.') }}</p></div></div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm preview-zoom-wrap">
+                        <img
+                            src="{{ asset('front/images/landify/sections-images/login.png') }}"
+                            class="img-fluid object-fit-cover"
+                            alt="WhatsApp lead delivery preview screen"
+                            loading="lazy"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- BENEFITS --}}
+    <section class="section">
+        <div class="container section-title text-center" data-aos="fade-up">
+            <h2>{{ __('Benefits (real outcomes)') }}</h2>
+            <p class="mb-0">{{ __('This works when teams respond fast and follow a clear process.') }}</p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="80">
+            <div class="row g-4">
+                <div class="col-md-4"><div class="feature-box h-100"><h5>{{ __('Faster first response') }}</h5><p class="mb-0">{{ __('Leads arrive with context so reps can reply immediately.') }}</p></div></div>
+                <div class="col-md-4"><div class="feature-box h-100"><h5>{{ __('Cleaner qualification') }}</h5><p class="mb-0">{{ __('Structured fields reduce back-and-forth and wasted calls.') }}</p></div></div>
+                <div class="col-md-4"><div class="feature-box h-100"><h5>{{ __('Better tracking') }}</h5><p class="mb-0">{{ __('Pair with CRM to track stages and improve conversion over time.') }}</p></div></div>
+            </div>
+        </div>
     </section>
 
     <section class="call-to-action section dark-background">

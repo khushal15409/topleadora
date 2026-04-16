@@ -130,6 +130,9 @@
 
             <nav id="navmenu" class="navmenu navbar-saas-center d-none d-xl-block mx-auto" aria-label="Primary">
                 <ul>
+                    <li>
+                        <a href="{{ url('/') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">{{ __('Home') }}</a>
+                    </li>
                     <li class="dropdown">
                         <a href="#">
                             <span>{{ __('Products') }}</span>
@@ -202,6 +205,7 @@
         </div>
         <div class="offcanvas-body d-flex flex-column">
             <nav class="nav flex-column gap-1 saas-offcanvas-nav" aria-label="Mobile">
+                <a class="nav-link saas-offcanvas-link" href="{{ url('/') }}">{{ __('Home') }}</a>
                 <a class="nav-link saas-offcanvas-link" data-bs-toggle="collapse" href="#mobileProducts" role="button" aria-expanded="false" aria-controls="mobileProducts">
                     {{ __('Products') }}
                 </a>
