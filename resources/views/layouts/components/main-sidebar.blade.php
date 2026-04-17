@@ -146,21 +146,23 @@
 						</li>
 					@endif
 
-					<li class="slide__category"><span class="category-name">{{ __('Marketing') }}</span></li>
-					<li class="slide">
-						<a href="{{ route('admin.marketing.leads.index') }}"
-							class="side-menu__item {{ request()->routeIs('admin.marketing.leads.*') ? 'active' : '' }}">
-							<i class="ri-user-follow-line side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Capture Leads') }}</span>
-						</a>
-					</li>
-					<li class="slide">
-						<a href="{{ route('admin.marketing.landing-pages.index') }}"
-							class="side-menu__item {{ request()->routeIs('admin.marketing.landing-pages.*') ? 'active' : '' }}">
-							<i class="ri-pages-line side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Landing Pages') }}</span>
-						</a>
-					</li>
+					@if ($saasIsSuper)
+						<li class="slide__category"><span class="category-name">{{ __('Marketing') }}</span></li>
+						<li class="slide">
+							<a href="{{ route('admin.marketing.leads.index') }}"
+								class="side-menu__item {{ request()->routeIs('admin.marketing.leads.*') ? 'active' : '' }}">
+								<i class="ri-user-follow-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Capture Leads') }}</span>
+							</a>
+						</li>
+						<li class="slide">
+							<a href="{{ route('admin.marketing.landing-pages.index') }}"
+								class="side-menu__item {{ request()->routeIs('admin.marketing.landing-pages.*') ? 'active' : '' }}">
+								<i class="ri-pages-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Landing Pages') }}</span>
+							</a>
+						</li>
+					@endif
 
 					@unless ($saasIsSuper)
 						<li class="slide__category"><span class="category-name">{{ __('Sales CRM') }}</span></li>
