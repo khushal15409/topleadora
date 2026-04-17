@@ -52,7 +52,7 @@
 
   @stack('json_ld')
 
-  @include('layouts.partials.leads-tracking')
+  @include('layouts.partials.analytics')
 </head>
 
 <body class="leads-layout @yield('body_class')">

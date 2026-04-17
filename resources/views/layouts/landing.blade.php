@@ -107,7 +107,7 @@
 
     @stack('styles')
 
-    @include('layouts.partials.google-ads')
+    @include('layouts.partials.analytics')
 </head>
 
 <body class="@yield('body_class', 'index-page')">

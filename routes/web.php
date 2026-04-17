@@ -135,7 +135,7 @@ Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZAT
                     })->name('home');
 
                     // CRM Modules (STRICT: NOT FOR API_CLIENT)
-                    Route::middleware(['not.api.client'])->group(function () {
+                    Route::middleware(['not.api.client', 'not.superadmin'])->group(function () {
                         Route::get('/leads', [DashboardLeadController::class, 'index'])->name('leads.index');
                         Route::get('/leads/create', [DashboardLeadController::class, 'create'])->name('leads.create');
                         Route::post('/leads', [DashboardLeadController::class, 'store'])->name('leads.store');
@@ -157,7 +157,7 @@ Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZAT
                     });
 
                     // API Service Routes (STRICT: API_CLIENT ONLY)
-                    Route::middleware(['api.client'])->prefix('api')->name('api.')->group(function () {
+                    Route::middleware(['api.client', 'not.superadmin'])->prefix('api')->name('api.')->group(function () {
                         Route::get('/overview', [\App\Http\Controllers\Dashboard\ApiDashboardController::class, 'index'])->name('overview');
                         Route::get('/keys', [\App\Http\Controllers\Dashboard\ApiKeyController::class, 'index'])->name('keys.index');
                         Route::post('/keys', [\App\Http\Controllers\Dashboard\ApiKeyController::class, 'store'])->name('keys.store');

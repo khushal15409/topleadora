@@ -17,6 +17,9 @@
     <div class="menu-inner-shadow"></div>
 
     <ul class="menu-inner py-1">
+        @php
+            $isSuperAdminRole = auth()->user()?->hasRole(\App\Support\Roles::SUPER_ADMIN) ?? false;
+        @endphp
         @if(isSuperAdmin())
             <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link">
@@ -111,7 +114,9 @@
                     <div>Integrations</div>
                 </a>
             </li>
+        @endif
 
+        @if(isApiClient() && !$isSuperAdminRole)
             <li class="menu-header mt-2">
                 <span class="menu-header-text">API Gateway</span>
             </li>
@@ -141,9 +146,9 @@
             </li>
         @endif
 
-        @if(auth()->user()?->hasRole(\App\Support\Roles::ORGANIZATION) || isSuperAdmin())
+        @if(auth()->user()?->hasRole(\App\Support\Roles::ORGANIZATION) && !$isSuperAdminRole)
             <li class="menu-header mt-2">
-                <span class="menu-header-text">{{ isSuperAdmin() ? 'Business CRM' : 'Organization' }}</span>
+                <span class="menu-header-text">Organization</span>
             </li>
 
             @if (($orgCrmLocked ?? false) && paymentEnabled() && !isSuperAdmin())
@@ -172,14 +177,12 @@
                     </span>
                 </li>
             @else
-                @if(!isSuperAdmin())
-                    <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                        <a href="{{ route('admin.dashboard') }}" class="menu-link">
-                            <i class="menu-icon icon-base ri ri-home-smile-line"></i>
-                            <div>Dashboard</div>
-                        </a>
-                    </li>
-                @endif
+                <li class="menu-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('admin.dashboard') }}" class="menu-link">
+                        <i class="menu-icon icon-base ri ri-home-smile-line"></i>
+                        <div>Dashboard</div>
+                    </a>
+                </li>
 
                 @if (paymentEnabled())
                     <li class="menu-item {{ request()->routeIs('admin.organization.plan') ? 'active' : '' }}">

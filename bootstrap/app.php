@@ -30,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'api.client' => \App\Http\Middleware\EnsureApiClient::class,
             'not.api.client' => \App\Http\Middleware\EnsureNotApiClient::class,
+            'not.superadmin' => \App\Http\Middleware\EnsureNotSuperAdmin::class,
             'organization.account' => EnsureOrganizationAccountActive::class,
             'organization.onboarding' => EnsureOrganizationOnboardingComplete::class,
             'organization.subscription' => CheckOrganizationSubscription::class,

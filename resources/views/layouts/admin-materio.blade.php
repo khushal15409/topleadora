@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="{{ asset('materio/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}">
     @stack('vendor-css')
 
-    @include('layouts.partials.google-ads')
+    @include('layouts.partials.analytics')
 
     <script src="{{ asset('materio/assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('materio/assets/js/config.js') }}"></script>

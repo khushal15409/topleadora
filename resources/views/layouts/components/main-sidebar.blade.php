@@ -23,7 +23,12 @@
 				</svg></div>
 			<ul class="main-menu">
 
-				@if(isApiClient() || isSuperAdmin())
+				@php
+					// Use the same role signal as layouts that set $saasIsSuper.
+					$saasIsSuper = $saasIsSuper ?? (auth()->user()?->hasRole(\App\Support\Roles::SUPER_ADMIN) ?? false);
+				@endphp
+
+				@if(isApiClient() && !$saasIsSuper)
 					{{-- API CLIENT MENU --}}
 					<li class="slide__category"><span class="category-name">{{ __('API Gateway') }}</span></li>
 					<li class="slide">
@@ -70,7 +75,7 @@
 					</li>
 				@endif
 
-				@if(!isApiClient() || isSuperAdmin())
+				@if(!isApiClient() || $saasIsSuper)
 					{{-- CRM MENU (Organization / Admin / Sales) --}}
 					<li class="slide__category"><span class="category-name">{{ __('Main') }}</span></li>
 					<li class="slide">
@@ -157,42 +162,44 @@
 						</a>
 					</li>
 
-					<li class="slide__category"><span class="category-name">{{ __('Sales CRM') }}</span></li>
-					<li class="slide">
-						<a href="{{ route('dashboard.leads.index') }}"
-							class="side-menu__item {{ request()->routeIs('dashboard.leads.index') ? 'active' : '' }}">
-							<i class="ri-team-line side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Leads List') }}</span>
-						</a>
-					</li>
-					<li class="slide">
-						<a href="{{ route('dashboard.pipeline.index') }}"
-							class="side-menu__item {{ request()->routeIs('dashboard.pipeline.*') ? 'active' : '' }}">
-							<i class="ri-kanban-view side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Sales Pipeline') }}</span>
-						</a>
-					</li>
-					<li class="slide">
-						<a href="{{ route('dashboard.followups.index') }}"
-							class="side-menu__item {{ request()->routeIs('dashboard.followups.*') ? 'active' : '' }}">
-							<i class="ri-calendar-check-line side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Follow-ups') }}</span>
-						</a>
-					</li>
-					<li class="slide border-b border-defaultborder/10 pb-2 mb-2">
-						<a href="{{ route('dashboard.broadcast.index') }}"
-							class="side-menu__item {{ request()->routeIs('dashboard.broadcast.*') ? 'active' : '' }}">
-							<i class="ri-whatsapp-line side-menu__icon text-[#25D366]"></i>
-							<span class="side-menu__label">{{ __('Broadcast') }}</span>
-						</a>
-					</li>
-					<li class="slide">
-						<a href="{{ route('dashboard.reports.index') }}"
-							class="side-menu__item {{ request()->routeIs('dashboard.reports.*') ? 'active' : '' }}">
-							<i class="ri-bar-chart-2-line side-menu__icon"></i>
-							<span class="side-menu__label">{{ __('Analytics') }}</span>
-						</a>
-					</li>
+					@unless ($saasIsSuper)
+						<li class="slide__category"><span class="category-name">{{ __('Sales CRM') }}</span></li>
+						<li class="slide">
+							<a href="{{ route('dashboard.leads.index') }}"
+								class="side-menu__item {{ request()->routeIs('dashboard.leads.index') ? 'active' : '' }}">
+								<i class="ri-team-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Leads List') }}</span>
+							</a>
+						</li>
+						<li class="slide">
+							<a href="{{ route('dashboard.pipeline.index') }}"
+								class="side-menu__item {{ request()->routeIs('dashboard.pipeline.*') ? 'active' : '' }}">
+								<i class="ri-kanban-view side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Sales Pipeline') }}</span>
+							</a>
+						</li>
+						<li class="slide">
+							<a href="{{ route('dashboard.followups.index') }}"
+								class="side-menu__item {{ request()->routeIs('dashboard.followups.*') ? 'active' : '' }}">
+								<i class="ri-calendar-check-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Follow-ups') }}</span>
+							</a>
+						</li>
+						<li class="slide border-b border-defaultborder/10 pb-2 mb-2">
+							<a href="{{ route('dashboard.broadcast.index') }}"
+								class="side-menu__item {{ request()->routeIs('dashboard.broadcast.*') ? 'active' : '' }}">
+								<i class="ri-whatsapp-line side-menu__icon text-[#25D366]"></i>
+								<span class="side-menu__label">{{ __('Broadcast') }}</span>
+							</a>
+						</li>
+						<li class="slide">
+							<a href="{{ route('dashboard.reports.index') }}"
+								class="side-menu__item {{ request()->routeIs('dashboard.reports.*') ? 'active' : '' }}">
+								<i class="ri-bar-chart-2-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Analytics') }}</span>
+							</a>
+						</li>
+					@endunless
 				@endif
 
 				<!-- Start::slide__category -->

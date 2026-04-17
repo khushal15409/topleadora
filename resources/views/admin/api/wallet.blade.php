@@ -340,6 +340,14 @@
             return;
         }
 
+        if (typeof window.trackWalletTopupInitiated === 'function') {
+            window.trackWalletTopupInitiated({
+                amount_inr: amount,
+                currency: @json(currency_context()['base_currency']),
+                source: 'dashboard_api_wallet'
+            });
+        }
+
         const btn = document.getElementById('payNowBtn');
         btn.disabled = true;
         btn.innerHTML = '<i class="ri-loader-4-line animate-spin me-2"></i> Creating order…';
@@ -498,6 +506,14 @@
             const data = await res.json();
 
             if (res.ok && data.ok) {
+                if (typeof window.trackWalletTopupSuccess === 'function') {
+                    window.trackWalletTopupSuccess({
+                        currency: @json(currency_context()['base_currency']),
+                        value: amount,
+                        amount_inr: amount,
+                        source: 'dashboard_api_wallet'
+                    });
+                }
                 showAlert('success', data.message || 'Wallet credited successfully.');
                 // Refresh balance display dynamically
                 const balEl = document.getElementById('walletBalanceDisplay');

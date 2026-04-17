@@ -7,19 +7,20 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Support\Roles;
 
-class EnsureApiClient
+class EnsureNotSuperAdmin
 {
     /**
-     * Handle an incoming request.
+     * Block Super Admin from accessing certain role-scoped areas.
      */
     public function handle(Request $request, Closure $next): Response
     {
         $user = auth()->user();
 
-        if (!$user || !$user->hasRole(Roles::API_CLIENT)) {
-            abort(403, 'Unauthorized. This area is reserved for API Clients.');
+        if ($user && $user->hasRole(Roles::SUPER_ADMIN)) {
+            abort(403, 'Unauthorized.');
         }
 
         return $next($request);
     }
 }
+
