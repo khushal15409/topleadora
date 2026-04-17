@@ -2,11 +2,6 @@
 
 @section('title', 'Organization Users')
 
-@push('vendor-css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/dataTables.bootstrap5.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" crossorigin="anonymous">
-@endpush
-
 @section('content')
     <!-- Page Header -->
     <div class="md:flex block items-center justify-between mb-6 mt-[2rem] page-header-breadcrumb">
@@ -96,7 +91,7 @@
                         </div>
                     @else
                         <div class="table-responsive p-4">
-                            <table id="dt-org-users" class="ti-custom-table table-hover text-nowrap w-full">
+                            <table id="dt-org-users" class="ti-custom-table table-hover text-nowrap w-full datatable" data-disable-last-sort="1">
                                 <thead class="bg-gray-100/50 dark:bg-black/20 border-b border-defaultborder/10">
                                     <tr>
                                         <th scope="col" class="!py-3 !px-4 text-[11px] font-bold uppercase tracking-wider">{{ __('User info') }}</th>
@@ -163,55 +158,3 @@
         </div>
     </div>
 @endsection
-
-@push('vendor-js')
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js" crossorigin="anonymous"></script>
-@endpush
-
-@push('page-js')
-    <script>
-        (function () {
-            if (typeof jQuery === 'undefined' || !jQuery.fn.DataTable) {
-                return;
-            }
-            const $table = jQuery('#dt-org-users');
-            if (!$table.length || $table.find('tbody tr').length === 0) {
-                return;
-            }
-            $table.DataTable({
-                responsive: true,
-                pageLength: 10,
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    [10, 25, 50, 100, 'All'],
-                ],
-                order: [[4, 'desc']],
-                columnDefs: [
-                    { orderable: false, searchable: false, targets: -1 },
-                    { className: 'align-middle', targets: '_all' },
-                ],
-                language: {
-                    search: '',
-                    searchPlaceholder: 'Search…',
-                    lengthMenu: 'Show _MENU_',
-                    info: 'Showing _START_ to _END_ of _TOTAL_',
-                    infoEmpty: 'No users',
-                    infoFiltered: '(filtered from _MAX_)',
-                    zeroRecords: 'No matching rows',
-                    paginate: { next: 'Next', previous: 'Prev' },
-                },
-                dom:
-                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center text-xs'l><'flex items-center'f>>" +
-                    "<'table-responsive'tr>" +
-                    "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
-            });
-            
-            // Re-style for compatibility
-            jQuery('.dataTables_filter input').addClass('ti-form-input !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md');
-            jQuery('.dataTables_length select').addClass('ti-form-select !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md !w-20 mx-2');
-        })();
-    </script>
-@endpush

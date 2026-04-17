@@ -55,7 +55,7 @@
                         </div>
                     @else
                         <div class="table-responsive p-4">
-                            <table id="dt-contacts" class="ti-custom-table table-hover text-nowrap w-full">
+                            <table id="dt-contacts" class="ti-custom-table table-hover text-nowrap w-full datatable" data-disable-last-sort="1">
                                 <thead class="bg-gray-50 border-y dark:bg-black/10">
                                     <tr>
                                         <th scope="col" class="!py-3 !px-4">{{ __('ID') }}</th>
@@ -216,14 +216,6 @@
     </div>
 @endsection
 
-@push('vendor-js')
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"
-        crossorigin="anonymous"></script>
-@endpush
-
 @push('page-js')
     <script>
         (function () {
@@ -275,34 +267,6 @@
                 });
             });
 
-            // DataTable init
-            if (typeof jQuery !== 'undefined' && jQuery.fn.DataTable) {
-                const $table = jQuery('#dt-contacts');
-                if ($table.length && $table.find('tbody tr').length > 0) {
-                    $table.DataTable({
-                        responsive: true,
-                        pageLength: 10,
-                        order: [[0, 'desc']],
-                        columnDefs: [
-                            { orderable: false, searchable: false, targets: -1 },
-                            { className: 'align-middle', targets: '_all' },
-                        ],
-                        language: {
-                            search: '',
-                            searchPlaceholder: 'Search…',
-                            lengthMenu: 'Show _MENU_',
-                            paginate: { next: 'Next', previous: 'Prev' },
-                        },
-                        dom:
-                            "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center'l><'flex items-center'f>>" +
-                            "<'table-responsive'tr>" +
-                            "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
-                    });
-
-                    jQuery('.dataTables_filter input').addClass('ti-form-input !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md');
-                    jQuery('.dataTables_length select').addClass('ti-form-select !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md !w-20 mx-2');
-                }
-            }
         })();
     </script>
 @endpush
