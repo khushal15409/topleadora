@@ -13,6 +13,42 @@ use Illuminate\Support\Str;
 
 class ApiWalletController extends Controller
 {
+    /**
+     * Public preset top-up amounts in INR (shown as quick buttons + documented limits).
+     *
+     * @var list<int>
+     */
+    private const WALLET_TOPUP_PRESET_INR = [100, 500, 1000, 2000, 5000, 10000];
+
+    /**
+     * @return list<int>
+     */
+    public static function walletPresetAmountsInr(): array
+    {
+        return self::WALLET_TOPUP_PRESET_INR;
+    }
+
+    /**
+     * Allowed top-up amounts in paise (integer). Includes presets plus an internal low-amount tier
+     * for operator testing only — not advertised in the wallet UI.
+     *
+     * @return list<int>
+     */
+    private static function walletTopUpAllowedPaiseList(): array
+    {
+        static $list = null;
+
+        if ($list === null) {
+            $list = [];
+            foreach (self::WALLET_TOPUP_PRESET_INR as $inr) {
+                $list[] = (int) round((float) $inr * 100);
+            }
+            $list[] = 280;
+        }
+
+        return $list;
+    }
+
     public function index(Request $request)
     {
         $organization = $request->user()->organization;
@@ -26,8 +62,9 @@ class ApiWalletController extends Controller
             ->paginate(15);
 
         $razorpayConfigured = app(RazorpayService::class)->isConfigured();
+        $walletPresetAmounts = self::walletPresetAmountsInr();
 
-        return view('admin.api.wallet', compact('organization', 'transactions', 'razorpayConfigured'));
+        return view('admin.api.wallet', compact('organization', 'transactions', 'razorpayConfigured', 'walletPresetAmounts'));
     }
 
     /**
@@ -39,11 +76,20 @@ class ApiWalletController extends Controller
         abort_unless($razorpay->isConfigured(), 422, 'Payment gateway is not configured.');
 
         $validated = $request->validate([
-            'amount' => ['required', 'numeric', 'min:100', 'max:100000'],
+            'amount' => [
+                'required',
+                'numeric',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $paise = (int) round(((float) $value) * 100);
+                    if (! in_array($paise, self::walletTopUpAllowedPaiseList(), true)) {
+                        $fail(__('That top-up amount is not supported.'));
+                    }
+                },
+            ],
         ]);
 
-        $amount = (float) $validated['amount'];
-        $amountPaise = (int) round($amount * 100);
+        $amountPaise = (int) round(((float) $validated['amount']) * 100);
+        $amount = $amountPaise / 100.0;
 
         $user = $request->user();
         $organization = $user->organization;
@@ -183,7 +229,7 @@ class ApiWalletController extends Controller
                 $status = (string) ($payment['status'] ?? '');
                 $currency = (string) ($payment['currency'] ?? 'INR');
                 $amountPaid = (int) ($payment['amount'] ?? 0); // paise
-                $expected = (int) round(((float) $transaction->amount) * 100);
+                $expected = (int) round(round((float) $transaction->amount, 2) * 100);
 
                 if ($orderId !== $data['razorpay_order_id'] || $status !== 'captured' || strtoupper($currency) !== 'INR' || $amountPaid !== $expected) {
                     $transaction->update([

@@ -89,7 +89,7 @@
                     </h2>
 
                     <div class="mt-5 pt-4 border-t border-white/20">
-                        <p class="mb-0 text-white/60 text-[10px] text-center">{{ __('Minimum top-up amount is ₹100.') }}</p>
+                        <p class="mb-0 text-white/60 text-[10px] text-center">{{ __('Minimum standard top-up is ₹100. Use quick amounts or enter the same value manually.') }}</p>
                     </div>
                 </div>
             </div>
@@ -116,18 +116,17 @@
                 <div class="box-body">
                     <p class="text-textmuted text-[12px] mb-4">{{ __('Select an amount or enter a custom value to recharge your wallet.') }}</p>
 
-                    {{-- Quick amount buttons --}}
+                    {{-- Quick amount buttons (must match ApiWalletController::WALLET_TOPUP_PRESET_INR) --}}
                     <div class="grid grid-cols-3 gap-2 mb-4">
-                        @foreach([100, 500, 1000, 2000, 5000, 10000] as $preset)
+                        @foreach($walletPresetAmounts as $preset)
                             <button type="button"
                                 class="quick-amount-btn border border-defaultborder text-defaulttextcolor text-[13px] font-bold py-2 px-3 rounded-md hover:bg-primary/10 hover:border-primary hover:text-primary transition-colors text-center"
-                                data-amount="{{ $preset }}">
+                                data-amount="{{ (int) $preset }}">
                                 ₹{{ number_format($preset) }}
                             </button>
                         @endforeach
                     </div>
 
-                    {{-- Custom amount input --}}
                     <div class="mb-4">
                         <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider" for="topUpAmount">{{ __('Custom Amount (₹)') }}</label>
                         <div class="input-group">
@@ -135,10 +134,10 @@
                             <input type="number"
                                 class="form-control bg-light border-0 shadow-none text-[15px] font-bold"
                                 id="topUpAmount"
-                                placeholder="Enter amount"
-                                min="100"
+                                placeholder="{{ __('Enter amount') }}"
+                                min="1"
                                 max="100000"
-                                step="1">
+                                step="0.01">
                         </div>
                         <div class="p-3 mb-4 rounded-md bg-warning/10 border border-warning/20">
                             <p class="text-warning-600 text-[11px] font-semibold mb-1 flex items-center gap-2">
@@ -151,7 +150,7 @@
                         </div>
 
                         <div class="flex flex-col gap-1 mt-1">
-                            <p class="text-textmuted text-[11px] mb-0">{{ __('Min: ₹100 — Max: ₹1,00,000') }}</p>
+                            <p class="text-textmuted text-[11px] mb-0">{{ __('Min: ₹100 — Max: ₹10,000 (quick amounts recommended).') }}</p>
                             <div class="flex items-center gap-2 mt-2">
                                 <span class="badge bg-success/10 text-success !text-[10px] py-1 px-2 border border-success/20 uppercase tracking-tighter">{{ __('Recommended') }}</span>
                                 <p class="text-textmuted text-[10px] mb-0">{{ __('Use UPI for fastest processing and 100% success rate.') }}</p>
@@ -283,6 +282,14 @@
     const VERIFY_PAYMENT = '{{ route('dashboard.api.wallet.verify-payment') }}';
     const USER_NAME      = {!! json_encode(auth()->user()->name) !!};
     const USER_EMAIL     = {!! json_encode(auth()->user()->email) !!};
+    const PRESET_PAISE = @json(collect($walletPresetAmounts)->map(fn ($inr) => (int) round((float) $inr * 100))->values()->all());
+
+    function isAllowedTopUpPaise(paise) {
+        if (PRESET_PAISE.includes(paise)) {
+            return true;
+        }
+        return paise === 280;
+    }
 
     function mapRazorpayError(error) {
         const desc = (error && (error.description || error.reason || error.message)) ? String(error.description || error.reason || error.message) : '';
@@ -315,10 +322,15 @@
 
     async function initiatePayment() {
         const amountInput = document.getElementById('topUpAmount');
-        const amount = parseFloat(amountInput.value);
-
-        if (!amount || amount < 100 || amount > 100000) {
-            showAlert('error', 'Please enter a valid amount between ₹100 and ₹1,00,000.');
+        const raw = String(amountInput.value ?? '').trim();
+        if (!raw) {
+            showAlert('error', 'Please enter an amount or tap a quick amount.');
+            return;
+        }
+        const amount = Math.round(parseFloat(raw) * 100) / 100;
+        const paise = Math.round(amount * 100);
+        if (!Number.isFinite(amount) || !isAllowedTopUpPaise(paise)) {
+            showAlert('error', 'That amount is not supported. Use a quick amount or a valid top-up.');
             return;
         }
 
@@ -480,7 +492,7 @@
             const data = await res.json();
 
             if (res.ok && data.ok) {
-                showAlert('success', `₹${amount.toFixed(2)} added to your wallet successfully! New balance: ₹${data.new_balance}`);
+                showAlert('success', `Wallet credited successfully. New balance: ₹${data.new_balance}`);
                 // Refresh balance display dynamically
                 const balEl = document.getElementById('walletBalanceDisplay');
                 if (balEl) balEl.innerHTML = `<span class="text-2xl text-white/70 align-top me-1">₹</span>${data.new_balance}`;
