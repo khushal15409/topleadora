@@ -66,8 +66,10 @@ class ApiWalletController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('[WalletTopUp] Razorpay order creation failed: ' . $e->getMessage());
-            return response()->json(['message' => 'Unable to initiate payment: ' . $e->getMessage()], 500);
+            Log::error('[WalletTopUp] Razorpay order creation failed', [
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json(['message' => 'Unable to initiate payment right now. Please try again later.'], 500);
         }
 
         // Create a pending transaction record
@@ -94,7 +96,7 @@ class ApiWalletController extends Controller
             'order_id' => (string) $orderPayload['id'],
             'amount' => (int) $orderPayload['amount'], // paise returned from RZP
             'currency' => 'INR',
-            'name' => (string) config('app.name', 'WP-CRM'),
+            'name' => (string) config('app.name', 'TopLeadOra'),
             'description' => 'Wallet top-up credits',
             'prefill' => [
                 'name' => (string) ($user->name ?? 'User'),
@@ -214,7 +216,9 @@ class ApiWalletController extends Controller
                 return response()->json(['message' => (string) ($result['message'] ?? 'Payment verification failed.')], (int) ($result['status'] ?? 422));
             }
         } catch (\Throwable $e) {
-            Log::error('[WalletTopUp] Verify/Credit failed: ' . $e->getMessage());
+            Log::error('[WalletTopUp] Verify/Credit failed', [
+                'error' => $e->getMessage(),
+            ]);
             return response()->json(['message' => 'Payment captured but wallet update failed. Contact support immediately.'], 500);
         }
 

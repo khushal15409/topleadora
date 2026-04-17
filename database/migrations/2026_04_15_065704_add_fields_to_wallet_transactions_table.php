@@ -10,10 +10,20 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (! Schema::hasTable('wallet_transactions')) {
+            return;
+        }
+
         Schema::table('wallet_transactions', function (Blueprint $table) {
-            $table->string('source')->after('type')->nullable(); // recharge, api_usage
-            $table->string('reference_id')->after('source')->nullable(); // payment_id or order_id
-            $table->string('status')->after('reference_id')->default('success'); // success, failed, pending
+            if (! Schema::hasColumn('wallet_transactions', 'source')) {
+                $table->string('source')->after('type')->nullable(); // recharge, api_usage
+            }
+            if (! Schema::hasColumn('wallet_transactions', 'reference_id')) {
+                $table->string('reference_id')->after('source')->nullable(); // payment_id or order_id
+            }
+            if (! Schema::hasColumn('wallet_transactions', 'status')) {
+                $table->string('status')->after('reference_id')->default('success'); // success, failed, pending
+            }
         });
     }
 
@@ -22,8 +32,20 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        if (! Schema::hasTable('wallet_transactions')) {
+            return;
+        }
+
         Schema::table('wallet_transactions', function (Blueprint $table) {
-            $table->dropColumn(['source', 'reference_id', 'status']);
+            $drops = [];
+            foreach (['source', 'reference_id', 'status'] as $col) {
+                if (Schema::hasColumn('wallet_transactions', $col)) {
+                    $drops[] = $col;
+                }
+            }
+            if ($drops !== []) {
+                $table->dropColumn($drops);
+            }
         });
     }
 };

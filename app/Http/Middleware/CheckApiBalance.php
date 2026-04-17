@@ -8,6 +8,19 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckApiBalance
 {
+    private function requiredCostInInr(Request $request): float
+    {
+        // Keep in sync with Api\GatewayController cost constants.
+        if ($request->is('api/send-otp')) {
+            return 0.50;
+        }
+        if ($request->is('api/send-whatsapp')) {
+            return 1.00;
+        }
+
+        return 0.00;
+    }
+
     /**
      * Handle an incoming request.
      */
@@ -32,7 +45,8 @@ class CheckApiBalance
             return response()->json(['error' => 'API access is disabled for your organization'], 403);
         }
 
-        if ($organization->wallet_balance <= 0) {
+        $required = $this->requiredCostInInr($request);
+        if ($required > 0 && (float) $organization->wallet_balance < $required) {
             return response()->json(['error' => 'Insufficient wallet balance. Please top up.'], 402);
         }
 

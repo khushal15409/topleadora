@@ -1,5 +1,5 @@
 /**
- * WP-CRM Landing – Landify-style front page
+ * TopLeadOra Landing – Landify-style front page
  * All selectors use .lp-* or body.landing-page to avoid any conflict with backend (Otika).
  * This file is ONLY loaded by layouts.front – never by app.blade.php (super admin / organization).
  */

@@ -79,11 +79,11 @@ class WhatsAppCloudApiService
             ];
         } catch (\Throwable $e) {
             Log::warning('WhatsApp send failed', [
-                'to' => $phone,
+                'to' => strlen($phone) > 5 ? (substr($phone, 0, 5) . str_repeat('*', max(0, strlen($phone) - 5))) : '*****',
                 'error' => $e->getMessage(),
             ]);
 
-            return ['ok' => false, 'error' => $e->getMessage()];
+            return ['ok' => false, 'error' => 'send_failed'];
         }
     }
 

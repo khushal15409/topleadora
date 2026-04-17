@@ -17,9 +17,36 @@ class GatewayController extends Controller
     protected OtpService $otpService;
     protected WhatsAppService $whatsappService;
 
-    // A constant deduction rate for simulation purposes, real SaaS could have dynamic models
-    protected const OTP_COST = 0.50; // $0.50 per OTP
-    protected const WA_COST = 1.00; // $1.00 per standard WA API call
+    /**
+     * Billing currency is INR.
+     * Keep these values small and stable; change via config later if you add plan-based pricing.
+     */
+    protected const OTP_COST_INR = 0.50; // ₹0.50 per OTP
+    protected const WA_COST_INR = 1.00; // ₹1.00 per WhatsApp send
+
+    private function maskPhone(string $phone): string
+    {
+        $digits = preg_replace('/\D+/', '', $phone) ?? '';
+        if ($digits === '') {
+            return '';
+        }
+        if (strlen($digits) <= 5) {
+            return str_repeat('*', strlen($digits));
+        }
+
+        return substr($digits, 0, 5) . str_repeat('*', max(0, strlen($digits) - 5));
+    }
+
+    private function safeMessageForLog(string $message): string
+    {
+        $message = trim($message);
+        if ($message === '') {
+            return '';
+        }
+
+        // Limit stored content to reduce PII exposure in logs.
+        return mb_substr($message, 0, 120);
+    }
 
     public function __construct(OtpService $otpService, WhatsAppService $whatsappService)
     {
@@ -57,7 +84,7 @@ class GatewayController extends Controller
             return response()->json(['error' => 'No organization found.'], 403);
         }
 
-        $cost = $type === 'otp' ? self::OTP_COST : self::WA_COST;
+        $cost = $type === 'otp' ? self::OTP_COST_INR : self::WA_COST_INR;
         $reservationRef = (string) Str::uuid();
 
         // Reserve funds BEFORE calling external services to avoid negative balances under concurrency.
@@ -76,13 +103,14 @@ class GatewayController extends Controller
 
                 $org->decrement('wallet_balance', $cost);
 
+                $maskedPhone = $this->maskPhone((string) ($validated['phone'] ?? ''));
                 WalletTransaction::create([
                     'organization_id' => $org->id,
                     'amount' => $cost,
                     'type' => 'debit',
                     'source' => 'api_usage',
                     'reference_id' => $reservationRef,
-                    'description' => strtoupper($type) . ' usage (reserved) for ' . $validated['phone'],
+                    'description' => strtoupper($type) . ' usage (reserved) for ' . $maskedPhone,
                     'status' => 'pending',
                 ]);
 
@@ -105,6 +133,8 @@ class GatewayController extends Controller
             $status = $serviceResponse['success'] ? 'success' : 'failed';
 
             DB::transaction(function () use ($user, $organization, $type, $validated, $cost, $status, $serviceResponse, $reservationRef) {
+                $maskedPhone = $this->maskPhone((string) ($validated['phone'] ?? ''));
+                $safeMsg = $this->safeMessageForLog((string) ($validated['message'] ?? ''));
                 /** @var WalletTransaction|null $trx */
                 $trx = WalletTransaction::query()
                     ->where('organization_id', $organization->id)
@@ -117,14 +147,14 @@ class GatewayController extends Controller
                     if ($status === 'success') {
                         $trx->update([
                             'status' => 'success',
-                            'description' => strtoupper($type) . ' usage deduction for ' . $validated['phone'],
+                            'description' => strtoupper($type) . ' usage deduction for ' . $maskedPhone,
                         ]);
                     } else {
                         // Refund reservation on failure.
                         $organization->increment('wallet_balance', $cost);
                         $trx->update([
                             'status' => 'failed',
-                            'description' => strtoupper($type) . ' failed — reservation refunded for ' . $validated['phone'],
+                            'description' => strtoupper($type) . ' failed — reservation refunded for ' . $maskedPhone,
                         ]);
                     }
                 } else {
@@ -138,8 +168,8 @@ class GatewayController extends Controller
                     'user_id' => $user->id,
                     'organization_id' => $organization->id,
                     'type' => $type,
-                    'phone' => $validated['phone'],
-                    'message' => $validated['message'],
+                    'phone' => $maskedPhone,
+                    'message' => $safeMsg,
                     'status' => $status,
                     'response' => json_encode($serviceResponse['response'] ?? []),
                 ]);
@@ -155,6 +185,8 @@ class GatewayController extends Controller
             // If the external call threw, refund the reservation.
             try {
                 DB::transaction(function () use ($organization, $cost, $type, $validated, $reservationRef, $e) {
+                    $maskedPhone = $this->maskPhone((string) ($validated['phone'] ?? ''));
+                    $safeMsg = $this->safeMessageForLog((string) ($validated['message'] ?? ''));
                     $trx = WalletTransaction::query()
                         ->where('organization_id', $organization->id)
                         ->where('reference_id', $reservationRef)
@@ -166,7 +198,7 @@ class GatewayController extends Controller
                         $organization->increment('wallet_balance', $cost);
                         $trx->update([
                             'status' => 'failed',
-                            'description' => strtoupper($type) . ' error — reservation refunded for ' . ($validated['phone'] ?? ''),
+                            'description' => strtoupper($type) . ' error — reservation refunded for ' . $maskedPhone,
                         ]);
                     }
 
@@ -174,10 +206,10 @@ class GatewayController extends Controller
                         'user_id' => $request->user()?->id,
                         'organization_id' => $organization->id,
                         'type' => $type,
-                        'phone' => (string) ($validated['phone'] ?? ''),
-                        'message' => (string) ($validated['message'] ?? ''),
+                        'phone' => $maskedPhone,
+                        'message' => $safeMsg,
                         'status' => 'failed',
-                        'response' => json_encode(['exception' => $e->getMessage()]),
+                        'response' => json_encode(['exception' => 'external_service_error']),
                     ]);
                 }, 3);
             } catch (\Throwable) {
@@ -185,8 +217,7 @@ class GatewayController extends Controller
             }
 
             return response()->json([
-                'error' => 'An error occurred while processing the request.',
-                'details' => $e->getMessage(),
+                'error' => 'Something went wrong. Please try again later.',
             ], 500);
         }
     }

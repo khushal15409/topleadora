@@ -51,7 +51,7 @@ class RazorpayPaymentController extends Controller
 
         } catch (\Throwable $e) {
             report($e);
-            return response()->json(['message' => 'Unable to create payment order: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Unable to create payment order right now. Please try again later.'], 500);
         }
 
         $payment = Payment::query()->create([

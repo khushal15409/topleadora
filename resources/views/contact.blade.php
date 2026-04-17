@@ -1,7 +1,7 @@
 @extends('layouts.landing')
 
-@section('meta_title', 'Contact us | '.config('app.name', 'WP-CRM'))
-@section('meta_description', 'Get in touch with the WP-CRM team. We will respond as soon as possible.')
+@section('meta_title', 'Contact us | '.config('app.name', 'TopLeadOra'))
+@section('meta_description', 'Get in touch with the TopLeadOra team. We will respond as soon as possible.')
 @section('canonical_url', route('contact', absolute: true))
 
 @section('content')

@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
+        if (! Schema::hasTable('wallet_transactions')) {
+            return;
+        }
+
         Schema::table('wallet_transactions', function (Blueprint $table) {
             if (!Schema::hasColumn('wallet_transactions', 'razorpay_order_id')) {
                 $table->string('razorpay_order_id', 100)->nullable()->after('reference_id');
@@ -22,14 +26,30 @@ return new class extends Migration {
             }
 
             // Idempotency (nulls allowed).
-            $table->unique('razorpay_payment_id');
-            $table->index(['organization_id', 'razorpay_order_id']);
-            $table->index(['organization_id', 'status']);
+            try {
+                $table->unique('razorpay_payment_id');
+            } catch (\Throwable) {
+                // noop
+            }
+            try {
+                $table->index(['organization_id', 'razorpay_order_id']);
+            } catch (\Throwable) {
+                // noop
+            }
+            try {
+                $table->index(['organization_id', 'status']);
+            } catch (\Throwable) {
+                // noop
+            }
         });
     }
 
     public function down(): void
     {
+        if (! Schema::hasTable('wallet_transactions')) {
+            return;
+        }
+
         Schema::table('wallet_transactions', function (Blueprint $table) {
             if (Schema::hasColumn('wallet_transactions', 'meta')) {
                 $table->dropColumn('meta');
@@ -38,11 +58,19 @@ return new class extends Migration {
                 $table->dropColumn('razorpay_signature');
             }
             if (Schema::hasColumn('wallet_transactions', 'razorpay_payment_id')) {
-                $table->dropUnique(['razorpay_payment_id']);
+                try {
+                    $table->dropUnique(['razorpay_payment_id']);
+                } catch (\Throwable) {
+                    // noop
+                }
                 $table->dropColumn('razorpay_payment_id');
             }
             if (Schema::hasColumn('wallet_transactions', 'razorpay_order_id')) {
-                $table->dropIndex(['organization_id', 'razorpay_order_id']);
+                try {
+                    $table->dropIndex(['organization_id', 'razorpay_order_id']);
+                } catch (\Throwable) {
+                    // noop
+                }
                 $table->dropColumn('razorpay_order_id');
             }
 

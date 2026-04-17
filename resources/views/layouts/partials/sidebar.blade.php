@@ -2,9 +2,9 @@
     <div class="app-brand demo">
         <a href="{{ route('admin.dashboard') }}"
             class="app-brand-link d-flex align-items-center gap-2 min-w-0 text-decoration-none sidebar-app-brand-link"
-            title="{{ config('app.name', 'WP-CRM') }}">
+            title="{{ config('app.name', 'TopLeadOra') }}">
             <span class="sidebar-logo-brand">
-                <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'WP-CRM') }}" width="160"
+                <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'TopLeadOra') }}" width="160"
                     height="40" class="sidebar-logo-brand__img" loading="eager">
             </span>
         </a>

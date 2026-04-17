@@ -790,7 +790,7 @@
                             </h3>
                             <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body">
-                                    Yes. WP-CRM is built for omnichannel capture so enquiries from social and your website
+                                    Yes. TopLeadOra is built for omnichannel capture so enquiries from social and your website
                                     flow into the same inbox and pipeline.
                                 </div>
                             </div>

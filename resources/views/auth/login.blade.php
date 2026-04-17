@@ -45,7 +45,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <label for="login-password" class="form-label mb-0">Password</label>
-                    <a href="javascript:void(0);" class="small fw-semibold text-decoration-none">Forgot password?</a>
+                    <a href="{{ route('password.request') }}" class="small fw-semibold text-decoration-none">Forgot password?</a>
                 </div>
                 <div class="auth-password mb-3">
                     <input type="password" name="password" id="login-password"

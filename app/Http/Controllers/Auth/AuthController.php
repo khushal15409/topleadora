@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -104,8 +105,12 @@ class AuthController extends Controller
             ]);
 
             if ($isApiType) {
+                // Production safety: ensure required role exists before assignment.
+                Role::findOrCreate(Roles::API_CLIENT, 'web');
                 $user->syncRoles([Roles::API_CLIENT]);
             } else {
+                Role::findOrCreate(Roles::ORGANIZATION, 'web');
+                Role::findOrCreate(Roles::ORG_ADMIN, 'web');
                 $user->syncRoles([Roles::ORGANIZATION, Roles::ORG_ADMIN]);
             }
 

@@ -260,7 +260,7 @@
             <div class="row gy-4 gx-lg-5 align-items-start">
                 <div class="col-lg-5 col-md-12 footer-about">
                     <a href="{{ url('/') }}" class="logo d-flex align-items-center" style="max-width: 720px;">
-                        <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'WP-CRM') }}"
+                        <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'TopLeadOra') }}"
                             style="width: auto; height: 180px; max-height: 200px; object-fit: contain;">
                     </a>
                     <p>WhatsApp CRM for Real Estate & Sales. Manage leads, pipelines, and follow-ups in one place.</p>
@@ -320,7 +320,7 @@
             </div>
         </div>
         <div class="container copyright text-center mt-4">
-            <p>© <span>{{ now()->year }} {{ config('app.name', 'WP-CRM') }}</span> <span>{{ __('All rights reserved') }}</span></p>
+            <p>© <span>{{ now()->year }} {{ config('app.name', 'TopLeadOra') }}</span> <span>{{ __('All rights reserved') }}</span></p>
         </div>
     </footer>
 

@@ -1,5 +1,5 @@
 /**
- * WP-CRM dashboard charts — reads window.__WP_CRM_DASHBOARD from the Blade view.
+ * TopLeadOra dashboard charts — reads window.__WP_CRM_DASHBOARD from the Blade view.
  */
 'use strict';
 
