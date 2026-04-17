@@ -184,6 +184,16 @@ Route::post('/currency', [\App\Http\Controllers\CurrencyPreferenceController::cl
     ->middleware(['web'])
     ->name('currency.update');
 
+// Profile should be accessible to every authenticated user (all roles).
+Route::prefix('admin')
+    ->middleware(['auth'])
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    });
+
 Route::prefix('admin')
     ->middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZATION . '|' . Roles::ORG_ADMIN . '|' . Roles::SALES])
     ->name('admin.')
@@ -230,10 +240,6 @@ Route::prefix('admin')
         });
 
         Route::middleware(['organization.account', 'organization.subscription.sync'])->group(function () {
-            Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-            Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-            Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
-
             Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding');
             Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
 

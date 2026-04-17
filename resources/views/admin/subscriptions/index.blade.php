@@ -2,11 +2,6 @@
 
 @section('title', __('Subscriptions'))
 
-@push('vendor-css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.11/css/dataTables.bootstrap5.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" crossorigin="anonymous">
-@endpush
-
 @php
     $currencyFmt = static function (?float $amount, string $currency): string {
         if ($amount === null) {
@@ -136,18 +131,24 @@
 
     <div class="box shadow-none border border-defaultborder/10">
         <div class="box-header !border-b !border-defaultborder/10 flex flex-wrap justify-between items-center gap-4">
-            <div class="flex flex-wrap gap-2">
-                @foreach ($filterLinks as $key => $label)
-                    <a href="{{ $key === 'all' ? route('admin.subscriptions.index') : route('admin.subscriptions.index', ['filter' => $key]) }}"
-                       @class([
-                           'ti-btn ti-btn-sm !font-medium !mb-0 transition-all',
-                           'ti-btn-primary-full' => ($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === '')),
-                           'ti-btn-light' => ! (($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === ''))),
-                       ])
-                    >{{ $label }}</a>
-                @endforeach
+            <div class="w-full md:w-auto overflow-x-auto -mx-2 px-2">
+                <div class="flex flex-nowrap items-center gap-2 min-w-max">
+                    @foreach ($filterLinks as $key => $label)
+                        @php
+                            $isActive = ($filter === $key) || ($key === 'all' && ($filter === 'all' || $filter === ''));
+                        @endphp
+                        <a href="{{ $key === 'all' ? route('admin.subscriptions.index') : route('admin.subscriptions.index', ['filter' => $key]) }}"
+                           @class([
+                               'inline-flex items-center whitespace-nowrap rounded-full px-3 py-1.5 text-[12px] font-semibold border transition-colors',
+                               'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-700 hover:border-indigo-700' => $isActive,
+                               'bg-white text-gray-700 border-gray-200 hover:bg-gray-50' => ! $isActive,
+                           ])
+                           @if ($isActive) aria-current="page" @endif
+                        >{{ $label }}</a>
+                    @endforeach
+                </div>
             </div>
-            <div class="flex items-center gap-2 text-textmuted text-[11px]">
+            <div class="flex items-center gap-2 text-textmuted text-[11px] whitespace-nowrap">
                 <i class="ri-information-line text-[14px]"></i>
                 {{ __('Refining visibility by plan status.') }}
             </div>
@@ -160,7 +161,7 @@
                 </div>
             @else
                 <div class="table-responsive p-4">
-                    <table id="dt-subscriptions" class="ti-custom-table table-hover text-nowrap w-full">
+                    <table id="dt-subscriptions" class="ti-custom-table table-hover text-nowrap w-full datatable" data-disable-last-sort="1">
                         <thead class="bg-gray-100/50 dark:bg-black/20 border-b border-defaultborder/10">
                             <tr>
                                 <th class="!py-3 !px-4">{{ __('Organization') }}</th>
@@ -232,55 +233,3 @@
         </div>
     </div>
 @endsection
-
-@push('vendor-js')
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/1.13.11/js/dataTables.bootstrap5.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js" crossorigin="anonymous"></script>
-@endpush
-
-@push('page-js')
-    <script>
-        (function () {
-            if (typeof jQuery === 'undefined' || !jQuery.fn.DataTable) {
-                return;
-            }
-            const $table = jQuery('#dt-subscriptions');
-            if (!$table.length || $table.find('tbody tr').length === 0) {
-                return;
-            }
-            $table.DataTable({
-                responsive: true,
-                pageLength: 10,
-                lengthMenu: [
-                    [10, 25, 50, 100, -1],
-                    [10, 25, 50, 100, 'All'],
-                ],
-                order: [[4, 'asc']],
-                columnDefs: [
-                    { orderable: false, searchable: false, targets: -1 },
-                    { className: 'align-middle', targets: '_all' },
-                ],
-                language: {
-                    search: '',
-                    searchPlaceholder: 'Search…',
-                    lengthMenu: 'Show _MENU_',
-                    info: 'Showing _START_ to _END_ of _TOTAL_',
-                    infoEmpty: 'No subscriptions',
-                    infoFiltered: '(filtered from _MAX_)',
-                    zeroRecords: 'No matching rows',
-                    paginate: { next: 'Next', previous: 'Prev' },
-                },
-                dom:
-                    "<'flex flex-wrap items-center justify-between gap-4 mb-4'<'flex items-center text-xs'l><'flex items-center'f>>" +
-                    "<'table-responsive'tr>" +
-                    "<'flex flex-wrap items-center justify-between gap-4 mt-4'<'flex items-center text-xs text-textmuted'i><'flex items-center'p>>",
-            });
-            
-            // Re-style for compatibility
-            jQuery('.dataTables_filter input').addClass('ti-form-input !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md');
-            jQuery('.dataTables_length select').addClass('ti-form-select !py-2 !px-3 !text-sm border-gray-200 focus:border-primary focus:ring-primary rounded-md !w-20 mx-2');
-        })();
-    </script>
-@endpush
