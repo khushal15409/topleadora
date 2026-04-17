@@ -85,11 +85,13 @@
                     </div>
 
                     <h2 class="text-4xl font-bold mb-2 text-white" id="walletBalanceDisplay">
-                        <span class="text-2xl text-white/70 align-top me-1">₹</span>{{ number_format($organization->wallet_balance, 2) }}
+                        {{ money_local((float) $organization->wallet_balance, 2) }}
                     </h2>
 
                     <div class="mt-5 pt-4 border-t border-white/20">
-                        <p class="mb-0 text-white/60 text-[10px] text-center">{{ __('Minimum standard top-up is ₹100. Use quick amounts or enter the same value manually.') }}</p>
+                        <p class="mb-0 text-white/60 text-[10px] text-center">
+                            {{ __('Minimum standard top-up is :min. Use quick amounts or enter the same value manually.', ['min' => money_inr(100, 0)]) }}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -122,15 +124,17 @@
                             <button type="button"
                                 class="quick-amount-btn border border-defaultborder text-defaulttextcolor text-[13px] font-bold py-2 px-3 rounded-md hover:bg-primary/10 hover:border-primary hover:text-primary transition-colors text-center"
                                 data-amount="{{ (int) $preset }}">
-                                ₹{{ number_format($preset) }}
+                                {{ money_inr((float) $preset, 0) }}
                             </button>
                         @endforeach
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider" for="topUpAmount">{{ __('Custom Amount (₹)') }}</label>
+                        <label class="form-label text-[11px] font-bold text-textmuted uppercase tracking-wider" for="topUpAmount">
+                            {{ __('Custom Amount (:currency)', ['currency' => currency_context()['currency_code']]) }}
+                        </label>
                         <div class="input-group">
-                            <span class="input-group-text bg-light border-0 text-textmuted font-bold">₹</span>
+                            <span class="input-group-text bg-light border-0 text-textmuted font-bold">{{ currency_context()['currency_code'] }}</span>
                             <input type="number"
                                 class="form-control bg-light border-0 shadow-none text-[15px] font-bold"
                                 id="topUpAmount"
@@ -150,7 +154,9 @@
                         </div>
 
                         <div class="flex flex-col gap-1 mt-1">
-                            <p class="text-textmuted text-[11px] mb-0">{{ __('Min: ₹100 — Max: ₹10,000 (quick amounts recommended).') }}</p>
+                            <p class="text-textmuted text-[11px] mb-0">
+                                {{ __('Min: :min — Max: :max (quick amounts recommended).', ['min' => money_inr(100, 0), 'max' => money_inr(10000, 0)]) }}
+                            </p>
                             <div class="flex items-center gap-2 mt-2">
                                 <span class="badge bg-success/10 text-success !text-[10px] py-1 px-2 border border-success/20 uppercase tracking-tighter">{{ __('Recommended') }}</span>
                                 <p class="text-textmuted text-[10px] mb-0">{{ __('Use UPI for fastest processing and 100% success rate.') }}</p>
@@ -214,7 +220,7 @@
                                         </td>
                                         <td class="!px-4">
                                             <span class="font-bold text-sm {{ $trx->type === 'credit' ? 'text-success' : 'text-defaulttextcolor' }}">
-                                                {{ $trx->type === 'credit' ? '+' : '-' }} ₹{{ number_format($trx->amount, 2) }}
+                                {{ $trx->type === 'credit' ? '+' : '-' }} {{ money_local((float) $trx->amount, 2) }}
                                             </span>
                                         </td>
                                         <td class="!px-4">
@@ -378,7 +384,7 @@
         const options = {
             "key": orderData.key,
             "amount": orderData.amount, 
-            "currency": orderData.currency || "INR",
+            "currency": orderData.currency || @json(currency_context()['base_currency']),
             "name": orderData.name,
             "description": orderData.description,
             "order_id": orderData.order_id,
@@ -492,10 +498,10 @@
             const data = await res.json();
 
             if (res.ok && data.ok) {
-                showAlert('success', `Wallet credited successfully. New balance: ₹${data.new_balance}`);
+                showAlert('success', data.message || 'Wallet credited successfully.');
                 // Refresh balance display dynamically
                 const balEl = document.getElementById('walletBalanceDisplay');
-                if (balEl) balEl.innerHTML = `<span class="text-2xl text-white/70 align-top me-1">₹</span>${data.new_balance}`;
+                if (balEl && data.new_balance_local) balEl.textContent = data.new_balance_local;
                 // Reload the page after a short delay to show updated transactions
                 setTimeout(() => window.location.reload(), 2500);
             } else {

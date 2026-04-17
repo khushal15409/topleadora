@@ -42,12 +42,7 @@
                             @foreach ($plans as $plan)
                                 <option value="{{ $plan->id }}" @selected((int) old('plan_id') === $plan->id)>
                                     {{ $plan->name }} —
-                                    @if (strtoupper((string) $plan->currency) === 'INR')
-                                        ₹
-                                    @else
-                                        {{ $plan->currency }}
-                                    @endif
-                                    {{ number_format((float) $plan->price_monthly, 0) }}/{{ __('mo') }}
+                                    {{ money_local((float) $plan->price_monthly, 0) }}/{{ __('mo') }}
                                 </option>
                             @endforeach
                         </select>

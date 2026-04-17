@@ -12,8 +12,8 @@
         if ($amount === null) {
             return '—';
         }
-        $sym = strtoupper($currency) === 'INR' ? '₹' : $currency.' ';
-        return $sym.number_format($amount, 0);
+        // Amounts are stored in INR; currency column here is legacy/display only.
+        return money_local((float) $amount, 0);
     };
 
     $filterLinks = [

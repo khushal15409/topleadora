@@ -133,7 +133,7 @@
                                             </span>
                                         </div>
                                         <div class="flex-1">
-                                            <p class="text-2xl font-bold mb-0">${{ number_format($stats['wallet_balance'], 2) }}</p>
+                                            <p class="text-2xl font-bold mb-0">{{ money_local((float) $stats['wallet_balance'], 2) }}</p>
                                         </div>
                                     </div>
                                 </div>

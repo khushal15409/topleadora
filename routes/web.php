@@ -179,6 +179,11 @@ Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZAT
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
+// Optional user override for display currency (does not affect INR storage/charges).
+Route::post('/currency', [\App\Http\Controllers\CurrencyPreferenceController::class, 'update'])
+    ->middleware(['web'])
+    ->name('currency.update');
+
 Route::prefix('admin')
     ->middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZATION . '|' . Roles::ORG_ADMIN . '|' . Roles::SALES])
     ->name('admin.')

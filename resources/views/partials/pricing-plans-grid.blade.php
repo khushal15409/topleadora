@@ -11,13 +11,6 @@
         $plans = collect($plans ?? []);
     }
 
-    $currencySymbol = static function (\App\Models\Plan $plan): string {
-        return match (strtoupper((string) $plan->currency)) {
-            'INR' => '₹',
-            default => $plan->currency . ' ',
-        };
-    };
-
     $landingPlanQuery = static function (\App\Models\Plan $plan): string {
         return match ($plan->slug) {
             'starter' => 'starter',
@@ -74,11 +67,15 @@
                                 <span class="badge-title">{{ $badgeTitle }}</span>
                                 <div class="price-wrap price-wrap-paid">
                                     <span class="price price-monthly">
-                                        <span class="price-currency">{{ $currencySymbol($plan) }}</span><span
-                                            class="price-value">{{ number_format((float) $plan->price_monthly, 0) }}</span><span
-                                            class="period">/month</span>
+                                        <span class="price-value">{{ money_local((float) $plan->price_monthly, 0) }}</span><span class="period">/month</span>
                                     </span>
                                 </div>
+                                @php($ctx = currency_context())
+                                @if (($ctx['currency_code'] ?? 'INR') !== ($ctx['base_currency'] ?? 'INR'))
+                                    <p class="text-muted small mb-0">
+                                        {{ __('Charged in') }} {{ $ctx['base_currency'] }} ({{ money_inr((float) $plan->price_monthly, 0) }})
+                                    </p>
+                                @endif
                                 @if ($meta['plan_tagline'] !== '')
                                     <p class="plan-tagline">{{ $meta['plan_tagline'] }}</p>
                                 @endif

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckOrganizationSubscription;
+use App\Http\Middleware\CurrencyContextMiddleware;
 use App\Http\Middleware\EnsureOrganizationAccountActive;
 use App\Http\Middleware\EnsureOrganizationOnboardingComplete;
 use App\Http\Middleware\SyncOrganizationSubscriptionExpiry;
@@ -21,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn() => route('login'));
         $middleware->redirectUsersTo(fn() => route('admin.dashboard'));
+        // Establish a global currency context for all web requests (display-only).
+        $middleware->appendToGroup('web', CurrencyContextMiddleware::class);
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,

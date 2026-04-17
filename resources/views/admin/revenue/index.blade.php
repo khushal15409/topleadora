@@ -8,7 +8,7 @@
 
 @php
     $money = static function (float $amount): string {
-        return '₹'.number_format($amount, 0);
+        return money_local($amount, 0);
     };
 
     $exportQuery = array_merge(request()->only(['range', 'date_from', 'date_to', 'payment_status', 'q']), ['export' => 'csv']);
@@ -270,7 +270,7 @@
                                                         <span class="text-[10px] text-textmuted">{{ $p->plan?->name ?? '—' }}</span>
                                                     </div>
                                                 </td>
-                                                <td class="text-end !px-4 font-bold">{{ $p->currency === 'INR' ? '₹' : $p->currency }}{{ number_format((float) $p->amount, 0) }}</td>
+                                                <td class="text-end !px-4 font-bold">{{ money_local((float) $p->amount, 0) }}</td>
                                                 <td class="!px-4">
                                                     @if ($p->status === \App\Models\Payment::STATUS_SUCCESS)
                                                         <span class="badge bg-success/10 text-success rounded-full px-2 py-1 text-[9px] uppercase">{{ __('Paid') }}</span>
@@ -310,7 +310,7 @@
 
 @push('page-js')
     <script>
-        window.__WP_CRM_REVENUE_CHARTS = @json(array_merge($chartPayload, ['currencySymbol' => '₹']));
+        window.__WP_CRM_REVENUE_CHARTS = @json(array_merge($chartPayload, ['currencySymbol' => currency_context()['currency_code']]));
     </script>
     <script src="{{ asset('materio/assets/js/revenue-analytics.js') }}"></script>
 @endpush
@@ -321,7 +321,7 @@
 
 @push('page-js')
     <script>
-        window.__WP_CRM_REVENUE_CHARTS = @json(array_merge($chartPayload, ['currencySymbol' => '₹']));
+        window.__WP_CRM_REVENUE_CHARTS = @json(array_merge($chartPayload, ['currencySymbol' => currency_context()['currency_code']]));
     </script>
     <script src="{{ asset('materio/assets/js/revenue-analytics.js') }}"></script>
 @endpush

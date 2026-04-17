@@ -29,7 +29,9 @@ class RazorpayPaymentController extends Controller
         $organization = $user->organization;
         abort_if($organization === null, 403);
 
-        $currency = (string) ($plan->currency ?: 'INR');
+        // Global rule: backend storage/calculation currency is INR.
+        // Razorpay is used only in INR for this SaaS.
+        $currency = 'INR';
         $amount = (float) $plan->price_monthly;
         $amountPaise = (int) round($amount * 100);
         abort_if($amountPaise <= 0, 422);

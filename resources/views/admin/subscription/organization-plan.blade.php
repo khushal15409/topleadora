@@ -3,13 +3,6 @@
 @section('title', __('My plan'))
 
 @php
-    $currencySymbol = static function (\App\Models\Plan $plan): string {
-        return match (strtoupper((string) $plan->currency)) {
-            'INR' => '₹',
-            default => $plan->currency . ' ',
-        };
-    };
-
     $metaFor = static function (\App\Models\Plan $plan): array {
         return \App\Http\Controllers\Admin\SubscriptionController::planDisplayMeta($plan);
     };

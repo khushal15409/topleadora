@@ -93,7 +93,7 @@
 Name: Rahul
 City: Ahmedabad
 Interest: 2BHK
-Budget: ₹40L–₹55L
+Budget: {{ money_local(4000000, 0) }}–{{ money_local(5500000, 0) }}
 Preferred time: Evening
 Notes: Wants options near metro, ready to visit this weekend
                 </pre>

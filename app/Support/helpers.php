@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Setting;
+use App\Services\CurrencyService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
@@ -158,6 +159,57 @@ if (!function_exists('isApiClient')) {
     function isApiClient(): bool
     {
         return auth()->check() && auth()->user()->hasRole(\App\Support\Roles::API_CLIENT);
+    }
+}
+
+if (!function_exists('currency_context')) {
+    /**
+     * Current display currency context (display-only).
+     *
+     * @return array{base_currency:string,currency_code:string,country_code:string|null}
+     */
+    function currency_context(): array
+    {
+        /** @var array{base_currency?:string,currency_code?:string,country_code?:string|null}|null $ctx */
+        $ctx = view()->shared('currencyContext');
+        if (is_array($ctx) && isset($ctx['base_currency'], $ctx['currency_code'])) {
+            return [
+                'base_currency' => (string) $ctx['base_currency'],
+                'currency_code' => (string) $ctx['currency_code'],
+                'country_code' => isset($ctx['country_code']) ? (string) $ctx['country_code'] : null,
+            ];
+        }
+
+        $svc = app(CurrencyService::class);
+        return [
+            'base_currency' => $svc->baseCurrency(),
+            'currency_code' => $svc->defaultDisplayCurrency(),
+            'country_code' => null,
+        ];
+    }
+}
+
+if (!function_exists('money_local')) {
+    /**
+     * Format a base (INR) amount into the viewer's local currency.
+     */
+    function money_local(float|int $amountInBase, int $maxFractionDigits = 2): string
+    {
+        $ctx = currency_context();
+        $svc = app(CurrencyService::class);
+
+        return $svc->formatFromBase((float) $amountInBase, (string) $ctx['currency_code'], null, $maxFractionDigits);
+    }
+}
+
+if (!function_exists('money_inr')) {
+    /**
+     * Format an INR/base amount explicitly as INR.
+     */
+    function money_inr(float|int $amountInBase, int $maxFractionDigits = 2): string
+    {
+        $svc = app(CurrencyService::class);
+        return $svc->formatFromBase((float) $amountInBase, $svc->baseCurrency(), null, $maxFractionDigits);
     }
 }
 

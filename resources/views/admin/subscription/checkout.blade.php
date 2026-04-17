@@ -28,9 +28,15 @@
                 <div class="card-body">
                     <p class="mb-2">
                         <span class="text-body-secondary">Amount due</span><br>
-                        <span class="h4 mb-0">{{ $plan->currency }} {{ number_format((float) $plan->price_monthly, 2) }}</span>
+                        <span class="h4 mb-0">{{ money_local((float) $plan->price_monthly, 2) }}</span>
                         <span class="text-body-secondary">/ month</span>
                     </p>
+                    @php($ctx = currency_context())
+                    @if (($ctx['currency_code'] ?? 'INR') !== ($ctx['base_currency'] ?? 'INR'))
+                        <p class="text-body-secondary small mb-3">
+                            {{ __('Charged in') }} {{ $ctx['base_currency'] }} ({{ money_inr((float) $plan->price_monthly, 2) }})
+                        </p>
+                    @endif
                     @php
                         $razorpayConfigured = (string) setting('razorpay_key', '') !== '' && (string) setting('razorpay_secret', '') !== '';
                     @endphp

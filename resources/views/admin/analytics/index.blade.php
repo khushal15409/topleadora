@@ -53,7 +53,7 @@
         $cards = [
             ['label' => __('ORGANIZATIONS'), 'value' => number_format($totalOrganizations), 'hint' => __('All platform tenants'), 'icon' => 'ri-building-4-line', 'color' => 'primary'],
             ['label' => __('SUBSCRIPTIONS'), 'value' => number_format($activeSubscriptions), 'hint' => __('Active paid plans'), 'icon' => 'ri-bank-card-line', 'color' => 'success'],
-            ['label' => __('TOTAL REVENUE'), 'value' => '₹' . number_format($totalRevenue, 0), 'hint' => __('Life-time revenue'), 'icon' => 'ri-line-chart-line', 'color' => 'info'],
+            ['label' => __('TOTAL REVENUE'), 'value' => money_local((float) $totalRevenue, 0), 'hint' => __('Life-time revenue'), 'icon' => 'ri-line-chart-line', 'color' => 'info'],
             ['label' => __('TOTAL LEADS'), 'value' => number_format($totalLeads), 'hint' => __('Global leads database'), 'icon' => 'ri-user-search-line', 'color' => 'warning'],
         ];
     @endphp

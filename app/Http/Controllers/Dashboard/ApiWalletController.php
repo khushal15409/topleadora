@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\WalletTransaction;
+use App\Services\CurrencyService;
 use App\Services\RazorpayService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -182,10 +183,20 @@ class ApiWalletController extends Controller
             ->where('status', 'success')
             ->first();
         if ($already !== null) {
+            $fresh = $organization->fresh();
+            $balance = (float) ($fresh?->wallet_balance ?? $organization->wallet_balance);
+            $ctx = currency_context();
+            $currency = (string) ($ctx['currency_code'] ?? app(CurrencyService::class)->defaultDisplayCurrency());
+            $svc = app(CurrencyService::class);
+
             return response()->json([
                 'ok' => true,
                 'message' => 'Wallet already credited.',
-                'new_balance' => number_format($organization->fresh()->wallet_balance, 2),
+                // Backward-compatible field (INR numeric string)
+                'new_balance' => number_format($balance, 2),
+                // New fields for global currency display
+                'new_balance_inr' => number_format($balance, 2),
+                'new_balance_local' => $svc->formatFromBase($balance, $currency, null, 2),
             ]);
         }
 
@@ -271,7 +282,15 @@ class ApiWalletController extends Controller
         return response()->json([
             'ok' => true,
             'message' => 'Wallet credited successfully!',
-            'new_balance' => number_format($organization->fresh()->wallet_balance, 2),
+            // Backward-compatible field (INR numeric string)
+            'new_balance' => number_format((float) $organization->fresh()->wallet_balance, 2),
+            'new_balance_inr' => number_format((float) $organization->fresh()->wallet_balance, 2),
+            'new_balance_local' => app(CurrencyService::class)->formatFromBase(
+                (float) $organization->fresh()->wallet_balance,
+                (string) (currency_context()['currency_code'] ?? app(CurrencyService::class)->defaultDisplayCurrency()),
+                null,
+                2
+            ),
         ]);
     }
 
