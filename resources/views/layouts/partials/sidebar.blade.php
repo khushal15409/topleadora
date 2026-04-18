@@ -1,11 +1,16 @@
+@php
+    $__gccBrandLogo = asset('front/images/logo.png');
+    $__gccBrandFavicon = asset(config('branding.favicon', 'front/images/landify/favicon.png'));
+@endphp
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="{{ route('admin.dashboard') }}"
             class="app-brand-link d-flex align-items-center gap-2 min-w-0 text-decoration-none sidebar-app-brand-link"
             title="{{ config('app.name', 'TopLeadOra') }}">
             <span class="sidebar-logo-brand">
-                <img src="{{ asset('front/images/logo.png') }}" alt="{{ config('app.name', 'TopLeadOra') }}" width="160"
-                    height="40" class="sidebar-logo-brand__img" loading="eager">
+                <img src="{{ $__gccBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" width="2560"
+                    height="640" class="sidebar-logo-brand__img gcc-sidebar-brand-img" loading="eager"
+                    data-brand-src="{{ $__gccBrandLogo }}" data-favicon-src="{{ $__gccBrandFavicon }}">
             </span>
         </a>
 
@@ -106,6 +111,12 @@
                 <a href="{{ route('admin.analytics.index') }}" class="menu-link">
                     <i class="menu-icon icon-base ri ri-bar-chart-box-line"></i>
                     <div>Analytics</div>
+                </a>
+            </li>
+            <li class="menu-item {{ request()->routeIs('admin.site-traffic.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.site-traffic.index') }}" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-global-line"></i>
+                    <div>Website traffic</div>
                 </a>
             </li>
             <li class="menu-item {{ request()->routeIs('admin.integrations.*') ? 'active' : '' }}">

@@ -17,6 +17,13 @@
 .leads-layout {
   background: var(--ls-bg);
   color: var(--ls-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.leads-layout #main {
+  flex: 1 1 auto;
 }
 
 .leads-page-conversion {

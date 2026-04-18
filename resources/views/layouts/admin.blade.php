@@ -86,12 +86,9 @@ header('Permissions-Policy: accelerometer=*, gyroscope=*, magnetometer=*, paymen
                 @yield('content')
 
             </div>
+            @include('layouts.components.footer')
         </div>
         <!-- End::content  -->
-
-        <!-- Footer opened -->
-        @include('layouts.components.footer')
-        <!-- End Footer -->
 
         @yield('modals')
 
@@ -122,6 +119,36 @@ header('Permissions-Policy: accelerometer=*, gyroscope=*, magnetometer=*, paymen
     @stack('page-js')
     @stack('scripts')
     <!-- END SCRIPTS -->
+
+    <script>
+        (function () {
+            function syncAdminFixedFooterInset() {
+                var content = document.querySelector('.gcc-admin-theme .page > .content');
+                var footer = document.querySelector('.footer.app-main-footer');
+                if (!content || !footer) {
+                    return;
+                }
+                var start = getComputedStyle(content).marginInlineStart || '0px';
+                footer.style.insetInlineStart = start === 'auto' ? '0px' : start;
+            }
+
+            function bindAdminFixedFooterInset() {
+                syncAdminFixedFooterInset();
+                window.addEventListener('resize', syncAdminFixedFooterInset, { passive: true });
+                new MutationObserver(syncAdminFixedFooterInset).observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ['class', 'data-toggled', 'data-nav-style', 'data-vertical-style', 'data-icon-overlay', 'dir'],
+                });
+                document.querySelector('.page')?.addEventListener('transitionend', syncAdminFixedFooterInset, true);
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', bindAdminFixedFooterInset);
+            } else {
+                bindAdminFixedFooterInset();
+            }
+        })();
+    </script>
 
 </body>
 

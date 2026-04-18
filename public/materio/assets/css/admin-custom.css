@@ -37,7 +37,7 @@
   width: auto;
   max-width: 100%;
   height: auto;
-  max-height: 40px;
+  max-height: 720px;
   margin-inline: 0;
   object-fit: contain;
   object-position: left center;
@@ -56,8 +56,22 @@
 
 @media (min-width: 1200px) {
   .layout-menu .sidebar-logo-brand__img {
-    max-height: 40px;
+    max-height: 720px;
   }
+}
+
+/* Icon rail: favicon mark (src swapped via resources/js/sidebar-brand.js) */
+.layout-menu .sidebar-logo-brand__img.gcc-sidebar-favicon-mode {
+  max-height: 3rem !important;
+  width: 3rem !important;
+  max-width: 3rem !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+/* Room for Materio fixed footer so tables don’t sit under the bar */
+html.layout-footer-fixed .layout-content-navbar .content-wrapper > .container-xxl.flex-grow-1 {
+  padding-bottom: 5.5rem !important;
 }
 
 /* Dashboard hero */
@@ -816,6 +830,12 @@ html.layout-menu-collapsed .layout-menu:hover {
 .content-footer.footer {
   background: transparent !important;
   border-top: 1px solid var(--saas-border);
+}
+
+/* Materio shell (gcc.layouts.app): keep footer after the flex-grow main block */
+.layout-content-navbar .content-wrapper > .content-footer.footer {
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .content-footer .footer-link {

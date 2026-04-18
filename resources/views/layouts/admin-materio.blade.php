@@ -1,7 +1,7 @@
 <!doctype html>
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    class="layout-menu-fixed layout-compact layout-navbar-fixed"
+    class="layout-menu-fixed layout-compact layout-navbar-fixed layout-footer-fixed"
     data-assets-path="{{ asset('materio/assets/') }}/"
     data-template="vertical-menu-template-free"
 >

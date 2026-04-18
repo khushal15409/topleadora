@@ -1,13 +1,17 @@
+@php
+    $__crmBrandLogo = asset('front/images/logo.png');
+    $__crmBrandFavicon = asset(config('branding.favicon', 'front/images/landify/favicon.png'));
+@endphp
 <aside class="app-sidebar" id="sidebar">
 
 	<!-- Start::main-sidebar-header -->
 	<div class="main-sidebar-header">
-		<a href="{{ route('admin.dashboard') }}" class="header-logo">
-			<img src="{{ asset('front/images/logo.png') }}" alt="logo" class="desktop-logo h-8">
-			<img src="{{ asset('front/images/logo.png') }}" alt="logo" class="toggle-logo h-8">
-			<img src="{{ asset('front/images/logo.png') }}" alt="logo" class="desktop-dark h-8">
-			<img src="{{ asset('front/images/logo.png') }}" alt="logo" class="toggle-dark h-8">
-			<img src="{{ asset('front/images/logo.png') }}" alt="logo" class="desktop-white h-8">
+		<a href="{{ route('admin.dashboard') }}" class="header-logo" data-favicon-url="{{ $__crmBrandFavicon }}">
+			<img src="{{ $__crmBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" data-brand-src="{{ $__crmBrandLogo }}" class="crm-sidebar-logo desktop-logo w-auto max-w-full object-contain">
+			<img src="{{ $__crmBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" data-brand-src="{{ $__crmBrandLogo }}" class="crm-sidebar-logo toggle-logo w-auto max-w-full object-contain">
+			<img src="{{ $__crmBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" data-brand-src="{{ $__crmBrandLogo }}" class="crm-sidebar-logo desktop-dark w-auto max-w-full object-contain">
+			<img src="{{ $__crmBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" data-brand-src="{{ $__crmBrandLogo }}" class="crm-sidebar-logo toggle-dark w-auto max-w-full object-contain">
+			<img src="{{ $__crmBrandLogo }}" alt="{{ config('app.name', 'TopLeadOra') }}" data-brand-src="{{ $__crmBrandLogo }}" class="crm-sidebar-logo desktop-white w-auto max-w-full object-contain">
 		</a>
 	</div>
 	<!-- End::main-sidebar-header -->
@@ -135,6 +139,13 @@
 								class="side-menu__item {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}">
 								<i class="ri-bar-chart-box-line side-menu__icon"></i>
 								<span class="side-menu__label">{{ __('Analytics') }}</span>
+							</a>
+						</li>
+						<li class="slide">
+							<a href="{{ route('admin.site-traffic.index') }}"
+								class="side-menu__item {{ request()->routeIs('admin.site-traffic.*') ? 'active' : '' }}">
+								<i class="ri-global-line side-menu__icon"></i>
+								<span class="side-menu__label">{{ __('Website traffic') }}</span>
 							</a>
 						</li>
 						<li class="slide">

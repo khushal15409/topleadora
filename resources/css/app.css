@@ -11,6 +11,69 @@
 }
 
 @layer components {
+    /*
+     | Vyzor admin (layouts.admin): footer is rendered inside .content so it always
+     | lines up with the main column for every sidebar width / toggle state / RTL.
+     | Flex keeps the footer at the bottom when a page has little content.
+     */
+    .gcc-admin-theme .page > .content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /*
+     | Sidebar logo: theme ships `.header-logo img{ height: 2rem }`. Override with
+     | higher specificity + !important so height/width can grow (object-contain).
+     */
+    .gcc-admin-theme .app-sidebar .main-sidebar-header .header-logo img.crm-sidebar-logo {
+        height: 8rem !important;
+        width: auto !important;
+        max-width: min(100%, 14rem) !important;
+        max-height: 8rem !important;
+        object-fit: contain !important;
+    }
+
+    /* Icon rail (~5rem): favicon-sized mark (src swapped via sidebar-brand.js) */
+    .gcc-admin-theme .app-sidebar .main-sidebar-header .header-logo img.crm-sidebar-logo.crm-sidebar-favicon-mode {
+        height: 2.75rem !important;
+        width: 2.75rem !important;
+        max-width: 2.75rem !important;
+        max-height: 2.75rem !important;
+        object-fit: contain !important;
+    }
+
+    .gcc-admin-theme .main-sidebar-header {
+        padding-block: 1.25rem;
+    }
+
+    .gcc-admin-theme .main-sidebar-header .header-logo {
+        display: block;
+        max-width: 100%;
+    }
+
+    .gcc-admin-theme {
+        --app-admin-footer-h: 5.75rem;
+    }
+
+    .gcc-admin-theme .page > .content > .main-content {
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 0;
+        padding-bottom: var(--app-admin-footer-h);
+    }
+
+    /* Fixed “sticky” bar: stays at viewport bottom; inset follows .content margin (see admin layout script). */
+    .gcc-admin-theme .page > .content > .footer.app-main-footer {
+        position: fixed;
+        z-index: 102;
+        inset-block-end: 0;
+        inset-inline-end: 0;
+        margin-top: 0;
+        width: auto;
+        box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06);
+        padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+    }
+
     /* DataTables: clean filter/length UI to match admin theme */
     .dataTables_wrapper .dataTables_length,
     .dataTables_wrapper .dataTables_filter,

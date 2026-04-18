@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\RazorpayPaymentController;
 use App\Http\Controllers\Admin\RevenueAnalyticsController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SubscriptionController;
+use App\Http\Controllers\Admin\SiteTrafficController;
 use App\Http\Controllers\Admin\SubscriptionMonitoringController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -210,6 +211,8 @@ Route::prefix('admin')
             Route::get('broadcast-usage/{organization}', [BroadcastUsageController::class, 'show'])->name('broadcast-usage.show');
 
             Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+
+            Route::get('site-traffic', [SiteTrafficController::class, 'index'])->name('site-traffic.index');
 
             Route::get('integrations', [IntegrationsController::class, 'index'])->name('integrations.index');
             Route::put('integrations', [IntegrationsController::class, 'update'])->name('integrations.update');

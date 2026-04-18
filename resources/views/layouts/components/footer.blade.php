@@ -1,5 +1,5 @@
 <footer
-	class="footer mt-auto xl:ps-[15rem] font-normal leading-normal text-sm bg-white dark:bg-bodybg py-4 text-center border-t border-defaultborder/10">
+	class="footer app-main-footer w-full shrink-0 font-normal leading-normal text-sm py-4 text-center border-t border-defaultborder/10 backdrop-blur-sm bg-white/95 dark:bg-bodybg/95">
 	<div class="container">
 		<span class="text-textmuted">
 			{{ __('Copyright') }} © <span id="year">{{ date('Y') }}</span>

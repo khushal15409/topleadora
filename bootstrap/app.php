@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(fn() => route('admin.dashboard'));
         // Establish a global currency context for all web requests (display-only).
         $middleware->appendToGroup('web', CurrencyContextMiddleware::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\LogPublicSiteVisit::class);
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
