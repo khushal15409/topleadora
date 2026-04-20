@@ -18,6 +18,11 @@ class ContactMessageController extends Controller
         return view('admin.contacts.index', compact('contacts'));
     }
 
+    public function show(Contact $contact): View
+    {
+        return view('admin.contacts.show', compact('contact'));
+    }
+
     public function markAsRead(Contact $contact): RedirectResponse
     {
         $contact->update(['is_read' => true]);

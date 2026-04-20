@@ -235,6 +235,7 @@ Route::prefix('admin')
             });
 
             Route::get('contacts', [ContactMessageController::class, 'index'])->name('contacts.index');
+            Route::get('contacts/{contact}', [ContactMessageController::class, 'show'])->name('contacts.show');
             Route::patch('contacts/{contact}/read', [ContactMessageController::class, 'markAsRead'])->name('contacts.mark-read');
             Route::delete('contacts/{contact}', [ContactMessageController::class, 'destroy'])->name('contacts.destroy');
 
