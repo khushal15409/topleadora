@@ -155,6 +155,12 @@
                     <div>API Logs</div>
                 </a>
             </li>
+            <li class="menu-item {{ request()->routeIs('dashboard.api.test-send*') ? 'active' : '' }}">
+                <a href="{{ route('dashboard.api.test-send') }}" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-flask-line"></i>
+                    <div>Test OTP & WhatsApp</div>
+                </a>
+            </li>
         @endif
 
         @if(auth()->user()?->hasRole(\App\Support\Roles::ORGANIZATION) && !$isSuperAdminRole)

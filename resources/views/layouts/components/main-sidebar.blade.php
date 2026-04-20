@@ -70,6 +70,13 @@
 							<span class="side-menu__label">{{ __('Documentation') }}</span>
 						</a>
 					</li>
+					<li class="slide">
+						<a href="{{ route('dashboard.api.test-send') }}"
+							class="side-menu__item {{ request()->routeIs('dashboard.api.test-send*') ? 'active' : '' }}">
+							<i class="ri-flask-line side-menu__icon"></i>
+							<span class="side-menu__label">{{ __('Test OTP & WhatsApp') }}</span>
+						</a>
+					</li>
 					<li class="slide {{ isSuperAdmin() ? '' : 'border-b border-defaultborder/10 pb-2 mb-2' }}">
 						<a href="{{ route('dashboard.api.settings') }}"
 							class="side-menu__item {{ request()->routeIs('dashboard.api.settings') ? 'active' : '' }}">

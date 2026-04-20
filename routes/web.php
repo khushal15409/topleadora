@@ -171,6 +171,10 @@ Route::middleware(['auth', 'role:' . Roles::SUPER_ADMIN . '|' . Roles::ORGANIZAT
                         Route::get('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'index'])->name('settings');
                         Route::put('/settings', [\App\Http\Controllers\Dashboard\ApiSettingsController::class, 'update'])->name('settings.update');
                         Route::get('/docs', [\App\Http\Controllers\Dashboard\ApiDocsController::class, 'index'])->name('docs');
+                        Route::get('/test-send', [\App\Http\Controllers\Dashboard\ApiTestSendController::class, 'index'])->name('test-send');
+                        Route::post('/test-send', [\App\Http\Controllers\Dashboard\ApiTestSendController::class, 'store'])
+                            ->middleware('throttle:15,1')
+                            ->name('test-send.store');
                     });
                 });
             });

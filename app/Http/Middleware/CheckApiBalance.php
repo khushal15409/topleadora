@@ -10,7 +10,7 @@ class CheckApiBalance
 {
     private function requiredCostInInr(Request $request): float
     {
-        // Keep in sync with Api\GatewayController cost constants.
+        // Keep in sync with ApiGatewaySendService cost constants.
         if ($request->is('api/send-otp')) {
             return 0.50;
         }
