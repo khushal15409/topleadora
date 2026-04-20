@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -196,7 +197,13 @@ class LeadCaptureController extends Controller
             return collect();
         }
 
-        return BlogPost::published()->limit(4)->get(['id', 'slug', 'title', 'published_at']);
+        return Cache::remember('marketing:recent_blog_posts:v1', 300, static function () {
+            if (! Schema::hasTable('blog_posts')) {
+                return collect();
+            }
+
+            return BlogPost::published()->limit(4)->get(['id', 'slug', 'title', 'published_at']);
+        });
     }
 
     /**
@@ -379,7 +386,13 @@ class LeadCaptureController extends Controller
             return collect();
         }
 
-        return Service::query()->activeOrdered()->get(['id', 'name', 'slug']);
+        return Cache::remember('marketing:public_form_services:v1', 300, static function () {
+            if (! Schema::hasTable('services')) {
+                return collect();
+            }
+
+            return Service::query()->activeOrdered()->get(['id', 'name', 'slug']);
+        });
     }
 
     /**
@@ -391,7 +404,13 @@ class LeadCaptureController extends Controller
             return collect();
         }
 
-        return Country::query()->activeOrdered()->get(['id', 'code', 'name', 'url_slug']);
+        return Cache::remember('marketing:public_form_countries:v1', 300, static function () {
+            if (! Schema::hasTable('countries')) {
+                return collect();
+            }
+
+            return Country::query()->activeOrdered()->get(['id', 'code', 'name', 'url_slug']);
+        });
     }
 
     /**
@@ -428,7 +447,13 @@ class LeadCaptureController extends Controller
             return collect();
         }
 
-        return MarketingFormField::query()->activeOrdered()->get();
+        return Cache::remember('marketing:public_form_fields:v1', 300, static function () {
+            if (! Schema::hasTable('marketing_form_fields')) {
+                return collect();
+            }
+
+            return MarketingFormField::query()->activeOrdered()->get();
+        });
     }
 
     /**
@@ -544,13 +569,15 @@ class LeadCaptureController extends Controller
 
     private function indiaCountryIdForRelated(): ?int
     {
-        if (! Schema::hasTable('countries')) {
-            return null;
-        }
+        return Cache::remember('marketing:india_country_id:v1', 3600, static function () {
+            if (! Schema::hasTable('countries')) {
+                return null;
+            }
 
-        $id = Country::query()->where('code', 'IN')->where('is_active', true)->value('id');
+            $id = Country::query()->where('code', 'IN')->where('is_active', true)->value('id');
 
-        return $id !== null ? (int) $id : null;
+            return $id !== null ? (int) $id : null;
+        });
     }
 
     /**

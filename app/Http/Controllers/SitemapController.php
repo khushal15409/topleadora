@@ -9,6 +9,7 @@ use App\Models\LeadNiche;
 use App\Models\Service;
 use App\Support\ProgrammaticLeadResolver;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class SitemapController extends Controller
@@ -18,14 +19,20 @@ class SitemapController extends Controller
      */
     public function index(): Response
     {
-        $now = now()->toAtomString();
-        $sitemaps = [
-            ['loc' => route('sitemap.main', absolute: true), 'lastmod' => $now],
-            ['loc' => route('sitemap.blog', absolute: true), 'lastmod' => $now],
-            ['loc' => route('sitemap.leads', absolute: true), 'lastmod' => $now],
-        ];
+        $host = request()->getHost();
+        $ttlSeconds = 3600;
+        $cacheKey = "sitemap:index:{$host}";
 
-        $xml = view('sitemap.index', compact('sitemaps'))->render();
+        $xml = Cache::remember($cacheKey, $ttlSeconds, function () {
+            $now = now()->toAtomString();
+            $sitemaps = [
+                ['loc' => route('sitemap.main', absolute: true), 'lastmod' => $now],
+                ['loc' => route('sitemap.blog', absolute: true), 'lastmod' => $now],
+                ['loc' => route('sitemap.leads', absolute: true), 'lastmod' => $now],
+            ];
+
+            return view('sitemap.index', compact('sitemaps'))->render();
+        });
 
         return $this->xmlResponse($xml);
     }
@@ -33,34 +40,50 @@ class SitemapController extends Controller
     /** Static marketing URLs: home, features, pricing, blog index, contact. */
     public function main(): Response
     {
-        $now = now()->toAtomString();
-        $sm = config('programmatic_seo.sitemap', []);
+        $host = request()->getHost();
+        $ttlSeconds = 3600;
+        $cacheKey = "sitemap:main:{$host}";
 
-        $urls = [
-            $this->entry(url('/'), $now, $sm['home_changefreq'] ?? 'daily', $sm['home_priority'] ?? '1.0'),
-            $this->entry(url('/features'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
-            $this->entry(url('/pricing'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
-            $this->entry(route('blog.index'), $now, $sm['blog_changefreq'] ?? 'weekly', $sm['blog_priority'] ?? '0.70'),
-            $this->entry(route('contact'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
-        ];
+        $xml = Cache::remember($cacheKey, $ttlSeconds, function () {
+            $now = now()->toAtomString();
+            $sm = config('programmatic_seo.sitemap', []);
 
-        return $this->urlsetResponse($urls);
+            $urls = [
+                $this->entry(url('/'), $now, $sm['home_changefreq'] ?? 'daily', $sm['home_priority'] ?? '1.0'),
+                $this->entry(url('/features'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+                $this->entry(url('/pricing'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+                $this->entry(route('blog.index'), $now, $sm['blog_changefreq'] ?? 'weekly', $sm['blog_priority'] ?? '0.70'),
+                $this->entry(route('contact'), $now, $sm['default_changefreq'] ?? 'weekly', $sm['main_priority'] ?? '0.85'),
+            ];
+
+            return view('sitemap.urlset', ['urls' => $urls])->render();
+        });
+
+        return $this->xmlResponse($xml);
     }
 
     public function blog(): Response
     {
-        $sm = config('programmatic_seo.sitemap', []);
-        $urls = BlogPost::published()
-            ->get(['slug', 'updated_at'])
-            ->map(fn (BlogPost $p) => $this->entry(
-                route('blog.show', $p->slug),
-                ($p->updated_at ?? now())->toAtomString(),
-                $sm['default_changefreq'] ?? 'weekly',
-                $sm['post_priority'] ?? '0.65',
-            ))
-            ->all();
+        $host = request()->getHost();
+        $ttlSeconds = 3600;
+        $cacheKey = "sitemap:blog:{$host}";
 
-        return $this->urlsetResponse($urls);
+        $xml = Cache::remember($cacheKey, $ttlSeconds, function () {
+            $sm = config('programmatic_seo.sitemap', []);
+            $urls = BlogPost::published()
+                ->get(['slug', 'updated_at'])
+                ->map(fn (BlogPost $p) => $this->entry(
+                    route('blog.show', $p->slug),
+                    ($p->updated_at ?? now())->toAtomString(),
+                    $sm['default_changefreq'] ?? 'weekly',
+                    $sm['post_priority'] ?? '0.65',
+                ))
+                ->all();
+
+            return view('sitemap.urlset', ['urls' => $urls])->render();
+        });
+
+        return $this->xmlResponse($xml);
     }
 
     /**
@@ -68,39 +91,47 @@ class SitemapController extends Controller
      */
     public function leads(): Response
     {
-        $sm = config('programmatic_seo.sitemap', []);
-        $seen = [];
-        $urls = [];
+        $host = request()->getHost();
+        $ttlSeconds = 3600;
+        $cacheKey = "sitemap:leads:{$host}";
 
-        foreach ($this->leadLandingUrls() as $row) {
-            $loc = $row['loc'];
-            if (isset($seen[$loc])) {
-                continue;
+        $xml = Cache::remember($cacheKey, $ttlSeconds, function () {
+            $sm = config('programmatic_seo.sitemap', []);
+            $seen = [];
+            $urls = [];
+
+            foreach ($this->leadLandingUrls() as $row) {
+                $loc = $row['loc'];
+                if (isset($seen[$loc])) {
+                    continue;
+                }
+                $seen[$loc] = true;
+                $urls[] = $this->entry(
+                    $loc,
+                    $row['lastmod'],
+                    $sm['leads_changefreq'] ?? 'weekly',
+                    $sm['leads_priority'] ?? '0.90',
+                );
             }
-            $seen[$loc] = true;
-            $urls[] = $this->entry(
-                $loc,
-                $row['lastmod'],
-                $sm['leads_changefreq'] ?? 'weekly',
-                $sm['leads_priority'] ?? '0.90',
-            );
-        }
 
-        foreach ($this->syntheticProgrammaticLeadUrls() as $row) {
-            $loc = $row['loc'];
-            if (isset($seen[$loc])) {
-                continue;
+            foreach ($this->syntheticProgrammaticLeadUrls() as $row) {
+                $loc = $row['loc'];
+                if (isset($seen[$loc])) {
+                    continue;
+                }
+                $seen[$loc] = true;
+                $urls[] = $this->entry(
+                    $loc,
+                    $row['lastmod'],
+                    $sm['leads_changefreq'] ?? 'weekly',
+                    $sm['leads_priority'] ?? '0.90',
+                );
             }
-            $seen[$loc] = true;
-            $urls[] = $this->entry(
-                $loc,
-                $row['lastmod'],
-                $sm['leads_changefreq'] ?? 'weekly',
-                $sm['leads_priority'] ?? '0.90',
-            );
-        }
 
-        return $this->urlsetResponse($urls);
+            return view('sitemap.urlset', ['urls' => $urls])->render();
+        });
+
+        return $this->xmlResponse($xml);
     }
 
     /**
